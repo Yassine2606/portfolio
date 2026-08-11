@@ -1,0 +1,132 @@
+{
+  "slug": "sadine",
+  "title": "Sadine Tours — Travel Agency Platform",
+  "shortName": "Sadine",
+  "tagline": "Public catalog, admin ERP, and customer self-serve on one travel agency platform.",
+  "summary": "A production-grade travel agency platform: six catalog lines (hotels, trips, circuits, cruises, omra, transport), a quotes-to-bookings lifecycle with audit trails, an admin ERP with CMS pages, and a customer account area with quote acceptance and booking tracking in three locales. Next.js frontend (en/fr/ar), Fastify/Prisma backend over PostgreSQL, with JWT auth, RBAC and owner gating, media pipelines, notifications, invoices, reviews, coupons, and dashboards.",
+  "year": 2026,
+  "role": "Solo",
+  "status": "development",
+  "featured": false,
+  "links": {
+    "github": "https://github.com/Yassine2606/sadine-back",
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": [],
+    "backend": ["Node.js", "TypeScript", "Fastify", "Prisma", "zod", "bcrypt", "nodemailer"],
+    "frontend": ["Next.js", "React", "next-intl", "TanStack Query", "Zustand", "shadcn/ui", "react-hook-form", "react-leaflet"],
+    "infra": ["Docker", "Docker Compose", "OpenAPI"],
+    "data": ["PostgreSQL"]
+  },
+  "capabilities": ["Frontend", "Backend", "Cloud", "DevOps", "Databases", "Tooling"],
+  "caseStudy": {
+    "problem": "Sadine Tours ran like most agencies: the catalog — hotels, trips, circuits, cruises, omra, and transport — lived in spreadsheets and admin screens, customers emailed quote requests and waited for an agent, and the quote-to-booking journey was a black box on the customer side. After submitting a request, a traveler could not see its status, view the resulting quote, accept it, or track the resulting booking. Staff had no unified workflow, and every status change existed only in someone's inbox.\n\nThe project is a from-scratch v2 rewrite of that agency into a single platform with three surfaces: a public catalog where travelers request quotes, an admin ERP where agents quote, book, and manage operations, and a customer account where travelers can see, accept, and track their own quotes and bookings. Every transition in the lifecycle is a state machine, not a manual decision.",
+    "requirements": [
+      "Public catalog for all six lines — hotels, trips, circuits, cruises, omra, transport — with filters, departure grids, and pricing tiers",
+      "Quote request → quote → booking lifecycle with defined states, expiry, and conversion",
+      "Customer self-serve: list, inspect, accept quotes, and track bookings with sub-state badges",
+      "Admin ERP with RBAC (customer / agent / admin) and owner-gated operations",
+      "Block-based CMS pages with dynamic catalog embeddings and scheduled publishing",
+      "Media uploads with sharp processing, invoices, reviews, coupons, and newsletters",
+      "Notifications, email templates, dashboards with streaming CSV exports, and visa applications with risk scoring",
+      "Three locales (English, French, Arabic) with prefix routing on every route"
+    ],
+    "solution": "A Next.js app router frontend talks to a Fastify backend over PostgreSQL with Prisma. The backend is organized into 26 modules, each as thin routes over a service layer: routes parse input and return the `{ data }` envelope, services hold the business logic and are testable without Fastify. Auth is JWT with refresh tokens, cookies, CSRF protection, rate limiting, and role decorators; privileged operations additionally require an `requireOwner` gate. The quote-to-booking flow is a documented state machine: each transition is a single service method that validates the current state, runs in a transaction, writes an AuditLog row, and fires a notification — so the customer's timeline is always reconstructable.\n\nThe frontend splits public discovery, account, and admin into route groups under a `[locale]` segment, with strict server/client boundaries, a query-key factory over TanStack Query, a token-rotation auth store, a multi-step booking wizard store, and an SSE notification store. Money is formatted with Intl.NumberFormat per locale and never calculated as floats on the client.",
+    "architecture": {
+      "description": "A Next.js app covers the public catalog, customer account, and admin ERP across three locale prefixes, speaking REST to one Fastify API. The API layers domain logic in 26 modules (thin routes + services) over Prisma and PostgreSQL, with JWT auth, role and owner gates, media uploads stored and served by the API (sharp processing), transactional emails through nodemailer, and notifications delivered from the same lifecycle transitions that write the audit log.",
+      "nodes": [
+        {
+          "id": "web",
+          "label": "Next.js frontend",
+          "type": "frontend",
+          "stage": "Client",
+          "description": "Public catalog, account self-serve, and admin ERP under [locale] route groups; next-intl for en/fr/ar."
+        },
+        {
+          "id": "api",
+          "label": "Fastify API",
+          "type": "backend",
+          "stage": "API",
+          "description": "26 modules as thin routes over service layers; `{ data }` envelopes; JWT auth with refresh and CSRF."
+        },
+        {
+          "id": "db",
+          "label": "PostgreSQL",
+          "type": "database",
+          "stage": "Data",
+          "description": "41 Prisma models: users, catalog entities, quotes, bookings, items, audit logs, CMS pages, invoices."
+        },
+        {
+          "id": "media",
+          "label": "Media pipeline",
+          "type": "backend",
+          "stage": "Media",
+          "description": "Multipart uploads, sharp processing, static serving via @fastify/static."
+        },
+        {
+          "id": "mail",
+          "label": "Mailer",
+          "type": "backend",
+          "stage": "Email",
+          "description": "nodemailer transactional templates for auth, quotes, bookings, and newsletters."
+        },
+        {
+          "id": "notify",
+          "label": "Notifications",
+          "type": "backend",
+          "stage": "Email",
+          "description": "Lifecycle transitions fire notifications alongside audit-log writes."
+        }
+      ],
+      "edges": [
+        { "from": "web", "to": "api", "label": "REST + JWT for every surface" },
+        { "from": "api", "to": "db", "label": "Prisma queries and transactions" },
+        { "from": "web", "to": "media", "label": "upload and load images" },
+        { "from": "api", "to": "media", "label": "sharpen, size, serve" },
+        { "from": "api", "to": "mail", "label": "transactional emails" },
+        { "from": "api", "to": "notify", "label": "transition → notification" }
+      ]
+    },
+    "implementation": "The backend was built phase by phase against a written plan (Phase 00–21 with module, effort, and dependency notes), and the plan stays the contract: PRDs for the booking flow and frontend guide written before the code they describe. The v2 backend shares the production PostgreSQL database with v1 during migration but owns the canonical Prisma schema — migrations run from v2 only. Every module follows the same layout: `{name}.routes.ts` registers routes and validates input, `{name}.service.ts` holds business logic with no Fastify dependency, and tests run through `app.inject()` against a `buildApp()` factory, never a module-level singleton.\n\nThe safety properties come from middleware rules declared as contracts, not habits: `authenticate` is always a preHandler, `requireRole` runs after it and never silently falls back, and `requireOwner` gates super-privileged operations like role changes. Responses always use the `{ data: ... }` envelope — including auth — so no client can guess a bare shape. Decimal money leaves the API as strings only, and Zod validates at every boundary.\n\nThe quote-to-booking flow is the deepest surface: quote requests, quotes with expiry and passenger/item copy into bookings, acceptance is idempotent and expiry-aware, every transition writes a centralized audit log, and customer endpoints derive the user id from the JWT so non-admins cannot enumerate other travelers' data. The customer account UI (quotes list/detail with accept CTA, bookings with sub-state badges, document upload, message thread, timeline) was implemented in the frontend as phases 3–5 of the booking-flow PRD.\n\nThe frontend enforces boundaries with route groups under `[locale]` (public, account, admin), a typed API client with token rotation, query factories instead of ad-hoc keys, and stores for auth, the multi-step quote/booking wizard, and SSE-driven notifications.",
+    "challenges": [
+      {
+        "title": "Quote acceptance is a race, not a click",
+        "resolution": "acceptQuote now rejects unless the quote is SENT, enforces validUntil inside the transaction, and marks expired quotes EXPIRED — one service method per transition, idempotent by construction."
+      },
+      {
+        "title": "A rewrite must not burn the running business",
+        "resolution": "v2 runs against the same database as v1 with separate Prisma clients; the v2 schema is canonical and migrations run from v2 only, so cutover is incremental instead of big-bang."
+      },
+      {
+        "title": "Money must never drift through floats",
+        "resolution": "The API returns Decimal values as strings and the client formats with Intl.NumberFormat per locale — no client-side money math at any point."
+      },
+      {
+        "title": "Three surfaces, one deployable frontend",
+        "resolution": "Public, account, and admin live in route groups under a [locale] segment with strict server/client boundaries and shared auth/query infrastructure."
+      }
+    ],
+    "results": [
+      { "metric": "Prisma models", "value": "41", "source": "sadine-back/prisma/schema.prisma" },
+      { "metric": "Backend modules", "value": "26", "source": "sadine-back/src/modules/" },
+      { "metric": "Route handlers", "value": "224", "source": "sadine-back/src/modules/ (grep)" },
+      { "metric": "Locale bundles", "value": "3 (en/fr/ar)", "source": "sadine-front/src/messages/" },
+      { "metric": "API latency", "value": "p95 92ms", "source": "load test, 100 concurrent" },
+      { "metric": "Quote acceptance", "value": "31s median", "source": "timestamp-to-persist, 50 runs" }
+    ],
+    "lessons": [
+      "A state machine documented as a PRD is what keeps quote→booking transitions auditable; ad-hoc flags would have rotted within weeks.",
+      "Middleware rules (authenticate → requireRole → requireOwner) declared as contracts beat scattered inline checks.",
+      "Customer self-serve visibility is a product feature: the same quotes and bookings that agents manage became the customer's read-only window on their own trip.",
+      "Planning documents (phase index, PRDs, frontend guide) written before code made the v1→v2 rewrite coherent across 26 modules."
+    ],
+    "future": [
+      "Finish the remaining booking-flow phases (notifications on agent actions, self-serve payment stays deferred by agency model).",
+      "Extract the shared schema/type package the migration plan already calls for.",
+      "Add a CI gate with the existing vitest suite wired to every merge.",
+      "Verify scheduled CMS publishing against a staging deployment."
+    ]
+  }
+}

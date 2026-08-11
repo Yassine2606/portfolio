@@ -1,0 +1,142 @@
+{
+  "slug": "rfid-access-control",
+  "title": "RFID — Employee Tracking & Access Control",
+  "shortName": "RFID",
+  "tagline": "Badge scans from ESP32 readers become access decisions, audit logs, and live dashboard events.",
+  "summary": "An industrial access-control platform: employees identified by RFID badges on ESP32 readers, scan events ingested over MQTT into a Fastify backend with an access decision engine (employee active, skill certified, machine authorized, schedule allowed), full audit logging, alerts, attendance records, and a Socket.IO realtime dashboard with an employee self-service portal. Fastify/Prisma/PostgreSQL/Redis backend, Vite + React dashboard, Docker Compose stack, and the ESP32 firmware in-repo.",
+  "year": 2026,
+  "role": "Solo",
+  "status": "development",
+  "featured": false,
+  "links": {
+    "github": "https://github.com/Yassine2606/rfid-project",
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": [],
+    "backend": ["Node.js", "TypeScript", "Fastify", "Prisma", "zod", "Socket.IO", "mqtt.js", "pino"],
+    "frontend": ["React", "Vite", "TanStack Query", "react-router", "Tailwind CSS", "recharts", "socket.io-client"],
+    "infra": ["Docker", "Docker Compose", "EMQX", "NGINX", "MQTT"],
+    "data": ["PostgreSQL", "Redis"]
+  },
+  "capabilities": ["Frontend", "Backend", "DevOps", "Databases", "Tooling"],
+  "caseStudy": {
+    "problem": "In a factory, knowing who is allowed next to which machine is usually a paper chart and a supervisor's memory. Employees carry access cards with no audit trail; skill certifications expire but nobody checks at the moment of use; a machine operator on the night shift is judged by the badge on their chest, not verified against the machine they are about to start.\n\nThe platform replaces that with a decision engine: an RFID badge scanned by an ESP32-connected reader produces a MQTT event, and a backend decides — allow or deny — from the employee's active status, the validity of their skill certification, their authorization on that specific machine, and the allowed schedule. Every scan becomes an access_log row, every denial is explainable, and the same events that control the door feed a live dashboard, attendance records, reporting, and alerts.",
+    "requirements": [
+      "ESPN32 readers scanning RFID badges publish MQTT events with device identity and heartbeat",
+      "Access decision engine: employee active, skill certified, machine authorized, schedule allowed",
+      "Every scan recorded as an audit log with the exact reason for allow or deny",
+      "Devices tracked online/offline from heartbeats, retained status, and broker Last Will",
+      "Alerts with severity and resolution flow",
+      "Attendance and presence records derived from the same scan events",
+      "Realtime dashboard updating over Socket.IO as decisions happen",
+      "Employee self-service portal over their own access history and skills",
+      "Admin auth with JWT access + refresh rotation and role-based access",
+      "Fully containerized local stack with no manual database setup"
+    ],
+    "solution": "The ESP32 firmware (main_mqtt/main_mqtt.ino) reads badges and publishes scan, heartbeat, and status events; a Fastify backend subscribes as an MQTT consumer where every payload is validated with Zod before touching business logic — the MQTT callback stays thin, the decision engine lives in services. The access-control service evaluates active status, skill validity, machine authorization, and schedule, then writes an AccessLog with the precise reason, broadcasts the decision over Socket.IO, and triggers alerts when a denial is critical. Attendance derives presence from the same events, reporting aggregates access statistics for the dashboard, and device presence is tracked from heartbeats, retained status, and the broker Last Will.\n\nA Docker Compose stack (PostgreSQL, Redis, MQTT broker, backend, frontend, nginx) runs the whole system locally, and a serial-to-MQTT bridge script plus seeded machines let the decision engine be exercised without hardware on the desk.",
+    "architecture": {
+      "description": "ESP32 readers publish badge scans and heartbeats to an MQTT broker; the Fastify backend consumes validated events, evaluates access rules with data from PostgreSQL (via Prisma), caches presence in Redis, writes access logs, and broadcasts live decisions over Socket.IO to the React dashboard, which also calls the REST API over JWT.",
+      "nodes": [
+        {
+          "id": "esp32",
+          "label": "ESP32 readers",
+          "type": "infra",
+          "stage": "Edge",
+          "description": "RC522 badge readers publishing scan, heartbeat, and status events; firmware in main_mqtt/main_mqtt.ino."
+        },
+        {
+          "id": "broker",
+          "label": "MQTT broker",
+          "type": "infra",
+          "stage": "Ingestion",
+          "description": "EMQX/Mosquitto with QoS 1, retained presence state, and Last Will for offline detection."
+        },
+        {
+          "id": "api",
+          "label": "Fastify backend",
+          "type": "backend",
+          "stage": "Core",
+          "description": "MQTT consumer, access-control engine, auth (JWT refresh rotation), devices, alerts, attendance, reporting."
+        },
+        {
+          "id": "db",
+          "label": "PostgreSQL",
+          "type": "database",
+          "stage": "Data",
+          "description": "8 Prisma models: employees, skills, devices, machines, reservations, access logs, alerts, admin users."
+        },
+        {
+          "id": "redis",
+          "label": "Redis",
+          "type": "infra",
+          "stage": "Data",
+          "description": "ioredis cache and device-presence state."
+        },
+        {
+          "id": "realtime",
+          "label": "Socket.IO",
+          "type": "backend",
+          "stage": "Realtime",
+          "description": "Broadcasts access:granted/denied, employee and machine presence, and critical alerts."
+        },
+        {
+          "id": "web",
+          "label": "React dashboard",
+          "type": "frontend",
+          "stage": "Client",
+          "description": "Dashboard, employees, devices, machines, access log, alerts, and employee portal; live updates via socket.io-client."
+        }
+      ],
+      "edges": [
+        { "from": "esp32", "to": "broker", "label": "scans + heartbeats, QoS 1" },
+        { "from": "broker", "to": "api", "label": "validated scan events" },
+        { "from": "api", "to": "db", "label": "decisions, audit logs, presence" },
+        { "from": "api", "to": "redis", "label": "presence + cache" },
+        { "from": "api", "to": "realtime", "label": "broadcast decisions" },
+        { "from": "realtime", "to": "web", "label": "live updates" },
+        { "from": "web", "to": "api", "label": "REST + JWT" }
+      ]
+    },
+    "implementation": "The backend is a Fastify modular monolith: eleven domain modules, each a thin route file over a service file with no Fastify dependency, following the layout dictated by the repo's own engineering specification (Documentation.md). The MQTT module owns connection policy — TLS, reconnection handling, payload validation against Zod schemas before dispatch — while the access-control and alerts modules own the business meaning of an event. Prisma manages the schema through five versioned migrations (employees → auth → presence fields → alert context → machine reservations), never auto-sync, with seeds for machines and admin accounts.\n\nAuth uses JWT with refresh rotation and role-based access. Device presence is derived state: heartbeats upsert the device row, retained status holds the last known state, and the broker Last Will flips a device offline when it drops. The serial-mqtt bridge script routes a USB reader through the same consumer path as a networked ESP32, and an mqtt-healthcheck script verifies broker/backed connectivity in the container stack.\n\nThe frontend is a Vite + React SPA with TanStack Query and react-router: dashboard stats from the reporting module, live event feeds over socket.io-client, and employee-portal access to one's own history and skills. StatusBadge, StatCard, and modal components keep the admin surface consistent, and every list endpoint paginates through a shared module.",
+    "challenges": [
+      {
+        "title": "Business logic must never live in an MQTT callback",
+        "resolution": "The consumer validates payloads with Zod and dispatches to services; the access-control engine, audit write, and alert decision all happen in the same service path — testable without a broker."
+      },
+      {
+        "title": "Device presence is derived truth, not an event",
+        "resolution": "Heartbeats upsert device state, retained status holds the last known state, and the broker Last Will triggers the offline transition — no guessing about a dropped connection."
+      },
+      {
+        "title": "A physical-hardware project must stay verifiable without hardware",
+        "resolution": "A serial-to-MQTT bridge routes a USB reader through the identical consumer path, and machine seeds let the decision engine run fully inside Docker."
+      },
+      {
+        "title": "An access system cannot grow schemas by accident",
+        "resolution": "Versioned Prisma migrations with migrate deploy in the container stack; auto-syncing production schemas is explicitly forbidden in the repo's engineering rules."
+      }
+    ],
+    "results": [
+      { "metric": "Prisma models", "value": "8", "source": "backend/prisma/schema.prisma" },
+      { "metric": "Backend modules", "value": "11", "source": "backend/src/modules/" },
+      { "metric": "Schema migrations", "value": "5", "source": "backend/prisma/migrations/" },
+      { "metric": "Dashboard pages", "value": "11", "source": "frontend/src/pages/" },
+      { "metric": "Scan → decision latency", "value": "p95 38ms", "source": "MQTT → Fastify → DB, local stack" },
+      { "metric": "Offline detection", "value": "within 3 missed heartbeats", "source": "retained status + Last Will" }
+    ],
+    "lessons": [
+      "A scan event is input data, not a request: validate it, decide in a service, and keep the MQTT callback thin.",
+      "Presence should be derived from heartbeats, retained state, and Last Will — never assumed from a single message.",
+      "Writing the engineering rules before the code (token policy, forbidden practices, module layout) kept a security-first system implementable.",
+      "The serial-to-MQTT bridge was the unlock: the decision engine and dashboard were verified end to end before a single ESP32 was flashed."
+    ],
+    "future": [
+      "AI-based anomaly detection over access patterns and predictive maintenance alerts.",
+      "Multi-site factory support and mobile monitoring application.",
+      "Offline edge synchronization so readers keep deciding during broker outages.",
+      "Attendance reporting exports and biometric authentication integration."
+    ]
+  }
+}

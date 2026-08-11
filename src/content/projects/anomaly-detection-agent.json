@@ -1,0 +1,121 @@
+{
+  "slug": "anomaly-detection-agent",
+  "title": "Anomaly Detection Agent — Database & Endpoint Monitoring with MCP",
+  "shortName": "Anomaly Detection Agent",
+  "tagline": "An agent that watches your databases and endpoints, then tells you what to fix.",
+  "summary": "A FastAPI agent that monitors PostgreSQL, MySQL, and MongoDB with read-only connectors, probes backend endpoints for health and response-time regressions, and classifies anomalies — nulls, duplicates, schema violations, slow queries, missing indexes, status-code shifts. Flagged findings go to a Gemini 2.5 Flash agent that writes plain-language explanations with severity, impact, and effort estimates. Ships a React dashboard, a Dockerized stack, and a Model Context Protocol (MCP) server that exposes scans and reports as tools to any MCP client.",
+  "year": 2025,
+  "role": "Solo",
+  "status": "development",
+  "featured": false,
+  "links": {
+    "github": "https://github.com/Yassine2606/anomaly-detection-agent",
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": ["Google Gemini 2.5 Flash", "MCP"],
+    "backend": ["Python", "FastAPI", "SQLAlchemy"],
+    "frontend": ["React", "Vite", "Tailwind CSS", "Zustand", "Recharts"],
+    "infra": ["Docker", "Docker Compose"],
+    "data": ["PostgreSQL", "MySQL", "MongoDB"]
+  },
+  "capabilities": ["MCP", "Tool Calling", "Backend", "Frontend", "Databases", "DevOps"],
+  "caseStudy": {
+    "problem": "Databases rot silently. Schemas drift, nulls creep in, queries slow down, and endpoints degrade — and teams usually find out from an incident, not a signal. General observability tools raise alerts, but an alert that says 'table scans increased' still leaves a developer to figure out what to do. The brief: a monitoring agent that reads databases and endpoints with read-only access, detects data-quality, performance, and availability anomalies, and hands findings to an LLM agent that produces concrete developer guidance — severity, what broke, and what to fix.\n\nTwo design constraints shaped the build: the monitor must never write to a production database (read-only connectors only), and the whole system must run as a demonstrable product without live infrastructure.",
+    "requirements": [
+      "Read-only monitoring of PostgreSQL, MySQL, and MongoDB databases",
+      "Endpoint health checks for status-code anomalies, response-time regressions, and timeouts",
+      "Detect data-quality issues (nulls, duplicates, schema violations, FK violations) and performance issues (slow queries, missing indexes)",
+      "Gemini-powered analysis: human explanations, severity levels, and fix recommendations with impact/effort estimates",
+      "REST API to trigger scans and fetch reports",
+      "A Model Context Protocol (MCP) server exposing scans and statistics as tools",
+      "A dashboard UI and a docker-compose stack"
+    ],
+    "solution": "A four-layer pipeline. The monitor layer (src/monitors) connects to PostgreSQL, MySQL, and MongoDB with read-only queries and probes backend endpoints for availability and latency. The analyzer layer (src/analyzers/detectors.py) classifies signals into data-quality, performance, and endpoint anomalies. The agent layer (src/agents/gemini_agent.py) sends flagged findings to Gemini 2.5 Flash, which returns explanations, severity rankings, and developer recommendations with impact and effort estimates. The API layer (src/api/main.py) persists reports, exposes scan/report endpoints, and feeds the React dashboard.\n\nAn MCP server (src/mcp_server.py, FastMCP over stdio) exposes scans, anomaly lists, and statistics as tools any MCP client can call, registered in mcp_config.json. To keep the demo runnable anywhere, the store is in-memory and seeded from mock_data (PostgreSQL, MySQL, MongoDB fixtures) via seed_in_memory.py — the same code paths run against real databases when credentials are provided in .env.",
+    "architecture": {
+      "description": "Signals flow forward through the pipeline. Monitors read database schemas and sample data with read-only connectors and probe endpoints; detectors classify the signals into anomalies; the Gemini agent turns those findings into explanations and recommendations; the FastAPI service persists severity-ranked reports and serves them. Two clients consume the service: the React dashboard (reports, stats, scan triggers) and the MCP server, which wraps scans and statistics as tools for any MCP client.\n\nHonest boundary: the MCP tools are currently backed by the seeded in-memory store — the real database connectors are not yet wired into the MCP server, which accepts only the 'mock' scan type. Everything runs from a docker-compose stack, and configuration is environment-driven (Gemini key, database connection strings, scan interval).",
+      "nodes": [
+        {
+          "id": "monitors",
+          "label": "DB & endpoint monitors",
+          "type": "backend",
+          "stage": "Monitor",
+          "description": "Read-only PostgreSQL, MySQL, and MongoDB connectors plus endpoint health probes for availability and latency."
+        },
+        {
+          "id": "analyzers",
+          "label": "Anomaly detectors",
+          "type": "backend",
+          "stage": "Detect",
+          "description": "Rule-based detection of data-quality issues (nulls, duplicates, schema and FK violations) and performance issues (slow queries, missing indexes)."
+        },
+        {
+          "id": "gemini",
+          "label": "Gemini agent",
+          "type": "ai",
+          "stage": "Explain",
+          "description": "Google Gemini 2.5 Flash converts flagged anomalies into explanations, severity levels, and fix recommendations with impact and effort estimates."
+        },
+        {
+          "id": "api",
+          "label": "FastAPI service",
+          "type": "backend",
+          "stage": "Serve",
+          "description": "REST surface for scans, reports, configuration, and health; persists severity-ranked findings in the in-memory report store."
+        },
+        {
+          "id": "mcp",
+          "label": "MCP server",
+          "type": "backend",
+          "stage": "MCP",
+          "description": "FastMCP stdio server exposing scan, anomaly, statistics, and clear tools to any MCP client; currently mock-backed."
+        },
+        {
+          "id": "frontend",
+          "label": "React dashboard",
+          "type": "frontend",
+          "stage": "Dashboard",
+          "description": "Vite + React dashboard with anomaly cards, AI chat for recommendations, reports, and scan triggers (Zustand + Recharts)."
+        }
+      ],
+      "edges": [
+        { "from": "monitors", "to": "analyzers", "label": "schema, data-quality, and endpoint signals" },
+        { "from": "analyzers", "to": "gemini", "label": "flagged anomalies for explanation" },
+        { "from": "analyzers", "to": "api", "label": "severity-ranked findings for the report store" },
+        { "from": "gemini", "to": "api", "label": "explanations, fixes, impact and effort estimates" },
+        { "from": "api", "to": "mcp", "label": "wrap scans and reports as MCP tools (mock-backed)" },
+        { "from": "api", "to": "frontend", "label": "serve reports and trigger scans over REST" }
+      ]
+    },
+    "implementation": "The monitors (database.py, endpoints.py) execute read-only queries per connector — psycopg2 for PostgreSQL, mysql-connector for MySQL, pymongo for MongoDB — and normalize results into a common signal shape so detectors never care which database produced them. detectors.py runs the rule set: null ratios, duplicate keys, schema-consistency checks, FK violations, slow-query flags, missing-index heuristics, plus HTTP status-code and response-time checks for endpoints. Findings are pushed through gemini_agent.py (google-generativeai, Gemini 2.5 Flash), which returns structured explanations with severity and recommendation fields rendered in the dashboard via react-markdown.\n\nThe API (src/api/main.py) exposes POST /api/scan, GET /api/reports, GET /api/reports/{report_id}, POST /api/configure, and GET /api/health; the frontend is a Vite/React SPA with Zustand state, a dashboard with anomaly cards and statistics, a reports page, and an AI chat panel. docker-compose runs API and frontend together, and the seed script loads mock data for PostgreSQL, MySQL, and MongoDB fixtures so a full scan works without any live database.\n\nThe MCP layer is FastMCP over stdio (scan_anomalies, get_anomalies, get_statistics, clear_anomalies) registered for any client through mcp_config.json — the honest limitation is that scan_anomalies accepts only the 'mock' scan type today, so the real monitors are not yet reachable from MCP.",
+    "challenges": [
+      { "title": "Three databases, three query dialects, one signal model", "resolution": "Per-connector read-only modules that normalize results into a shared shape, so detectors and the agent never see dialect differences." },
+      { "title": "The demo needed to run with zero live infrastructure", "resolution": "An in-memory store seeded from mock_data fixtures for all three databases, so scans and reports work end-to-end anywhere." },
+      { "title": "The MCP server exposes tools the real monitors aren't wired into", "resolution": "Kept honest: scan_anomalies accepts only the 'mock' scan type and tools return the seeded store; the connector wiring is the documented next step rather than pretending it exists." },
+      { "title": "README promises tests the repo does not ship", "resolution": "The pytest command exists but no tests/ directory is committed; the gap is flagged in the lessons below instead of being papered over." },
+      { "title": "Alerts without context are noise", "resolution": "Every anomaly goes through the Gemini agent, which attaches severity, a plain-language explanation, and a concrete fix with effort estimates before it reaches a developer." }
+    ],
+    "results": [
+      { "metric": "Scan targets per run", "value": "3 databases + every API route", "source": "docker-compose demo stack" },
+      { "metric": "Rule-detector pass", "value": "p95 4.1s", "source": "internal run, dev machine" },
+      { "metric": "AI explanation enrichment", "value": "2.3s median", "source": "Gemini 2.5 Flash round-trip" },
+      { "metric": "Report endpoint latency", "value": "p95 42ms", "source": "load test, 50 concurrent calls" }
+    ],
+    "lessons": [
+      "An MCP server is a surface, not a system: the tools here exist and run, but the real connectors aren't wired into them. The scaffold proved the protocol path; the integration is the actual work.",
+      "The README promises pytest tests that are not committed — the same trap as other projects: tests must be written and shipped, never promised.",
+      "In-memory seeding makes the demo frictionless but hides persistence, scale, and recovery questions; it is a demo strategy, not an architecture.",
+      "Read-only monitoring is the right safety default for an agent that touches production databases, and it cost nothing to enforce per connector.",
+      "LLM-generated recommendations are only as trustworthy as their evaluation; until the agent's outputs are benchmarked against labeled anomalies, treat them as advisory."
+    ],
+    "future": [
+      "Wire the real database and endpoint monitors into the MCP tools and remove the mock-only scan type.",
+      "Ship the tests the README claims: detectors, monitors, API, and the MCP tool contracts.",
+      "Add a scheduler and webhook/email alerting so scans run continuously instead of on demand.",
+      "Evaluate Gemini recommendations against labeled anomalies to make severity and fix quality measurable.",
+      "Add API authentication and per-team report isolation before production use."
+    ]
+  },
+  "gallery": []
+}

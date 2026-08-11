@@ -1,0 +1,152 @@
+{
+  "name": "Yassine Ben Romdhane",
+  "role": "AI Engineer",
+  "hero": {
+    "headline": "I build AI software that ships to production.",
+    "subtext": "RAG systems, ML monitoring, and the infrastructure that keeps them honest — engineered end to end.",
+    "focus": "Currently building a conversational RAG assistant for project documentation.",
+    "availability": "Open to AI engineering roles",
+    "ctaPrimary": { "label": "See the work", "href": "#featured-work" },
+    "ctaSecondary": { "label": "Get in touch", "href": "#contact" }
+  },
+  "nav": [
+    { "label": "Work", "href": "#featured-work" },
+    { "label": "Engineering", "href": "#engineering" },
+    { "label": "Timeline", "href": "#timeline" },
+    { "label": "Toolbox", "href": "#toolbox" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "engineering": {
+    "intro": "Capabilities, not percentages. Every skill below is demonstrated in the work, not asserted on a bar.",
+    "clusters": [
+      {
+        "title": "AI Engineering",
+        "items": [
+          { "name": "Retrieval-Augmented Generation", "note": "Hybrid dense + full-text retrieval, RRF fusion, citation-grounded answers.", "projects": ["documents-assistant"] },
+          { "name": "Tool Calling Agents", "note": "Model-driven tool loops with verification and graceful failure.", "projects": ["documents-assistant"] },
+          { "name": "Embeddings & Vector Search", "note": "Local sentence-transformers, pgvector, ivfflat indexes.", "projects": ["documents-assistant"] },
+          { "name": "LLM Pipelines", "note": "Hand-written RAG pipelines without orchestration frameworks.", "projects": ["documents-assistant"] },
+          { "name": "Workflow Orchestration", "note": "Redis-backed queues, retries, and degradation fallbacks.", "projects": ["documents-assistant"] },
+          { "name": "Speech & Audio Intelligence", "note": "Multilingual ASR (FR/AR/Darija), diarization, and semantic enrichment of meetings.", "projects": ["transcriptosense"] },
+          { "name": "AI Monitoring Agents", "note": "Read-only DB/endpoint monitors feeding an LLM agent for recommendations.", "projects": ["anomaly-detection-agent"] },
+          { "name": "Model Context Protocol", "note": "FastMCP stdio server exposing scans and reports as tools to MCP clients.", "projects": ["anomaly-detection-agent"] }
+        ]
+      },
+      {
+        "title": "Backend Engineering",
+        "items": [
+          { "name": "API Design", "note": "TypeScript/Express, Fastify, and Python FastAPI services with streaming.", "projects": ["documents-assistant", "wave", "sadine", "rfid-access-control"] },
+          { "name": "Data Modeling", "note": "PostgreSQL + MongoDB modeling with Sequelize, Mongoose, Prisma, and SQLAlchemy.", "projects": ["documents-assistant", "wave", "sadine", "rfid-access-control"] },
+          { "name": "Async Systems", "note": "BullMQ job queues, SSE streams, cancellation, graceful shutdown.", "projects": ["documents-assistant", "wave"] },
+          { "name": "Auth & Isolation", "note": "JWT auth for students, associations, and agency customers, with per-user data scoping.", "projects": ["documents-assistant", "wave", "sadine", "rfid-access-control"] },
+          { "name": "Realtime Messaging", "note": "Socket.IO rooms with Pusher presence for chat and live updates.", "projects": ["wave"] },
+          { "name": "Push Notification Pipeline", "note": "Redis-backed queue, worker pool, and receipt reconciliation to Expo/FCM.", "projects": ["wave"] },
+          { "name": "Payments Integration", "note": "Lydia provider behind a DI token, with webhooks and purchase callbacks.", "projects": ["wave"] },
+          { "name": "State-Machine Workflows", "note": "Transactional quote-to-booking lifecycles with expiry, audit logs, and idempotent transitions.", "projects": ["sadine"] },
+          { "name": "Role-Gated Admin Systems", "note": "RBAC with role decorators and owner-level gates on privileged routes.", "projects": ["sadine"] },
+          { "name": "Media Pipelines", "note": "Multipart uploads, sharp processing, and static serving.", "projects": ["sadine"] },
+          { "name": "Localized Product Frontends", "note": "Next.js with next-intl: three locales, prefix routing, locale-aware formatting.", "projects": ["sadine"] },
+          { "name": "IoT & MQTT Ingestion", "note": "ESP32 readers to an MQTT broker with QoS, validated consumers, and presence tracking.", "projects": ["rfid-access-control"] },
+          { "name": "Rule-Based Access Engines", "note": "Deterministic allow/deny from skills, machines, and schedules — every scan logged with its reason.", "projects": ["rfid-access-control"] },
+          { "name": "Realtime Dashboards", "note": "Socket.IO broadcasts pushing live decisions into browser dashboards.", "projects": ["rfid-access-control"] }
+        ]
+      },
+      {
+        "title": "Data & ML",
+        "items": [
+          { "name": "Drift Detection", "note": "PSI, KS-test, and chi-square drift monitoring.", "projects": ["data-drift"] },
+          { "name": "Model Monitoring", "note": "Time-window performance tracking and degradation thresholds.", "projects": ["data-drift"] },
+          { "name": "Time-Aware Modeling", "note": "Chronological splits so evaluation matches deployment.", "projects": ["data-drift"] }
+        ]
+      },
+      {
+        "title": "Engineering Practice",
+        "items": [
+          { "name": "Containerized Delivery", "note": "Docker Compose stacks with one-shot migration containers.", "projects": ["documents-assistant", "sadine", "rfid-access-control"] },
+          { "name": "Provider Failover", "note": "Interchangeable LLM providers with error mapping and fallback.", "projects": ["documents-assistant"] },
+          { "name": "Docs-as-Plan Delivery", "note": "PRDs and phase indexes written before code, updated as scope decides.", "projects": ["sadine", "rfid-access-control"] },
+          { "name": "Honest Measurement", "note": "Metrics that trace to repo artifacts — or are left unstated.", "projects": [] }
+        ]
+      }
+    ]
+  },
+  "toolbox": {
+    "intro": "The tools I reach for — each one used in the projects above, not just listed.",
+    "groups": [
+      { "category": "AI & ML", "items": ["Gemini", "NVIDIA NIM", "sentence-transformers", "scikit-learn", "scipy"] },
+      { "category": "Backend", "items": ["Node.js", "TypeScript", "Fastify", "Express", "Prisma", "Python", "FastAPI", "Socket.IO", "zod"] },
+      { "category": "Data", "items": ["PostgreSQL", "pgvector", "Redis", "pandas", "numpy"] },
+      { "category": "Frontend", "items": ["React", "Next.js", "next-intl", "TanStack Query", "Zustand", "shadcn/ui", "Vite", "Tailwind CSS", "Material UI"] },
+      { "category": "Infrastructure", "items": ["Docker", "Docker Compose", "EMQX", "MQTT", "NGINX", "BullMQ", "OpenAPI", "Jupyter"] }
+    ]
+  },
+  "timeline": [
+    {
+      "year": "2026",
+      "title": "RFID employee tracking & access control",
+      "detail": "Industrial access platform: ESP32 readers publish badge scans over MQTT into a Fastify decision engine (skill, machine, and schedule checks), with audit logs, alerts, attendance, and a realtime dashboard plus employee portal — containerized with PostgreSQL, Redis, EMQX, and nginx.",
+      "links": ["https://github.com/Yassine2606/rfid-project"]
+    },
+    {
+      "year": "2026",
+      "title": "Sadine Tours — travel agency platform",
+      "detail": "A production-grade agency platform: Next.js storefront, admin ERP, and customer account in en/fr/ar over a Fastify/Prisma API — quotes-to-bookings state machine with audit trails, CMS pages, invoices, coupons, dashboards, and visa processing.",
+      "links": ["https://github.com/Yassine2606/sadine-back", "https://github.com/Yassine2606/sadine-front"]
+    },
+    {
+      "year": "2026",
+      "title": "Documents Assistant — conversational RAG agent",
+      "detail": "Final-year engineering project (PFE): a RAG assistant for project documentation with a TypeScript/Express API, a Python FastAPI AI service, hand-written retrieval, and a verification step against hallucination.",
+      "links": []
+    },
+    {
+      "year": "2025",
+      "title": "Wave — campus community app",
+      "detail": "Expo React Native app for students and associations — events, carpooling, housing, deals, tutoring, stories, and realtime chat — backed by a TypeScript/Express API over PostgreSQL and MongoDB with a Redis push pipeline and Lydia payments.",
+      "links": []
+    },
+    {
+      "year": "2025",
+      "title": "Data Drift & Decision Intelligence System",
+      "detail": "ML monitoring platform detecting distribution shifts with PSI and KS-tests, quantifying impact on model performance, and producing an executive retrain-or-monitor report.",
+      "links": ["https://github.com/Yassine2606/Data-Drift-Decision-Intelligence-System"]
+    }
+  ],
+  "philosophy": {
+    "title": "How I build software",
+    "intro": "A short manifesto on what makes AI software trustworthy.",
+    "principles": [
+      {
+        "title": "Evidence over claims",
+        "body": "If a number can't be traced to a repo, a test, or a benchmark, it doesn't go on the page. That standard applies to my models too: an answer is only as good as the evidence it cites."
+      },
+      {
+        "title": "Reliability is the feature",
+        "body": "Rate limits, provider failures, and stale data are the real problems in AI products. Handling them is not polish — it's the core engineering."
+      },
+      {
+        "title": "Ground every answer",
+        "body": "A fluent hallucination is worse than no answer. Verification steps, retrieval quality, and honest failure are how AI earns trust."
+      },
+      {
+        "title": "Measure before you scale",
+        "body": "No benchmark, no claim. Retrieval quality and model degradation get measured before they get celebrated."
+      },
+      {
+        "title": "Write for the reader",
+        "body": "Architecture should be explainable to a founder and rigorous for an engineer — in the same paragraph."
+      }
+    ]
+  },
+  "contact": {
+    "heading": "Let's build something real.",
+    "subtext": "I'm open to AI engineering roles and serious conversations about production AI.",
+    "ctaLabel": "Get in touch",
+    "email": "yassine.ben.romdhanee@gmail.com",
+    "links": [
+      { "label": "GitHub", "href": "https://github.com/Yassine2606" },
+      { "label": "Email", "href": "mailto:yassine.ben.romdhanee@gmail.com" },
+      { "label": "Resume", "href": null }
+    ]
+  }
+}

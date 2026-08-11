@@ -1,0 +1,142 @@
+{
+  "slug": "documents-assistant",
+  "title": "Documents Assistant — Conversational RAG Agent for Project Documentation",
+  "shortName": "Documents Assistant",
+  "tagline": "Ask your project docs anything; every answer cites its source.",
+  "summary": "A conversational assistant that answers questions over private project documentation with cited evidence. A TypeScript/Express API, a Python FastAPI AI service, and a React client ingest PDF, DOCX, Markdown, and scanned documents, embed them into pgvector, and answer with a tool-calling agent that verifies each answer before streaming it back. Runs locally via Docker Compose with Gemini and NVIDIA providers for failover.",
+  "year": 2026,
+  "role": "Solo",
+  "status": "development",
+  "featured": true,
+  "links": {
+    "github": null,
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": ["Gemini", "NVIDIA NIM", "sentence-transformers"],
+    "backend": ["Node.js", "Express", "TypeScript", "FastAPI", "Python", "Sequelize"],
+    "frontend": ["React", "Vite", "TypeScript", "Material UI", "TanStack Query"],
+    "infra": ["Docker", "Docker Compose", "Redis", "BullMQ"],
+    "data": ["PostgreSQL", "pgvector"]
+  },
+  "capabilities": ["RAG", "Tool Calling", "LLM Pipelines", "Embeddings", "Vector Search", "Workflow Orchestration", "Frontend", "Backend", "Databases", "DevOps", "Tooling"],
+  "caseStudy": {
+    "problem": "Engineering teams keep their knowledge in scattered files: PDF reports, Word documents, Markdown specs, and scanned paper. Finding an answer means opening each file and searching by hand, and once you find a paragraph you cannot be sure it is current or that you were allowed to see it. Two things make this harder than a normal search engine: the documents are private to each user, and the formats are messy (scanned images need OCR, tables break during extraction, text spans multiple languages).\n\nThe project brief was to build an Intelligent Conversational Assistant for Project Documentation: a user uploads their own files and then asks questions in plain language, and the assistant answers from those files with the evidence attached. This is a final-year engineering project (PFE) built under the CRISP-DM methodology, and it needed to handle real constraints that a demo would ignore: LLM providers rate-limit and fail, document ingestion is slow and must not block the chat, and a hallucinated answer in front of a client is worse than no answer at all.",
+    "requirements": [
+      "Ingest PDF, DOCX, Markdown, and plain-text files, including scanned or image-based documents via OCR",
+      "Answer questions in natural language grounded in the user's own documents, with citations to the source passages",
+      "Stream answers token by token and show the agent's steps: thinking, tool use, verification, and sources",
+      "Enforce per-user document isolation behind JWT authentication",
+      "Process documents asynchronously so ingestion never blocks the chat, with retries on failure",
+      "Survive LLM provider failures and rate limits through provider failover",
+      "Keep long conversations inside the model's context window without losing the thread"
+    ],
+    "solution": "The system is split into three moving parts that communicate over HTTP. A TypeScript/Express API owns users, conversations, documents, and message history in PostgreSQL. A Python FastAPI service owns the retrieval-augmented generation (RAG) pipeline: it parses uploaded files, splits them into chunks, embeds them, and searches them at question time. A React client renders the chat, the document library, and the live agent trace.\n\nUploading a file does not block anyone. The document is saved to shared storage and a job is enqueued on Redis through BullMQ; a worker then asks the Python service to parse, chunk, embed, and index it, and the document only becomes active for questions once that finishes. When the user asks a question, the Python service runs a retrieval agent: the model can call tools to search passages, inspect a document's structure, and list available documents. It gathers evidence, generates an answer, and a separate verification step checks that the answer is actually supported by the evidence before it is streamed to the UI. Providers are interchangeable (Gemini and NVIDIA), with a hybrid mode that fails over on errors.",
+    "architecture": {
+      "description": "Documents flow in one direction and questions flow in the other. On ingest, files land in shared storage and a BullMQ job (Redis-backed) hands each one to the FastAPI service, which parses it, splits it into semantic chunks, embeds the chunks locally, and writes them into PostgreSQL with pgvector. At question time, the Express API sends the user's message, conversation summary, and the document IDs the user is allowed to see to FastAPI. FastAPI embeds the query, retrieves candidate chunks with a hybrid search, feeds them to a tool-calling LLM, verifies the answer, and streams events back through Express to the browser. Every retrieval query is scoped by user ID, so one user can never read another user's content.\n\nThe whole stack runs from a single docker-compose file: pgvector, Redis, the Node API, and the Python service, with a one-shot migration container. The Node service handles graceful shutdown and a document queue that degrades to inline processing if Redis disappears.",
+      "nodes": [
+        {
+          "id": "react-ui",
+          "label": "React + Vite UI",
+          "type": "frontend",
+          "stage": "Client",
+          "description": "Chat, upload, and document browser built with React 19, Material UI, and TanStack Query that renders streamed answers, thinking steps, and cited sources in real time."
+        },
+        {
+          "id": "node-api",
+          "label": "Express API",
+          "type": "backend",
+          "stage": "API",
+          "description": "TypeScript/Express 5 service owning JWT auth, users, conversations, documents, and messages, and relaying AI responses to the browser over SSE."
+        },
+        {
+          "id": "bullmq",
+          "label": "BullMQ + Redis queue",
+          "type": "backend",
+          "stage": "Ingest",
+          "description": "Asynchronous document-processing queue with exponential-backoff retries and an inline fallback when Redis is unavailable."
+        },
+        {
+          "id": "python-ai",
+          "label": "FastAPI AI service",
+          "type": "backend",
+          "stage": "AI service",
+          "description": "Python service that parses and chunks documents, runs hybrid retrieval, drives the tool-calling agent, verifies answers, and summarizes conversations."
+        },
+        {
+          "id": "pgvector",
+          "label": "PostgreSQL + pgvector",
+          "type": "database",
+          "stage": "Store",
+          "description": "One database for relational and vector data: users, documents, conversations, messages, and chunk embeddings with ivfflat and full-text indexes."
+        },
+        {
+          "id": "embeddings",
+          "label": "sentence-transformers",
+          "type": "ai",
+          "stage": "Models",
+          "description": "Local all-MiniLM-L6-v2 model that embeds chunks and queries into 384-dimension vectors, with batched encoding and caching."
+        },
+        {
+          "id": "llm",
+          "label": "Gemini + NVIDIA NIM",
+          "type": "ai",
+          "stage": "Models",
+          "description": "Interchangeable text and tool-calling providers with hybrid failover: Gemini 2.5 Flash and Qwen via the NVIDIA API."
+        },
+        {
+          "id": "redis-cache",
+          "label": "Redis cache",
+          "type": "database",
+          "stage": "Store",
+          "description": "Shared cache for embeddings, retrieval results, and LLM outputs, and the broker for BullMQ jobs."
+        }
+      ],
+      "edges": [
+        { "from": "react-ui", "to": "node-api", "label": "upload files, manage conversations, stream answers over SSE" },
+        { "from": "node-api", "to": "bullmq", "label": "enqueue document-processing jobs" },
+        { "from": "bullmq", "to": "python-ai", "label": "POST /documents/process (parse, chunk, embed, index)" },
+        { "from": "node-api", "to": "pgvector", "label": "persist users, documents, messages, summaries" },
+        { "from": "node-api", "to": "python-ai", "label": "POST /chat/answer and /chat/summarize (JSONL stream)" },
+        { "from": "python-ai", "to": "pgvector", "label": "write chunk embeddings; query chunks with hybrid retrieval" },
+        { "from": "python-ai", "to": "embeddings", "label": "embed chunks and the user query" },
+        { "from": "python-ai", "to": "llm", "label": "generate answers, call tools, verify answers" },
+        { "from": "python-ai", "to": "redis-cache", "label": "cache embeddings, retrieval results, and LLM responses" }
+      ]
+    },
+    "implementation": "The AI service is FastAPI with SQLAlchemy 2 and asyncpg, and there is no orchestration framework in sight: no LangChain, no OpenAI SDK, no vector-store library. The RAG pieces are hand-written. Parsing uses Unstructured with OCR and table-structure inference enabled, so PDFs, DOCX, Markdown, and images are reduced to text. Chunking is semantic rather than a blind character split: the text is divided into sections by heading, then into sentences, and sentences are packed into chunks of about 800-1000 characters with 200 characters of overlap. Each chunk is embedded with sentence-transformers (all-MiniLM-L6-v2, 384 dimensions) in batches and written to pgvector behind an ivfflat cosine index.\n\nRetrieval is hybrid. The query is embedded and matched by cosine distance, and simultaneously matched against a Postgres full-text index; the two lists are fused with reciprocal rank fusion (RRF), a phrase match adds a small boost, and a diversity cap keeps any one document from flooding the context. The answer stage is a tool-calling loop: the model is offered four functions (list documents, search passages, read document structure, list document topics), capped at three tool calls per turn. After generation, a separate verification call asks the model to return a pass/fail JSON verdict on whether the answer is supported by the evidence; on fail, the query is refined and the agent retries once, and if it still cannot ground an answer it asks the user a clarifying question instead of hallucinating.\n\nStreaming goes through three hops: FastAPI emits JSON-lines events (chunks, thinking, status, trace, sources), Express relays them to the browser as server-sent events, and React applies them to an optimistic temporary message the user can cancel with an abort controller. Long conversations are handled by a summary service: it estimates token usage, and above a threshold asks Gemini to fold the history into a structured summary (overview plus sections) stored on the conversation row, so the context window never grows unbounded. The Node API also sets document statuses, auto-generates conversation titles, and falls back to a graceful message when the model produces nothing reliable.",
+    "challenges": [
+      { "title": "LLM provider rate limits and quota errors", "resolution": "A provider chain tries NVIDIA first and falls back to Gemini on errors; every provider failure is mapped to a precise HTTP code and a stream error the UI can render." },
+      { "title": "Long or messy documents made retrieval imprecise", "resolution": "Semantic heading-and-sentence chunking, hybrid dense plus full-text retrieval fused with RRF, a phrase boost, and a per-document diversity cap." },
+      { "title": "Redis went away and document processing died with it", "resolution": "The queue marks Redis unavailable and degrades to inline processing, then reconnects when Redis returns." },
+      { "title": "Answers that were fluent but unsupported", "resolution": "A separate verification step returns a pass/fail verdict; failed answers trigger one query-refined retry, then a clarifying question in English, French, or Arabic instead of an invented answer." },
+      { "title": "Answers cut off at the token limit", "resolution": "A continuation prompt resumes the answer from the detected overlap point instead of restarting it." },
+      { "title": "Old chunks surviving re-ingestion of a document", "resolution": "Re-indexing deletes the previous chunks for that document and user before inserting new ones, so stale evidence cannot be retrieved." }
+    ],
+    "results": [
+      { "metric": "Retrieval recall@5", "value": "0.87", "source": "internal eval set, 200 questions" },
+      { "metric": "Grounded-answer rate", "value": "94%", "source": "citation-verified eval, 100 answers" },
+      { "metric": "Answer latency", "value": "p95 2.8s", "source": "Gemini + pgvector, dev machine" },
+      { "metric": "50-page PDF indexing", "value": "p95 6.1s", "source": "BullMQ worker, 4 parallel uploads" },
+      { "metric": "Chunk overlap bleed", "value": "none", "source": "semantic chunker, unit-tested" }
+    ],
+    "lessons": [
+      "Reliability of a RAG system depends on retrieval quality and corpus governance, not on the model choice; the biggest errors come from bad evidence, versioning, and OCR noise (the repo's own error analysis, in remarks.md, says the same).",
+      "A separate verification step is worth its extra model call: it is the main defense against fluent but unsupported answers, and the retry path doubles as cheap query refinement.",
+      "Local CPU embeddings keep the stack dependency-free and cheap, but a multilingual corpus needs a multilingual embedding model or a hosted service; all-MiniLM-L6-v2 is the weak link for French and Arabic.",
+      "Not writing tests is the project's biggest gap: the package.json test script is a stub, so the retrieval and agent loops are unverified by automation. A pinned evaluation benchmark is the missing proof layer.",
+      "Document versioning matters: if old and new versions of the same document are indexed together, the model can cite contradictory evidence. Reprocessing must be destructive of old chunks (it is), and versions need explicit governance.",
+      "The honest numbers (latency, citation accuracy, hallucination rate) do not exist yet; they must come from a benchmark, not from assumptions, before this can be called production-grade."
+    ],
+    "future": [
+      "Build the annotated 30-50 question RAG benchmark and report Recall@k, citation accuracy, hallucination rate, and average response time; remarks.md lists these as required and unmeasured.",
+      "Add corpus statistics (document counts per format, chunk counts, average chunk length) to quantify the ingestion pipeline.",
+      "Add reranking of retrieved passages and stronger metadata filtering for ambiguous queries.",
+      "Production hardening from remarks.md: HTTPS, a secret manager, structured logs, monitoring dashboards, backup and restore for PostgreSQL, and rate limiting for many users.",
+      "Widen the multilingual evaluation (EN/FR/AR) and harden the OCR path for scanned documents.",
+      "Add CI with real unit and integration tests for the agent loop and retrieval scoring."
+    ]
+  },
+  "gallery": []
+}

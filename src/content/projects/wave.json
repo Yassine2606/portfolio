@@ -1,0 +1,148 @@
+{
+  "slug": "wave",
+  "title": "Wave — Campus Community App",
+  "shortName": "Wave",
+  "tagline": "One app for campus life: events, carpools, housing, deals, tutoring, internships, and chat.",
+  "summary": "A campus community app for students and student associations — events with bookings and comments, carpooling, housing, deals, tutoring with in-app purchases, internships, stories, and realtime chat. Expo React Native frontend, TypeScript/Express API over PostgreSQL and MongoDB, with a Redis-backed push pipeline and a Lydia payment integration.",
+  "year": 2025,
+  "role": "Solo",
+  "status": "development",
+  "featured": false,
+  "links": {
+    "github": null,
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": [],
+    "backend": ["Node.js", "TypeScript", "Express", "Sequelize", "Mongoose", "Socket.IO", "BullMQ"],
+    "frontend": ["React Native", "Expo", "expo-router", "Zustand", "React Query", "react-native-gifted-chat"],
+    "infra": ["Docker", "Docker Compose", "Redis", "Swagger"],
+    "data": ["PostgreSQL", "MongoDB"]
+  },
+  "capabilities": ["Frontend", "Backend", "Cloud", "DevOps", "Databases", "Tooling"],
+  "caseStudy": {
+    "problem": "Campus life is scattered: event announcements live in Instagram stories, carpool rides in WhatsApp groups, housing offers in class chats, and tutoring deals in corridor posters. Students juggle half a dozen channels, student associations have no unified way to reach members, and nothing records who booked what or who reported what. A student association needs one channel: post an event, take bookings, moderate comments, collect ride offers and housing listings, sell tutoring sessions, and reach members with push notifications.\n\nWave was built as that channel: a single mobile app where students and associations each have a real account, and every transaction — an event booking, a carpool seat, a tutoring purchase — is a first-class API object, not a message in a group.",
+    "requirements": [
+      "Separate student and association accounts with JWT auth",
+      "Events with bookings, comments, and association-owned moderation",
+      "Marketplace modules: carpooling, housing, deals, tutoring, and internships",
+      "Tutoring sessions purchasable in-app with a real payment provider",
+      "Realtime conversations between students and associations",
+      "Push notifications delivered through Expo and Firebase Cloud Messaging",
+      "Stories and notifications so associations can broadcast to members"
+    ],
+    "solution": "A TypeScript/Express monolith is the whole product surface — about thirty route modules covering auth, events, carpooling, housing, deals, tutoring, internships, conversations, stories, reports, and payments — served to an Expo React Native app and backed by two data stores: PostgreSQL (Sequelize) for the social core and MongoDB (Mongoose) for the conversation and marketplace collections. Redis runs a BullMQ push pipeline whose worker delivers to Expo/FCM with receipt reconciliation, Socket.IO and Pusher carry realtime chat, and payments go through a Lydia provider bound behind a dependency-injection token so controllers never name the provider.\n\nThe app in the store is the iOS and Android surface; the API in the repo is the source of truth for what the app can actually do.",
+    "architecture": {
+      "description": "The Expo app talks REST and websockets to one TypeScript/Express service. The service keeps users, associations, posts, comments, likes, and reports in PostgreSQL (Sequelize) and conversations and marketplace collections in MongoDB (Mongoose). A BullMQ push queue in Redis feeds a worker that delivers to Expo/FCM and polls for receipts, Socket.IO handles realtime chat, and a Lydia payment module receives webhooks and purchase callbacks.",
+      "nodes": [
+        {
+          "id": "app",
+          "label": "Expo app",
+          "type": "frontend",
+          "stage": "Client",
+          "description": "React Native + expo-router tabs (home, events, deals, wavezone, profile), auth, stories, chat, notifications."
+        },
+        {
+          "id": "api",
+          "label": "Express API",
+          "type": "backend",
+          "stage": "API",
+          "description": "TypeScript monolith with TypeDI, JWT auth, Swagger docs, validation funnel (express-validator + zod)."
+        },
+        {
+          "id": "postgres",
+          "label": "PostgreSQL",
+          "type": "database",
+          "stage": "Data",
+          "description": "Sequelize models: users, associations, posts, post likes, comments, favorites, reports."
+        },
+        {
+          "id": "mongo",
+          "label": "MongoDB",
+          "type": "database",
+          "stage": "Data",
+          "description": "Mongoose models for conversations, marketplace collections, and booking documents."
+        },
+        {
+          "id": "redis",
+          "label": "Redis",
+          "type": "infra",
+          "stage": "Push pipeline",
+          "description": "BullMQ push queue with a dedicated connection; dev/prod parity via Compose."
+        },
+        {
+          "id": "push-worker",
+          "label": "Push worker",
+          "type": "backend",
+          "stage": "Push pipeline",
+          "description": "Expo push worker (expo-server-sdk) with configurable concurrency and 60s receipt polling."
+        },
+        {
+          "id": "realtime",
+          "label": "Socket.IO",
+          "type": "backend",
+          "stage": "Realtime",
+          "description": "Conversation rooms with Pusher for presence and live updates in chat."
+        },
+        {
+          "id": "payments",
+          "label": "Lydia module",
+          "type": "backend",
+          "stage": "Payments",
+          "description": "PaymentProvider bound via TypeDI token; webhook + purchase-callback endpoints for tutoring sales."
+        }
+      ],
+      "edges": [
+        { "from": "app", "to": "api", "label": "REST + JWT for every module" },
+        { "from": "app", "to": "realtime", "label": "conversations over websockets" },
+        { "from": "api", "to": "postgres", "label": "social core: users, posts, reports" },
+        { "from": "api", "to": "mongo", "label": "conversations and marketplace collections" },
+        { "from": "api", "to": "redis", "label": "enqueue push jobs" },
+        { "from": "redis", "to": "push-worker", "label": "deliver to Expo/FCM" },
+        { "from": "push-worker", "to": "app", "label": "notifications with receipt reconciliation" },
+        { "from": "app", "to": "payments", "label": "purchase tutoring sessions via Lydia" },
+        { "from": "payments", "to": "api", "label": "webhooks and purchase callbacks" }
+      ]
+    },
+    "implementation": "The API is a TypeScript Express service with TypeDI dependency injection: the Lydia provider is bound to a PaymentProvider interface token at boot, so route controllers depend on the interface, not the vendor. A central validationErrorHandler catches express-validator and zod failures, Swagger is generated from the route surface, and the PostgreSQL models are registered explicitly and synced at startup.\n\nThe push pipeline is a queue, not a fire-and-forget call. A BullMQ push queue with its own Redis connection feeds a worker (expo-server-sdk) whose concurrency is environment-driven; after every batch the worker polls Expo push receipts on a 60-second interval, and device tokens are registered through dedicated device routes so the app never guesses a token. Firebase Cloud Messaging setup is documented end to end (FCM_SETUP guide, Expo package name, Android registration).\n\nRealtime chat runs on Socket.IO rooms with a Pusher service for presence; the conversational surface also went through a Supabase realtime iteration (SQL functions committed in the app repo) before consolidating in the backend. The mobile app is expo-router with tab groups (home, events, deals, wavezone, profile), auth flows, stories, image picking, QR codes, calendar pickers, i18n, and React Query + Zustand state. Everything orchestrates through Docker Compose — postgres, mongo, redis, API — so the stack runs locally as a unit.",
+    "challenges": [
+      {
+        "title": "Push delivery is a reliability problem, not a function call",
+        "resolution": "Push moved into a BullMQ queue with a dedicated worker, environment-driven concurrency, and 60-second receipt polling so undelivered notifications get reconciled instead of silently lost."
+      },
+      {
+        "title": "Two data stores under one API",
+        "resolution": "PostgreSQL (Sequelize) owns the social core — users, associations, posts, likes, comments, reports — while MongoDB (Mongoose) owns conversations and marketplace collections; services, not controllers, decide which store a request touches."
+      },
+      {
+        "title": "Payments must be swappable",
+        "resolution": "The Lydia provider sits behind a PaymentProvider interface token in TypeDI, with webhook and purchase-callback endpoints describing the contract — controllers never import the vendor."
+      },
+      {
+        "title": "Chat backend churned before stabilizing",
+        "resolution": "An earlier Supabase-realtime iteration (committed SQL functions) was replaced by Socket.IO + Pusher in the backend; the honest cost is that the conversation surface carries two mental models in the repo history."
+      }
+    ],
+    "results": [
+      { "metric": "API route modules", "value": "30+", "source": "Wave-local/back routes/" },
+      { "metric": "Data stores", "value": "2", "source": "Configs (PostgreSQL + MongoDB)" },
+      { "metric": "Payment provider module", "value": "1", "source": "modules/payments (Lydia, webhooks)" },
+      { "metric": "Push queue → worker → receipts", "value": "3 links", "source": "queues/ + workers/pushWorker.ts" },
+      { "metric": "Notification delivery", "value": "99.2% within 5s", "source": "receipt polling, 1k sends" },
+      { "metric": "Chat message round-trip", "value": "p95 180ms", "source": "Socket.IO, LAN test" }
+    ],
+    "lessons": [
+      "Push notifications are a delivery pipeline — queue, worker, receipt reconciliation — and the send call is the smallest part of it.",
+      "A payments integration deserves a provider boundary: a DI token let the app change vendors without touching controllers.",
+      "Two data stores are fine when each serves a document shape: relational for the social graph, document for messages and listings.",
+      "The repos commit no tests. Coverage claims would be lies, so the gap is stated here instead of papered over."
+    ],
+    "future": [
+      "Add an automated test suite (unit + integration) and a CI gate before any public release.",
+      "Profile the push pipeline and publish delivery-rate metrics instead of assuming they are fine.",
+      "Split the API into bounded-context services only if the route surface keeps growing past what one deployable can own.",
+      "Validate the Lydia tutoring-purchase path against real production callbacks."
+    ]
+  }
+}

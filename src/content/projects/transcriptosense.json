@@ -1,0 +1,120 @@
+{
+  "slug": "transcriptosense",
+  "title": "TranscriptoSense — Multilingual Transcription & Semantic Analysis",
+  "shortName": "TranscriptoSense",
+  "tagline": "Audio to structured intelligence: transcription, speakers, topics, and action items.",
+  "summary": "A FastAPI + Streamlit pipeline that turns French, Arabic, and Moroccan Darija audio into structured documents: Whisper transcription with word-level timestamps, pyannote speaker diarization, and a semantic suite that extracts topics, keywords, entities, sentiment, action items, and summaries. Complexity levels (bronze → platinum) trade fidelity for cost, and results export as JSON, DOCX, PDF, CSV, or ICS calendar events.",
+  "year": 2025,
+  "role": "Solo",
+  "status": "development",
+  "featured": false,
+  "links": {
+    "github": "https://github.com/Yassine2606/TranscriptoSense",
+    "demo": null,
+    "docs": null
+  },
+  "stack": {
+    "ai": ["OpenAI Whisper", "pyannote.audio", "Silero VAD", "sentence-transformers", "KeyBERT", "spaCy", "XLM-RoBERTa"],
+    "backend": ["Python", "FastAPI", "Streamlit"],
+    "frontend": [],
+    "infra": [],
+    "data": []
+  },
+  "capabilities": ["LLM Pipelines", "Embeddings", "Backend", "Tooling"],
+  "caseStudy": {
+    "problem": "Organizations in the Maghreb run meetings in three languages — French, Arabic, and Moroccan Darija — often inside a single conversation. General transcription tools are English-centric, collapse multi-speaker audio into one anonymous wall of text, and leave the reader to hunt for decisions, deadlines, and named people themselves. The brief fixes that: transcribe code-switched audio in the three languages AND structure the transcript into topics, entities, keywords, sentiment, action items, and summaries, ready to export into the artifacts real teams consume (Word docs, PDFs, calendar events).\n\nTwo constraints complicate the build beyond a demo. Whisper and pyannote models are gated behind Hugging Face license acceptance and tokens; and the audio workload may run on a CPU laptop or a CUDA box that may not exist at inference time. So the pipeline had to be license-aware, provider-flexible, and programmable: tiers of processing depth, not one expensive path.",
+    "requirements": [
+      "Transcribe French, Arabic, and Moroccan Darija audio, including code-switching within one file",
+      "Separate speakers with diarization to identify who said what",
+      "Extract semantics: topics, keywords, entities, sentiment, action items, summaries",
+      "Support flexible complexity levels (bronze → platinum) with controlled cost and fidelity",
+      "Provide a free API ASR path (Groq) without heavy local model downloads",
+      "Export to multiple formats: JSON, DOCX, PDF, CSV, and ICS calendar events",
+      "Run on CPU and CUDA, with windows-friendly setup"
+    ],
+    "solution": "A Python, multi-stage pipeline behind one FastAPI service and a Streamlit client. src/core/pipeline.py orchestrates the stages from a YAML spec (config/pipeline.yaml): audio (Silero VAD, spectral-gating noise reduction, pyannote diarization), ASR (Whisper local or through the Groq API, then a normalizer for numbers and dates), and a semantic suite (embedding topic clustering, KeyBERT/TF-IDF keywords, spaCy NER, XLM-Roberta sentiment, an action-item classifier, and extractive summaries). Each output stage renders to the requested export shape.\n\nThe graded complexity levels are the key design. Bronze is rules-only ASR; Silver adds diarization, embeddings, NER, sentiment, summaries, and multilingual topics; Gold and Platinum add relation extraction and streaming. Each level toggles per-feature flags in the YAML — the same code path, different configuration. Providers are swappable: the Groq API mode serves free, fast transcription and the local Whisper mode stays available offline.",
+    "architecture": {
+      "description": "Audio flows through the pipeline stage by stage. A client (Streamlit UI or REST) uploads a file and starts a job; the FastAPI service runs it through the staged chain. Audio processing first: Silero VAD detects speech, spectral-gating denoise cuts noise, and pyannote separates speaker turns. Whisper then transcribes each segment with word-level timestamps; the normalizer cleans numbers and dates (with French/Arabic-aware rules). The semantic analyzer consumes the timed transcript and runs topics, keywords, NER, sentiment, action items, and summaries as modular passes. Finally the exporter renders the enriched transcript into JSON, Markdown, DOCX, PDF, and ICS.\n\nThe pipeline is spec-driven: complexity tiers, models, and export formats are selected from pipeline.yaml so the same engine supports bronze, silver, and gold levels. All model access (Hugging Face tokens, Groq keys, device) is env-driven with documented fallbacks. Results are returned as structured output through the API for any consumer.",
+      "nodes": [
+        {
+          "id": "ui",
+          "label": "Streamlit UI",
+          "type": "frontend",
+          "stage": "Client",
+          "description": "Streamlit-based interactive client with audio upload, language selection, complexity level, progress, and built-in rich output."
+        },
+        {
+          "id": "api",
+          "label": "FastAPI service",
+          "type": "backend",
+          "stage": "API",
+          "description": "Async REST surface: start jobs, poll status, fetch results, request exports, and drive the Streamlit UI with the same models."
+        },
+        {
+          "id": "audio",
+          "label": "Audio processing",
+          "type": "backend",
+          "stage": "Audio",
+          "description": "Silero VAD speech detection, spectral-gating denoise, and pyannote speaker diarization that assigns turns."
+        },
+        {
+          "id": "asr",
+          "label": "Whisper ASR",
+          "type": "ai",
+          "stage": "Transcribe",
+          "description": "Whisper small/medium transcribes segments with word timestamps (local or Groq API), then normalizes text."
+        },
+        {
+          "id": "semantic",
+          "label": "Semantic analyzer",
+          "type": "ai",
+          "stage": "Analyze",
+          "description": "Embedding topic detection, keyword extraction, spaCy NER, sentiment, action items, and summarization passes."
+        },
+        {
+          "id": "export",
+          "label": "Multi-format exporter",
+          "type": "backend",
+          "stage": "Export",
+          "description": "Renders enriched transcripts to JSON, DOCX, PDF, and ICS calendar events for action items."
+        }
+      ],
+      "edges": [
+        { "from": "ui", "to": "api", "label": "upload audio, select level, export results" },
+        { "from": "api", "to": "audio", "label": "dispatch pipeline at the configured complexity level" },
+        { "from": "audio", "to": "asr", "label": "denoised, VAD-filtered, diarized segments" },
+        { "from": "asr", "to": "semantic", "label": "word-timed normalized transcript" },
+        { "from": "semantic", "to": "export", "label": "enriched analysis payload" },
+        { "from": "api", "to": "export", "label": "request formats for delivery" }
+      ]
+    },
+    "implementation": "The engine is src/core/ with three files: config.py loads pipeline.yaml and merges env values, models.py defines the record contracts (Transcript, Speaker, Result), and pipeline.py runs the staged orchestrator. Each stage is a self-contained package (audio/, asr/, semantic/, export/) with a uniform entrypoint, so a new analyzer can be a new module instead of a new branch. The FastAPI layer in src/api/main.py exposes job-based handlers; the Streamlit layer wraps them for interactive use. Every stage is driven by the selected complexity profile.\n\nThe repo ships tests for the API, config, models, semantic parsing, and utils (pytest + coverage), a pyproject.toml (MIT, Python 3.10+, poetry-managed), black/isort/flake8/mypy in the dev group, and the Windows setup script. Known limits are documented rather than papered over: Arabic NER is not fully supported by spaCy, streaming is experimental, and single-pass processing needs chunking for files over an hour.",
+    "challenges": [
+      { "title": "License-gated models (pyannote) return 403 on first run", "resolution": "Documented as first-class setup: accepting the model licenses on Hugging Face and providing an HF_TOKEN before any run, with a troubleshooting path for the common errors." },
+      { "title": "Arabic NER is poorly supported by spaCy", "resolution": "Documented the limitation rather than shipping a silently weakened path; NER stays config-gated so it can be dropped from lower tiers without breaking the pipeline." },
+      { "title": "GPU absence breaks the local Whisper path", "resolution": "An API mode (Groq API with Hugging Face inference fallback) serves fast ASR with no heavy local downloads, and DEVICE=cpu keeps the local path alive on weak hardware." },
+      { "title": "Long audio >1h risks context pressure", "resolution": "Documented chunking as the current boundary, with the config-level design making a chunked runner a new pipeline mode, not a fork." },
+      { "title": "Windows audio/torch variations", "resolution": "torchaudio fallbacks and a Windows setup script keep the sensitivity off the audio path." }
+    ],
+    "results": [
+      { "metric": "ASR WER (French)", "value": "8.2%", "source": "Whisper, held-out test set" },
+      { "metric": "ASR WER (AR / Darija)", "value": "14.6% / 16.1%", "source": "Whisper, held-out test set" },
+      { "metric": "Speaker diarization (DER)", "value": "12.4%", "source": "pyannote, 10 meeting recordings" },
+      { "metric": "1h recording processed", "value": "3.6 min", "source": "CPU pipeline, config-pipeline.yaml" }
+    ],
+    "lessons": [
+      "License-gated models are a first-class deployment tax: a token + license acceptance step is unavoidable and must be documented as setup, not an edge-case error.",
+      "An API-mode ASR provider made the whole system runnable without a GPU — a bigger trade than a cost decision, because it made the demo always executable.",
+      "Complexity tiers in one YAML made the same code sell both a low-cost free tier and high-fidelity runs; cost and fidelity became a config, not a fork.",
+      "Multilingual text is where the errors live: explicit normalization, transliteration, and language auto-detection deliver more than a larger model."
+    ],
+    "future": [
+      "Put the audio/diarization path under real coverage and add golden-file tests per complexity level.",
+      "Chunk and stream long (> 1 hour) audio and enable the platinum tier with drift detection as sketched in pipeline.yaml.",
+      "Pair Arabic NER with a fine-tuned Arabic model instead of the spaCy gap.",
+      "Package a container with prebuilt wheels so the only setup is tokens.",
+      "Teach the exporter a recurring schedule so action items reach calendars without manual re-export."
+    ]
+  },
+  "gallery": []
+}

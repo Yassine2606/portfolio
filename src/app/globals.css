@@ -1,26 +1,225 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — semantic layer.
+ * Dark is the primary theme. Light mode is a later swap: define tokens on
+ * `[data-theme="light"]` without touching any component styles.
+ *
+ * Palette: off-black base + off-white text + ONE accent (desaturated emerald).
+ * No pure #000 / #fff anywhere.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base surfaces — slightly green-tinted, never pure black/white */
+  --background: #0a0d0c;
+  --surface: #111513;
+  --surface-raised: #181d1a;
+  --foreground: #eef3ef;
+  --muted: #9aa8a1;
+  --muted-faint: #75817a; /* ≥4.5:1 on --background and --surface (AA small text) */
+  --danger: #e28f7c; /* form errors only — desaturated, not the accent hue */
+
+  /* Semantic borders */
+  --border: rgba(238, 243, 239, 0.09);
+  --border-strong: rgba(238, 243, 239, 0.16);
+
+  /* RGB triplets for alpha variants (rgba(var(--accent-rgb), 0.x)) */
+  --background-rgb: 10, 13, 12;
+  --foreground-rgb: 238, 243, 239;
+  --surface-rgb: 17, 21, 19;
+
+  /* Accent — desaturated emerald. The only hue on the page. */
+  --accent: #4fc793;
+  --accent-rgb: 79, 199, 147;
+  --accent-hover: #6bdaa8;
+  --accent-strong: #2f9c6d;
+  --accent-ink: #04231a; /* text on accent fills */
+  --accent-faint: rgba(var(--accent-rgb), 0.12);
+  --accent-focus: rgba(var(--accent-rgb), 0.35);
+
+  /* Glass spec */
+  --glass-bg: rgba(17, 21, 19, 0.62);
+  --glass-border: rgba(238, 243, 239, 0.1);
+  --glass-blur: 16px;
+
+  /* Radii — one scale */
+  --radius-ui: 0.4rem;
+  --radius-card: 0.9rem;
+  --radius-glass: 1.1rem;
+
+  /* Shadows */
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 40px -18px rgba(0, 0, 0, 0.6);
+  --shadow-raised: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 60px -24px rgba(0, 0, 0, 0.75);
+
+  /* Motion tokens */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 150ms;
+  --dur-reveal: 500ms;
+  --dur-choreography: 800ms;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-faint: var(--muted-faint);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-faint: var(--accent-faint);
+  --color-accent-focus: var(--accent-focus);
+  --color-danger: var(--danger);
+
+  --color-glass: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --radius-ui: var(--radius-ui);
+  --radius-card: var(--radius-card);
+  --radius-glass: var(--radius-glass);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Light mode token swap — smoke-tested, dark remains primary. Flip with
+ * <html data-theme="light">; every component reads tokens, so nothing else
+ * needs changing. Contrast: accent on light is darkened for AA.
+ */
+[data-theme="light"] {
+  --background: #f2f6f3;
+  --surface: #fbfdfb;
+  --surface-raised: #eaf0ec;
+  --foreground: #0d1713;
+  --muted: #47534d;
+  --muted-faint: #5f6d66; /* ≥4.5:1 on light surfaces (AA small text) */
+  --danger: #a5442f; /* form errors only — desaturated, not the accent hue */
+
+  --border: rgba(13, 23, 19, 0.12);
+  --border-strong: rgba(13, 23, 19, 0.22);
+
+  --background-rgb: 242, 246, 243;
+  --foreground-rgb: 13, 23, 19;
+  --surface-rgb: 251, 253, 251;
+
+  --accent: #1f8a5e;
+  --accent-rgb: 31, 138, 94;
+  --accent-hover: #1a7450;
+  --accent-strong: #146247;
+  --accent-ink: #f4fbf7;
+  --accent-faint: rgba(var(--accent-rgb), 0.12);
+  --accent-focus: rgba(var(--accent-rgb), 0.35);
+
+  --glass-bg: rgba(251, 253, 251, 0.7);
+  --glass-border: rgba(13, 23, 19, 0.1);
+
+  --shadow-card: 0 1px 0 rgba(13, 23, 19, 0.03) inset,
+    0 12px 40px -18px rgba(13, 23, 19, 0.14);
+  --shadow-raised: 0 1px 0 rgba(13, 23, 19, 0.04) inset,
+    0 24px 60px -24px rgba(13, 23, 19, 0.18);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    scroll-padding-top: 88px;
+    color-scheme: dark;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Global background system — base gradient + fixed noise + ambient light */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: radial-gradient(
+        ellipse 80% 50% at 50% -10%,
+        rgba(var(--accent-rgb), 0.07),
+        transparent
+      ),
+      var(--background);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before {
+      display: none;
+    }
+  }
+
+  ::selection {
+    background: var(--accent-faint);
+    color: var(--foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Terminal-style caret for the contact CTA line. Reduced-motion gate above
+     collapses the blink to a static caret. */
+  @keyframes caret-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .caret {
+    display: inline-block;
+    width: 0.5rem;
+    height: 1.15em;
+    margin-left: 0.3rem;
+    vertical-align: -0.22em;
+    background: currentColor;
+    border-radius: 1px;
+    animation: caret-blink 1.05s steps(1) infinite;
+  }
 }
