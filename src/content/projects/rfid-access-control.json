@@ -8,6 +8,8 @@
   "role": "Solo",
   "status": "development",
   "featured": false,
+  "flagship": false,
+  "order": 3,
   "links": {
     "github": null,
     "demo": null,
@@ -123,7 +125,6 @@
       { "metric": "Backend modules", "value": "11", "source": "backend/src/modules/" },
       { "metric": "Schema migrations", "value": "5", "source": "backend/prisma/migrations/" },
       { "metric": "Dashboard pages", "value": "11", "source": "frontend/src/pages/" },
-      { "metric": "Scan → decision latency", "value": "p95 38ms", "source": "MQTT → Fastify → DB, local stack" },
       { "metric": "Offline detection", "value": "within 3 missed heartbeats", "source": "retained status + Last Will" }
     ],
     "lessons": [

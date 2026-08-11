@@ -8,6 +8,9 @@
   "role": "Solo",
   "status": "development",
   "featured": false,
+  "flagship": false,
+  "order": 7,
+  "featured": false,
   "links": {
     "github": null,
     "demo": null,
@@ -128,9 +131,7 @@
       { "metric": "API route modules", "value": "30+", "source": "Wave-local/back routes/" },
       { "metric": "Data stores", "value": "2", "source": "Configs (PostgreSQL + MongoDB)" },
       { "metric": "Payment provider module", "value": "1", "source": "modules/payments (Lydia, webhooks)" },
-      { "metric": "Push queue → worker → receipts", "value": "3 links", "source": "queues/ + workers/pushWorker.ts" },
-      { "metric": "Notification delivery", "value": "99.2% within 5s", "source": "receipt polling, 1k sends" },
-      { "metric": "Chat message round-trip", "value": "p95 180ms", "source": "Socket.IO, LAN test" }
+      { "metric": "Push queue → worker → receipts", "value": "3 links", "source": "queues/ + workers/pushWorker.ts" }
     ],
     "lessons": [
       "Push notifications are a delivery pipeline — queue, worker, receipt reconciliation — and the send call is the smallest part of it.",

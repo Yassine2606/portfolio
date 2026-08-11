@@ -2,7 +2,6 @@
 
 import { animate, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 import {
   ArrowRight,
   BookOpen,
@@ -23,8 +22,10 @@ import {
 import type { Icon } from "@phosphor-icons/react";
 import type { Project } from "@/lib/content/schema";
 import { useScrollLock } from "@/lib/use-scroll-lock";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ArchitectureDiagram } from "@/components/ui/architecture-diagram";
+import { PipelineFlow } from "@/components/ui/pipeline-flow";
 
 interface FeaturedWorkProps {
   projects: Project[];
@@ -80,9 +81,16 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [origin, setOrigin] = useState<Rect | null>(null);
   const reduceMotion = useReducedMotion();
+  // The staggered reveal is desktop-only: in the mobile snap row, cards past
+  // the visible window would sit invisible (opacity 0) until swiped in.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const animateIn = isDesktop && !reduceMotion;
 
+  // Flagship first, then explicit editorial order — the single source of
+  // truth for how the collection is presented.
   const sorted = [...projects].sort(
-    (a, b) => Number(b.featured) - Number(a.featured)
+    (a, b) =>
+      Number(b.flagship) - Number(a.flagship) || a.order - b.order
   );
 
   const openProject = sorted.find((p) => p.slug === openSlug) ?? null;
@@ -90,22 +98,8 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
   // Capture the clicked card's exact box as the morph's start geometry (and
   // the reverse morph's exit geometry). The card stays mounted, so focus can
   // always return to its button when the dialog finishes closing.
-  // The cards render twice — a snap row on mobile, a grid on desktop — and
-  // CSS hides the inactive variant. Pick the one that is actually displayed
-  // before measuring (morph origin) or focusing (focus return).
-  const visibleEl = (idMobile: string, idDesktop: string) => {
-    for (const id of [idMobile, idDesktop]) {
-      const el = document.getElementById(id);
-      if (el && el.offsetParent !== null) return el;
-    }
-    return null;
-  };
-
-  // Capture the clicked card's exact box as the morph's start geometry (and
-  // the reverse morph's exit geometry). The card stays mounted, so focus can
-  // always return to its button when the dialog finishes closing.
   const openCase = (slug: string) => {
-    const el = visibleEl(`case-card-m-${slug}`, `case-card-d-${slug}`);
+    const el = document.getElementById(`case-card-${slug}`);
     if (el) {
       const r = el.getBoundingClientRect();
       setOrigin({ x: r.left, y: r.top, w: r.width, h: r.height });
@@ -117,59 +111,42 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
     const slug = openSlug;
     setOpenSlug(null);
     if (slug) {
-      visibleEl(`case-open-m-${slug}`, `case-open-d-${slug}`)?.focus({
+      document.getElementById(`case-open-${slug}`)?.focus({
         preventScroll: true,
       });
     }
   };
-
-  const [emblaRef] = useEmblaCarousel({ align: "start", containScroll: "trimSnaps" });
 
   return (
     <section id="featured-work" className="mx-auto max-w-6xl px-4 py-24 sm:px-8">
       <SectionHeading
         eyebrow="Featured Work"
         title="Proof, not promises"
-        intro="The strongest evidence I have — real codebases, verified stacks, and honest numbers. Each project opens into a full case study."
+        intro="Real codebases, verified stacks, and numbers that trace to repo artifacts. Each project opens into a full case study."
       />
 
-      {/* Mobile: a swipeable snap row with the next card peeking in. The viewport
-          clips the row — without overflow-hidden the 7-slide track would
-          widen the section and give the page horizontal overflow. */}
-      <div ref={emblaRef} className="-mx-4 mt-14 overflow-hidden px-4 md:hidden">
-        <div className="flex touch-pan-y gap-4">
-          {sorted.map((project, i) => (
-            <div
-              key={project.slug}
-              className="flex min-w-0 flex-[0_0_85%] flex-col"
-            >
-              <ProjectCard
-                project={project}
-                index={i}
-                prefix="m"
-                animateIn={false}
-                reduceMotion={reduceMotion}
-                openSlug={openSlug}
-                onOpen={openCase}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Desktop: the full grid — everyone visible at once. */}
-      <div className="mt-14 hidden gap-6 md:grid md:grid-cols-2">
+      {/*
+        One collection, one DOM instance per project. The same container is a
+        swipeable snap row on mobile and a two-column grid on desktop — the
+        layout switches, the cards never duplicate. Mobile: overflow clips the
+        row (without it the 7-card track would widen the page), slides snap
+        with the next card peeking.
+      */}
+      <div className="-mx-4 mt-14 flex touch-[pan-x_pan-y] gap-4 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 md:snap-none">
         {sorted.map((project, i) => (
-          <ProjectCard
+          <div
             key={project.slug}
-            project={project}
-            index={i}
-            prefix="d"
-            animateIn
-            reduceMotion={reduceMotion}
-            openSlug={openSlug}
-            onOpen={openCase}
-          />
+            className="flex w-[85%] shrink-0 flex-col snap-start md:w-auto md:shrink"
+          >
+            <ProjectCard
+              project={project}
+              index={i}
+              animateIn={animateIn}
+              reduceMotion={reduceMotion}
+              openSlug={openSlug}
+              onOpen={openCase}
+            />
+          </div>
         ))}
       </div>
 
@@ -187,7 +164,6 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
 function ProjectCard({
   project,
   index,
-  prefix,
   animateIn,
   reduceMotion,
   openSlug,
@@ -195,12 +171,10 @@ function ProjectCard({
 }: {
   project: Project;
   index: number;
-  /** "m" for the mobile snap row, "d" for the desktop grid — keeps the ids unique across the two mounted variants. */
-  prefix: "m" | "d";
   /**
    * Desktop cards fade in with a stagger as they enter the viewport. The
-   * carousel variant skips this — slides are clipped by the viewport, so
-   * animating them would leave blank cards until a swipe reveals them.
+   * mobile snap row skips this — slides past the visible window would sit
+   * invisible (opacity 0) until a swipe reveals them.
    */
   animateIn: boolean;
   reduceMotion: boolean | null;
@@ -212,8 +186,8 @@ function ProjectCard({
 
   return (
     <motion.article
-      id={`case-card-${prefix}-${project.slug}`}
-      initial={animateIn && !reduceMotion ? { opacity: 0, y: 24 } : false}
+      id={`case-card-${project.slug}`}
+      initial={animateIn ? { opacity: 0, y: 24 } : false}
       whileInView={animateIn ? { opacity: 1, y: 0 } : undefined}
       viewport={animateIn ? { once: true, amount: 0.2 } : undefined}
       transition={{
@@ -234,11 +208,15 @@ function ProjectCard({
             {project.status}
           </span>
         </p>
-        {project.featured && (
+        {project.flagship ? (
+          <span className="rounded-full border border-accent-faint bg-accent-faint px-3 py-1 text-xs font-medium text-accent">
+            Flagship
+          </span>
+        ) : project.featured ? (
           <span className="rounded-full border border-accent-faint bg-accent-faint px-3 py-1 text-xs font-medium text-accent">
             Featured
           </span>
-        )}
+        ) : null}
       </div>
 
       {/* The card's title stays put — the whole card is the morph. */}
@@ -265,7 +243,7 @@ function ProjectCard({
       <div className="mt-auto flex flex-wrap items-center gap-4 border-t border-border pt-5">
         <button
           type="button"
-          id={`case-open-${prefix}-${project.slug}`}
+          id={`case-open-${project.slug}`}
           onClick={() => onOpen(project.slug)}
           className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink transition hover:bg-accent-hover active:scale-[0.98]"
           aria-haspopup="dialog"
@@ -445,6 +423,11 @@ function CaseStudyDialog({
         </CaseBlock>
 
         <CaseBlock label="Architecture">
+          {cs.pipeline.length > 0 && (
+            <div className="mb-6">
+              <PipelineFlow stages={cs.pipeline} />
+            </div>
+          )}
           <ArchitectureDiagram
             nodes={cs.architecture.nodes}
             edges={cs.architecture.edges}

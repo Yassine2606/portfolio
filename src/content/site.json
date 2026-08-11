@@ -90,7 +90,7 @@
     {
       "year": "2026",
       "title": "Sadine Tours — travel agency platform",
-      "detail": "A production-grade agency platform: Next.js storefront, admin ERP, and customer account in en/fr/ar over a Fastify/Prisma API — quotes-to-bookings state machine with audit trails, CMS pages, invoices, coupons, dashboards, and visa processing.",
+      "detail": "A production-oriented agency platform: Next.js storefront, admin ERP, and customer account in en/fr/ar over a Fastify/Prisma API — quotes-to-bookings state machine with audit trails, CMS pages, invoices, coupons, dashboards, and visa processing.",
       "links": []
     },
     {

@@ -8,6 +8,8 @@
   "role": "Solo",
   "status": "development",
   "featured": true,
+  "flagship": true,
+  "order": 1,
   "links": {
     "github": null,
     "demo": null,
@@ -106,6 +108,17 @@
       ]
     },
     "implementation": "The AI service is FastAPI with SQLAlchemy 2 and asyncpg, and there is no orchestration framework in sight: no LangChain, no OpenAI SDK, no vector-store library. The RAG pieces are hand-written. Parsing uses Unstructured with OCR and table-structure inference enabled, so PDFs, DOCX, Markdown, and images are reduced to text. Chunking is semantic rather than a blind character split: the text is divided into sections by heading, then into sentences, and sentences are packed into chunks of about 800-1000 characters with 200 characters of overlap. Each chunk is embedded with sentence-transformers (all-MiniLM-L6-v2, 384 dimensions) in batches and written to pgvector behind an ivfflat cosine index.\n\nRetrieval is hybrid. The query is embedded and matched by cosine distance, and simultaneously matched against a Postgres full-text index; the two lists are fused with reciprocal rank fusion (RRF), a phrase match adds a small boost, and a diversity cap keeps any one document from flooding the context. The answer stage is a tool-calling loop: the model is offered four functions (list documents, search passages, read document structure, list document topics), capped at three tool calls per turn. After generation, a separate verification call asks the model to return a pass/fail JSON verdict on whether the answer is supported by the evidence; on fail, the query is refined and the agent retries once, and if it still cannot ground an answer it asks the user a clarifying question instead of hallucinating.\n\nStreaming goes through three hops: FastAPI emits JSON-lines events (chunks, thinking, status, trace, sources), Express relays them to the browser as server-sent events, and React applies them to an optimistic temporary message the user can cancel with an abort controller. Long conversations are handled by a summary service: it estimates token usage, and above a threshold asks Gemini to fold the history into a structured summary (overview plus sections) stored on the conversation row, so the context window never grows unbounded. The Node API also sets document statuses, auto-generates conversation titles, and falls back to a graceful message when the model produces nothing reliable.",
+    "pipeline": [
+      "Document upload & queueing",
+      "Parsing & OCR",
+      "Semantic chunking",
+      "Embedding",
+      "Hybrid retrieval (dense + full-text)",
+      "RRF fusion",
+      "Tool-calling LLM",
+      "Verification pass",
+      "Cited answer"
+    ],
     "challenges": [
       { "title": "LLM provider rate limits and quota errors", "resolution": "A provider chain tries NVIDIA first and falls back to Gemini on errors; every provider failure is mapped to a precise HTTP code and a stream error the UI can render." },
       { "title": "Long or messy documents made retrieval imprecise", "resolution": "Semantic heading-and-sentence chunking, hybrid dense plus full-text retrieval fused with RRF, a phrase boost, and a per-document diversity cap." },
@@ -114,13 +127,7 @@
       { "title": "Answers cut off at the token limit", "resolution": "A continuation prompt resumes the answer from the detected overlap point instead of restarting it." },
       { "title": "Old chunks surviving re-ingestion of a document", "resolution": "Re-indexing deletes the previous chunks for that document and user before inserting new ones, so stale evidence cannot be retrieved." }
     ],
-    "results": [
-      { "metric": "Retrieval recall@5", "value": "0.87", "source": "internal eval set, 200 questions" },
-      { "metric": "Grounded-answer rate", "value": "94%", "source": "citation-verified eval, 100 answers" },
-      { "metric": "Answer latency", "value": "p95 2.8s", "source": "Gemini + pgvector, dev machine" },
-      { "metric": "50-page PDF indexing", "value": "p95 6.1s", "source": "BullMQ worker, 4 parallel uploads" },
-      { "metric": "Chunk overlap bleed", "value": "none", "source": "semantic chunker, unit-tested" }
-    ],
+    "results": [],
     "lessons": [
       "Reliability of a RAG system depends on retrieval quality and corpus governance, not on the model choice; the biggest errors come from bad evidence, versioning, and OCR noise (the repo's own error analysis, in remarks.md, says the same).",
       "A separate verification step is worth its extra model call: it is the main defense against fluent but unsupported answers, and the retry path doubles as cheap query refinement.",

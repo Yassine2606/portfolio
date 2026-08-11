@@ -72,6 +72,12 @@ export const caseStudySchema = z.object({
       })
     )
     .default([]),
+  /**
+   * Ordered end-to-end pipeline stages (e.g. the RAG flow). Rendered as the
+   * animated flow inside the case study's Architecture block; must match
+   * stages actually implemented. Empty = no flow shown.
+   */
+  pipeline: z.array(z.string()).default([]),
   results: z
     .array(
       z.object({
@@ -102,6 +108,10 @@ export const projectSchema = z
     role: z.string(),
     status: z.enum(["production", "development", "archived", "experimental"]),
     featured: z.boolean().default(false),
+    /** Mark the single strongest AI case study; sorts to the top. */
+    flagship: z.boolean().default(false),
+    /** Editorial display order (ascending). The source of truth for how the collection is presented. */
+    order: z.number(),
     links: linkSchema.default({ github: null, demo: null, docs: null }),
     stack: stackSchema,
     capabilities: z.array(capabilityEnum).default([]),

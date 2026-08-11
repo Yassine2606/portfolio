@@ -7,7 +7,9 @@
   "year": 2025,
   "role": "Solo",
   "status": "development",
-  "featured": true,
+  "featured": false,
+  "flagship": false,
+  "order": 5,
   "links": {
     "github": "https://github.com/Yassine2606/Data-Drift-Decision-Intelligence-System",
     "demo": null,
@@ -96,12 +98,7 @@
       { "title": "Categorical features have no natural binning for PSI", "resolution": "Handled with a chi-square test over normalized category frequencies instead." },
       { "title": "Interpreting a raw PSI or KS number is not actionable", "resolution": "Every statistic is paired with a plain-language interpretation and a documented threshold table in the README." }
     ],
-    "results": [
-      { "metric": "Features drift-checked per window", "value": "20", "source": "synth. dataset, 10k rows" },
-      { "metric": "Drift flagged before degradation", "value": "2 windows ahead", "source": "chronological drill, notebook 05" },
-      { "metric": "PSI + KS agreement", "value": "87% of flagged features", "source": "across 15 monitoring windows" },
-      { "metric": "Executive report build", "value": "p95 3.2s", "source": "notebook 05, dev machine" }
-    ],
+    "results": [],
     "lessons": [
       "The statistical methods are sound and genuinely reusable, but nothing in the repo proves the end-to-end run: every notebook is unexecuted, and models/ and reports/ are empty, so the drift report the README promises has never been committed.",
       "A notebook-driven pipeline is fine for exploration, but production monitoring needs a scheduled job, an API, and alerting; none of those exist here.",

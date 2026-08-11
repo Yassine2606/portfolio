@@ -8,6 +8,8 @@
   "role": "Solo",
   "status": "development",
   "featured": false,
+  "flagship": false,
+  "order": 4,
   "links": {
     "github": "https://github.com/Yassine2606/anomaly-detection-agent",
     "demo": null,
@@ -97,10 +99,7 @@
       { "title": "Alerts without context are noise", "resolution": "Every anomaly goes through the Gemini agent, which attaches severity, a plain-language explanation, and a concrete fix with effort estimates before it reaches a developer." }
     ],
     "results": [
-      { "metric": "Scan targets per run", "value": "3 databases + every API route", "source": "docker-compose demo stack" },
-      { "metric": "Rule-detector pass", "value": "p95 4.1s", "source": "internal run, dev machine" },
-      { "metric": "AI explanation enrichment", "value": "2.3s median", "source": "Gemini 2.5 Flash round-trip" },
-      { "metric": "Report endpoint latency", "value": "p95 42ms", "source": "load test, 50 concurrent calls" }
+      { "metric": "Scan targets per run", "value": "3 databases + every API route", "source": "docker-compose demo stack" }
     ],
     "lessons": [
       "An MCP server is a surface, not a system: the tools here exist and run, but the real connectors aren't wired into them. The scaffold proved the protocol path; the integration is the actual work.",

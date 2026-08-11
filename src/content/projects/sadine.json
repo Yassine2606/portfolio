@@ -3,11 +3,13 @@
   "title": "Sadine Tours — Travel Agency Platform",
   "shortName": "Sadine",
   "tagline": "Public catalog, admin ERP, and customer self-serve on one travel agency platform.",
-  "summary": "A production-grade travel agency platform: six catalog lines (hotels, trips, circuits, cruises, omra, transport), a quotes-to-bookings lifecycle with audit trails, an admin ERP with CMS pages, and a customer account area with quote acceptance and booking tracking in three locales. Next.js frontend (en/fr/ar), Fastify/Prisma backend over PostgreSQL, with JWT auth, RBAC and owner gating, media pipelines, notifications, invoices, reviews, coupons, and dashboards.",
+  "summary": "A production-oriented travel agency platform: six catalog lines (hotels, trips, circuits, cruises, omra, transport), a quotes-to-bookings lifecycle with audit trails, an admin ERP with CMS pages, and a customer account area with quote acceptance and booking tracking in three locales. Next.js frontend (en/fr/ar), Fastify/Prisma backend over PostgreSQL, with JWT auth, RBAC and owner gating, media pipelines, notifications, invoices, reviews, coupons, and dashboards.",
   "year": 2026,
   "role": "Solo",
   "status": "development",
   "featured": false,
+  "flagship": false,
+  "order": 2,
   "links": {
     "github": null,
     "demo": null,
@@ -112,9 +114,7 @@
       { "metric": "Prisma models", "value": "41", "source": "sadine-back/prisma/schema.prisma" },
       { "metric": "Backend modules", "value": "26", "source": "sadine-back/src/modules/" },
       { "metric": "Route handlers", "value": "224", "source": "sadine-back/src/modules/ (grep)" },
-      { "metric": "Locale bundles", "value": "3 (en/fr/ar)", "source": "sadine-front/src/messages/" },
-      { "metric": "API latency", "value": "p95 92ms", "source": "load test, 100 concurrent" },
-      { "metric": "Quote acceptance", "value": "31s median", "source": "timestamp-to-persist, 50 runs" }
+      { "metric": "Locale bundles", "value": "3 (en/fr/ar)", "source": "sadine-front/src/messages/" }
     ],
     "lessons": [
       "A state machine documented as a PRD is what keeps quote→booking transitions auditable; ad-hoc flags would have rotted within weeks.",

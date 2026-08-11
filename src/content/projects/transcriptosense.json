@@ -8,6 +8,9 @@
   "role": "Solo",
   "status": "development",
   "featured": false,
+  "flagship": false,
+  "order": 6,
+  "featured": false,
   "links": {
     "github": "https://github.com/Yassine2606/TranscriptoSense",
     "demo": null,
@@ -96,12 +99,7 @@
       { "title": "Long audio >1h risks context pressure", "resolution": "Documented chunking as the current boundary, with the config-level design making a chunked runner a new pipeline mode, not a fork." },
       { "title": "Windows audio/torch variations", "resolution": "torchaudio fallbacks and a Windows setup script keep the sensitivity off the audio path." }
     ],
-    "results": [
-      { "metric": "ASR WER (French)", "value": "8.2%", "source": "Whisper, held-out test set" },
-      { "metric": "ASR WER (AR / Darija)", "value": "14.6% / 16.1%", "source": "Whisper, held-out test set" },
-      { "metric": "Speaker diarization (DER)", "value": "12.4%", "source": "pyannote, 10 meeting recordings" },
-      { "metric": "1h recording processed", "value": "3.6 min", "source": "CPU pipeline, config-pipeline.yaml" }
-    ],
+    "results": [],
     "lessons": [
       "License-gated models are a first-class deployment tax: a token + license acceptance step is unavoidable and must be documented as setup, not an edge-case error.",
       "An API-mode ASR provider made the whole system runnable without a GPU — a bigger trade than a cost decision, because it made the demo always executable.",
