@@ -122,7 +122,7 @@ export function Timeline({ site }: TimelineProps) {
                       className="inline-flex items-center gap-1 font-mono text-xs text-accent transition-colors hover:text-accent-hover"
                     >
                       <GithubLogo size={13} />
-                      {new URL(link).hostname}
+                      {new URL(link).pathname.slice(1)}
                     </a>
                   ))}
                 </div>

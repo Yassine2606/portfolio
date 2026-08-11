@@ -85,13 +85,13 @@
       "year": "2026",
       "title": "RFID employee tracking & access control",
       "detail": "Industrial access platform: ESP32 readers publish badge scans over MQTT into a Fastify decision engine (skill, machine, and schedule checks), with audit logs, alerts, attendance, and a realtime dashboard plus employee portal — containerized with PostgreSQL, Redis, EMQX, and nginx.",
-      "links": ["https://github.com/Yassine2606/rfid-project"]
+      "links": []
     },
     {
       "year": "2026",
       "title": "Sadine Tours — travel agency platform",
       "detail": "A production-grade agency platform: Next.js storefront, admin ERP, and customer account in en/fr/ar over a Fastify/Prisma API — quotes-to-bookings state machine with audit trails, CMS pages, invoices, coupons, dashboards, and visa processing.",
-      "links": ["https://github.com/Yassine2606/sadine-back", "https://github.com/Yassine2606/sadine-front"]
+      "links": []
     },
     {
       "year": "2026",
