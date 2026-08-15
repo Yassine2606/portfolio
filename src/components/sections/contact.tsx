@@ -15,6 +15,7 @@ import {
 import type { Icon } from "@phosphor-icons/react";
 import type { SiteContent } from "@/lib/content/schema";
 import { useScrollLock } from "@/lib/use-scroll-lock";
+import { setDialogOpen } from "@/lib/use-dialog-open";
 import { Reveal } from "@/components/motion/reveal";
 
 interface ContactProps {
@@ -62,13 +63,26 @@ export function Contact({ site }: ContactProps) {
       setOrigin({ x: r.left, y: r.top, w: r.width, h: r.height });
     }
     setOpen(true);
+    setDialogOpen(true);
   };
 
   const closeDialog = () => {
     setOpen(false);
-    // The CTA stays mounted, so focus can always return to it.
-    document.getElementById("contact-open")?.focus({ preventScroll: true });
+    setDialogOpen(false);
   };
+
+  // Return focus to the CTA only after the dialog has fully unmounted.
+  // Focusing synchronously during close is a no-op on iOS while the
+  // keyboard is up: it refuses to move focus off the input, which then
+  // gets removed from the DOM still focused — a dead "ghost input" that
+  // swallows every tap and keypress and leaves the page unresponsive.
+  const wasOpenRef = useRef(false);
+  useEffect(() => {
+    if (wasOpenRef.current && !open) {
+      document.getElementById("contact-open")?.focus({ preventScroll: true });
+    }
+    wasOpenRef.current = open;
+  }, [open]);
 
   return (
     <section
@@ -176,6 +190,14 @@ function ContactDialog({
     if (leavingRef.current) return;
     leavingRef.current = true;
 
+    // Dismiss the keyboard now, while the focused field is still in the
+    // DOM. Unmounting a focused input leaves a ghost element holding
+    // focus: taps land on an invisible input and the page feels frozen.
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && active !== document.body) {
+      active.blur();
+    }
+
     const el = rootRef.current;
     if (!morphable || !origin || !el) {
       setLeaving(true);
@@ -183,6 +205,8 @@ function ContactDialog({
     }
 
     // Reverse: animate the box layout back onto the CTA, then unmount.
+    // Slightly slower than the open (0.5s) so the return reads as a
+    // deliberate settle rather than a snap.
     const main = animate(
       el,
       {
@@ -192,19 +216,19 @@ function ContactDialog({
         height: origin.h,
         borderRadius: PILL_RADIUS,
       },
-      { duration: 0.45, ease: EASE, type: "tween" }
+      { duration: 0.58, ease: EASE, type: "tween" }
     );
     if (backdropRef.current) {
-      animate(backdropRef.current, { opacity: 0 }, { duration: 0.3, ease: EASE });
+      animate(backdropRef.current, { opacity: 0 }, { duration: 0.35, ease: EASE });
     }
     if (faceRef.current) {
-      animate(faceRef.current, { opacity: 0 }, { duration: 0.2, ease: EASE });
+      animate(faceRef.current, { opacity: 0 }, { duration: 0.26, ease: EASE });
     }
     if (pillRef.current) {
       animate(
         pillRef.current,
         { opacity: 1 },
-        { duration: 0.16, ease: "easeOut", delay: 0.12 }
+        { duration: 0.18, ease: "easeOut", delay: 0.16 }
       );
     }
     void main.finished.then(onClose).catch(onClose);
@@ -318,6 +342,9 @@ function ContactDialog({
       const el = rootRef.current;
       const o = originRef.current;
       if (!el || !o) return;
+      // The keyboard retraction fires a resize while closing — re-fitting
+      // then would re-grow the panel and fight the reverse morph.
+      if (leavingRef.current) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const sheet = vw < 640;
@@ -403,7 +430,7 @@ function ContactDialog({
   if (!morphable) {
     // Reduced motion — no morph, the dialog simply fades over the backdrop.
     return (
-      <div className="fixed inset-0 z-[60]">
+      <div className="fixed inset-0 z-40">
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0 }}
@@ -440,7 +467,7 @@ function ContactDialog({
   const contentW = sheet ? vw : Math.min(DIALOG_MAX_W, Math.max(vw - 48, 0));
 
   return (
-    <div className="fixed inset-0 z-[60]">
+    <div className="fixed inset-0 z-40">
       <div
         ref={backdropRef}
         aria-hidden="true"

@@ -22,8 +22,8 @@
       {
         "title": "AI Engineering",
         "items": [
-          { "name": "Retrieval-Augmented Generation", "note": "Hybrid dense + full-text retrieval, RRF fusion, citation-grounded answers.", "projects": ["documents-assistant"] },
-          { "name": "Tool Calling Agents", "note": "Model-driven tool loops with verification and graceful failure.", "projects": ["documents-assistant"] },
+          { "name": "Retrieval-Augmented Generation", "note": "Hybrid dense + full-text retrieval, RRF fusion, citation-grounded answers.", "projects": ["documents-assistant", "anomaly-detection-agent"] },
+          { "name": "Tool Calling Agents", "note": "Model-driven tool loops with verification and graceful failure.", "projects": ["documents-assistant", "anomaly-detection-agent", "sadine"] },
           { "name": "Embeddings & Vector Search", "note": "Local sentence-transformers, pgvector, ivfflat indexes.", "projects": ["documents-assistant"] },
           { "name": "LLM Pipelines", "note": "Hand-written RAG pipelines without orchestration frameworks.", "projects": ["documents-assistant"] },
           { "name": "Workflow Orchestration", "note": "Redis-backed queues, retries, and degradation fallbacks.", "projects": ["documents-assistant"] },

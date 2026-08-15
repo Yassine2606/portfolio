@@ -422,10 +422,24 @@ function SignalDust() {
     }[] = [];
 
     // Read the active accent from tokens so the field follows light mode too.
-    const accentRgb =
+    let accentRgb =
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent-rgb")
         .trim() || "79, 199, 147";
+
+    // Re-read the accent when the theme switches: the data-theme swap
+    // changes the token value, and the loop draws from this live variable
+    // every frame, so the dust recolors in place without restarting.
+    const accentObserver = new MutationObserver(() => {
+      accentRgb =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-rgb")
+          .trim() || accentRgb;
+    });
+    accentObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -509,6 +523,7 @@ function SignalDust() {
 
     return () => {
       cancelAnimationFrame(raf);
+      accentObserver.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", resize);

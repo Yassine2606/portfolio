@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { InlineScript } from "@/components/ui/inline-script";
 import { getSite } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -50,8 +51,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/*
+          Apply the stored theme before first paint so there is no flash of
+          the wrong palette. This mirrors src/lib/theme.ts — keep them in
+          sync. No localStorage / unknown value: fall back to the OS scheme.
+        */}
+        <InlineScript
+          html={`(function(){try{var s=localStorage.getItem("theme");var l=s==="light"||((s==="system"||!s)&&window.matchMedia("(prefers-color-scheme: light)").matches);var r=document.documentElement;r.setAttribute("data-theme",l?"light":"dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",l?"#f2f6f3":"#0a0d0c")}catch(e){}})()`}
+        />
+      </head>
       <body className="min-h-full">
         <a
           href="#main"

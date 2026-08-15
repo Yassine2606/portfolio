@@ -23,6 +23,7 @@ import type { Icon } from "@phosphor-icons/react";
 import type { Project } from "@/lib/content/schema";
 import { useScrollLock } from "@/lib/use-scroll-lock";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { setDialogOpen } from "@/lib/use-dialog-open";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ArchitectureDiagram } from "@/components/ui/architecture-diagram";
 import { PipelineFlow } from "@/components/ui/pipeline-flow";
@@ -70,8 +71,11 @@ const CASE_ICONS: Record<string, Icon> = {
  * grows into the dialog geometry using layout properties only, driven
  * imperatively so open and close are exact mirror images. The grid never
  * reflows: the real card stays in place under the dimmed backdrop while the
- * clone covers it, so the seam is invisible on the first frame. No shared
- * elements (`layoutId`), no projection system. The dialog is full-screen
+ * clone covers it, so the seam is invisible on the first frame. The morphing
+ * face is itself a real rendering of the card (same component, inert), so
+ * the card keeps its identity and reflows as it grows; the dialog face
+ * cross-fades in beneath it. No shared elements (`layoutId`), no projection
+ * system. The dialog is full-screen
  * on mobile and a centered panel on desktop; Escape, the backdrop,
  * and Close all dismiss it, focus is trapped inside it, and focus returns
  * to the card's button once the reverse morph completes. Reduced-motion:
@@ -105,17 +109,27 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
       setOrigin({ x: r.left, y: r.top, w: r.width, h: r.height });
     }
     setOpenSlug(slug);
+    setDialogOpen(true);
   };
 
   const closeCase = () => {
-    const slug = openSlug;
     setOpenSlug(null);
-    if (slug) {
-      document.getElementById(`case-open-${slug}`)?.focus({
-        preventScroll: true,
-      });
-    }
+    setDialogOpen(false);
   };
+
+  // Return focus to the card's button only after the dialog has fully
+  // unmounted. Focusing synchronously during close targets a button inside
+  // the still-mounted dialog that is about to be removed from the DOM —
+  // the same focus-on-a-removed-element race as the contact dialog.
+  const wasOpenRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (wasOpenRef.current && !openSlug) {
+      document
+        .getElementById(`case-open-${wasOpenRef.current}`)
+        ?.focus({ preventScroll: true });
+    }
+    wasOpenRef.current = openSlug;
+  }, [openSlug]);
 
   return (
     <section id="featured-work" className="mx-auto max-w-6xl px-4 py-24 sm:px-8">
@@ -142,7 +156,6 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
               project={project}
               index={i}
               animateIn={animateIn}
-              reduceMotion={reduceMotion}
               openSlug={openSlug}
               onOpen={openCase}
             />
@@ -165,9 +178,9 @@ function ProjectCard({
   project,
   index,
   animateIn,
-  reduceMotion,
   openSlug,
   onOpen,
+  clone = false,
 }: {
   project: Project;
   index: number;
@@ -177,19 +190,24 @@ function ProjectCard({
    * invisible (opacity 0) until a swipe reveals them.
    */
   animateIn: boolean;
-  reduceMotion: boolean | null;
   openSlug: string | null;
   onOpen: (slug: string) => void;
+  /**
+   * A hidden visual clone rendered inside the morphing dialog: the exact
+   * same markup so the card face is pixel-perfect, minus the ids (the real
+   * card owns them) and minus the entry animation.
+   */
+  clone?: boolean;
 }) {
   const StatusIcon =
     STATUS_ICONS[project.status] ?? STATUS_ICONS.experimental;
 
   return (
     <motion.article
-      id={`case-card-${project.slug}`}
-      initial={animateIn ? { opacity: 0, y: 24 } : false}
-      whileInView={animateIn ? { opacity: 1, y: 0 } : undefined}
-      viewport={animateIn ? { once: true, amount: 0.2 } : undefined}
+      id={clone ? undefined : `case-card-${project.slug}`}
+      initial={animateIn && !clone ? { opacity: 0, y: 24 } : false}
+      whileInView={animateIn && !clone ? { opacity: 1, y: 0 } : undefined}
+      viewport={animateIn && !clone ? { once: true, amount: 0.2 } : undefined}
       transition={{
         duration: 0.5,
         ease: [0.16, 1, 0.3, 1],
@@ -243,7 +261,7 @@ function ProjectCard({
       <div className="mt-auto flex flex-wrap items-center gap-4 border-t border-border pt-5">
         <button
           type="button"
-          id={`case-open-${project.slug}`}
+          id={clone ? undefined : `case-open-${project.slug}`}
           onClick={() => onOpen(project.slug)}
           className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-ink transition hover:bg-accent-hover active:scale-[0.98]"
           aria-haspopup="dialog"
@@ -315,6 +333,8 @@ function CaseStudyDialog({
     }
 
     // Reverse: animate the box layout back onto the card, then unmount.
+    // Slightly slower than the open (0.5s) so the return reads as a
+    // deliberate settle rather than a snap.
     const main = animate(
       el,
       {
@@ -324,19 +344,19 @@ function CaseStudyDialog({
         height: origin.h,
         borderRadius: CARD_RADIUS,
       },
-      { duration: 0.45, ease: EASE, type: "tween" }
+      { duration: 0.58, ease: EASE, type: "tween" }
     );
     if (backdropRef.current) {
-      animate(backdropRef.current, { opacity: 0 }, { duration: 0.3, ease: EASE });
+      animate(backdropRef.current, { opacity: 0 }, { duration: 0.35, ease: EASE });
     }
     if (faceRef.current) {
-      animate(faceRef.current, { opacity: 0 }, { duration: 0.2, ease: EASE });
+      animate(faceRef.current, { opacity: 0 }, { duration: 0.26, ease: EASE });
     }
     if (cardRef.current) {
       animate(
         cardRef.current,
         { opacity: 1 },
-        { duration: 0.16, ease: "easeOut", delay: 0.12 }
+        { duration: 0.18, ease: "easeOut", delay: 0.16 }
       );
     }
     void main.finished.then(onClose).catch(onClose);
@@ -356,9 +376,11 @@ function CaseStudyDialog({
         return;
       }
       if (e.key !== "Tab" || !rootRef.current) return;
-      const focusables = rootRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
+      const focusables = Array.from(
+        rootRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.closest("[inert]") === null);
       if (focusables.length === 0) return;
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
@@ -541,13 +563,15 @@ function CaseStudyDialog({
       animate(backdropRef.current, { opacity: 1 }, { duration: 0.35, ease: EASE });
     }
     if (cardRef.current) {
-      animate(cardRef.current, { opacity: 0 }, { duration: 0.14, ease: "easeOut" });
+      // The card clone dissolves as the dialog face fades in beneath it —
+      // a cross-fade, so the card never blanks out mid-morph.
+      animate(cardRef.current, { opacity: 0 }, { duration: 0.12, ease: "easeOut" });
     }
     if (faceRef.current) {
       animate(
         faceRef.current,
         { opacity: 1 },
-        { duration: 0.28, ease: EASE, delay: 0.14 }
+        { duration: 0.3, ease: EASE, delay: 0.05 }
       );
     }
 
@@ -568,6 +592,9 @@ function CaseStudyDialog({
       const el = rootRef.current;
       const o = originRef.current;
       if (!el || !o) return;
+      // Ignore viewport resizes fired while closing (e.g. the mobile URL
+      // bar collapsing) — re-fitting would re-grow the panel mid-morph.
+      if (leavingRef.current) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const sheet = vw < 640;
@@ -591,7 +618,7 @@ function CaseStudyDialog({
   if (!morphable) {
     // Reduced motion — no morph, the dialog simply fades over the backdrop.
     return (
-      <div className="fixed inset-0 z-[60]">
+      <div className="fixed inset-0 z-40">
         <motion.div
           aria-hidden="true"
           initial={{ opacity: 0 }}
@@ -628,7 +655,7 @@ function CaseStudyDialog({
   const contentW = sheet ? vw : Math.min(DIALOG_MAX_W, Math.max(vw - 48, 0));
 
   return (
-    <div className="fixed inset-0 z-[60]">
+    <div className="fixed inset-0 z-40">
       <div
         ref={backdropRef}
         aria-hidden="true"
@@ -662,15 +689,28 @@ function CaseStudyDialog({
           borderRadius: CARD_RADIUS,
         }}
       >
-        {/* Card face — an exact clone of the clicked card until it fades.
-            Never takes pointer events: it sits above the dialog face and
-            would otherwise swallow wheel/click input aimed at the panel. */}
+        {/* Card face — a pixel-exact clone of the clicked card (same
+            component, no ids, no entry animation) until it dissolves into
+            the dialog face. The card keeps its identity through the whole
+            morph instead of blanking out behind an empty box. inert +
+            aria-hidden + pointer-events-none: it never takes focus or
+            pointer input, so it can't swallow input aimed at the panel. */}
         <div
           ref={cardRef}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-[1] flex border border-border bg-surface"
+          inert
+          className="pointer-events-none absolute inset-0 z-[1]"
           style={{ opacity: 1, borderRadius: CARD_RADIUS }}
-        />
+        >
+          <ProjectCard
+            project={project}
+            index={0}
+            animateIn={false}
+            openSlug={null}
+            onOpen={() => {}}
+            clone
+          />
+        </div>
 
         {/* Dialog face — fades in as the box grows; fills it exactly. */}
         <div

@@ -8,9 +8,40 @@ import {
   Cpu,
   Database,
   Monitor,
+  PuzzlePiece,
   Wrench,
 } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
+import {
+  SiDocker,
+  SiExpress,
+  SiFastapi,
+  SiFastify,
+  SiGooglegemini,
+  SiJupyter,
+  SiMqtt,
+  SiMui,
+  SiNextdotjs,
+  SiNginx,
+  SiNodedotjs,
+  SiNumpy,
+  SiNvidia,
+  SiOpenapiinitiative,
+  SiPandas,
+  SiPostgresql,
+  SiPrisma,
+  SiPython,
+  SiReact,
+  SiRedis,
+  SiScikitlearn,
+  SiScipy,
+  SiSocketdotio,
+  SiTailwindcss,
+  SiTanstack,
+  SiTypescript,
+  SiVite,
+  SiZod,
+} from "@icons-pack/react-simple-icons";
 import type { SiteContent } from "@/lib/content/schema";
 import { SectionHeading } from "@/components/ui/section-heading";
 
@@ -25,6 +56,50 @@ const GROUP_ICONS: Record<string, Icon> = {
   Data: Database,
   Frontend: Monitor,
   Infrastructure: Cloud,
+};
+
+/**
+ * Per-technology glyph — keyed by the exact item name in site.json. Brand
+ * marks come from Simple Icons; items without a brand mark fall back to a
+ * neutral puzzle glyph. Every icon renders in `currentColor` (muted →
+ * foreground on hover) so the page keeps its one-accent discipline — the
+ * glyphs read as recognizable shapes, not a brand-color jumble.
+ */
+const TECH_ICONS: Record<string, Icon> = {
+  // AI & ML
+  Gemini: SiGooglegemini,
+  "NVIDIA NIM": SiNvidia,
+  "scikit-learn": SiScikitlearn,
+  scipy: SiScipy,
+  // Backend
+  "Node.js": SiNodedotjs,
+  TypeScript: SiTypescript,
+  Fastify: SiFastify,
+  Express: SiExpress,
+  Prisma: SiPrisma,
+  Python: SiPython,
+  FastAPI: SiFastapi,
+  "Socket.IO": SiSocketdotio,
+  zod: SiZod,
+  // Data
+  PostgreSQL: SiPostgresql,
+  Redis: SiRedis,
+  pandas: SiPandas,
+  numpy: SiNumpy,
+  // Frontend
+  React: SiReact,
+  "Next.js": SiNextdotjs,
+  "TanStack Query": SiTanstack,
+  Vite: SiVite,
+  "Tailwind CSS": SiTailwindcss,
+  "Material UI": SiMui,
+  // Infrastructure
+  Docker: SiDocker,
+  "Docker Compose": SiDocker,
+  MQTT: SiMqtt,
+  NGINX: SiNginx,
+  OpenAPI: SiOpenapiinitiative,
+  Jupyter: SiJupyter,
 };
 
 /**
@@ -103,14 +178,18 @@ export function Toolbox({ site }: ToolboxProps) {
                 {group.category}
               </h3>
               <ul className="mt-4 flex flex-wrap gap-2">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border border-border bg-background px-3 py-1 text-sm text-muted transition-colors hover:border-accent/50 hover:text-foreground"
-                  >
-                    {item}
-                  </li>
-                ))}
+                {group.items.map((item) => {
+                  const ItemIcon = TECH_ICONS[item] ?? PuzzlePiece;
+                  return (
+                    <li
+                      key={item}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-sm text-muted transition-colors hover:border-accent/50 hover:text-foreground"
+                    >
+                      <ItemIcon size={14} className="shrink-0" />
+                      {item}
+                    </li>
+                  );
+                })}
               </ul>
             </motion.div>
             );

@@ -9,8 +9,9 @@ import { useEffect } from "react";
  * leaving layout untouched. Elements marked with
  * `data-scroll-lock-scrollable` remain scrollable (the dialog's own areas).
  */
-export function useScrollLock(): void {
+export function useScrollLock(enabled = true): void {
   useEffect(() => {
+    if (!enabled) return;
     const canScrollThis = (e: Event) =>
       e.target instanceof HTMLElement &&
       e.target.closest("[data-scroll-lock-scrollable]") !== null;
@@ -56,5 +57,5 @@ export function useScrollLock(): void {
       document.removeEventListener("touchmove", onTouchMove);
       document.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [enabled]);
 }
