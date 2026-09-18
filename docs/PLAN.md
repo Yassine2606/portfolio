@@ -26,11 +26,15 @@ starting points — exact feel is tuned in the browser during Phase 7.
 
 Rule: never implement V2/V3 work during a V1 phase; every spec row carries its stamp.
 
-> **Current build state (Aug 2026):** Phases 0–6a are complete and the V2 feature set is
+> **Current build state (Sep 2026):** Phases 0–5 are complete; the V2 motion set is
 > implemented (morphs, timeline pin, philosophy sweep, toolbox filtering — see decision
-> log). Phase 7 is partial (per-section audit still pending), Phase 8 has not been run.
-> Remaining known gaps tracked in the decision log: Toolbox cross-linking (V1 row),
-> AI Systems lazy-loading, Phase 8 performance gate.
+> log) and the Toolbox V1 cross-linking gap is now closed. Phase 7 is partial
+> (per-section audit still pending), Phase 8 has not been run. Correction to the Aug
+> note: Phase 6a's standalone AI Systems section was never built — there is no AI
+> Systems section in `page.tsx`/nav; AI systems are demonstrated through the
+> architecture diagrams inside Featured Work case studies (see decision log).
+> Remaining known gaps: AI Systems section (deferred, see decision log), AI Systems
+> lazy-loading, Phase 8 performance gate.
 
 ---
 
@@ -169,7 +173,7 @@ during V1.
 | **Featured Work** `[V1]` | Asymmetric grid; featured project gets the most prominent treatment | Reveal stagger (`amount: 0.2`); `[V2]` the card's title morphs into a responsive case-study dialog via `layoutId` (fallback = plain fade dialog) | Opens a dialog: bottom sheet on mobile, centered modal on desktop; interactive architecture diagram; hover cross-links | Pure fade reveals |
 | **Engineering** `[V1]` | Capability clusters in an asymmetric grid | Reveal stagger | Hover highlights cross-links to projects (shared accent) | Pure fade |
 | **Timeline** `[V1]` | Vertical line, alternating events | Events reveal at threshold; `[V2]` pinned moment #1: line draws top→bottom scrubbed to `scrollYProgress` (**desktop-only** via `useMediaQuery`; mobile keeps the static rail + still-interactive events), active node rotates 45° (square→diamond) and scales as it crosses the center band | Expandable event details | Static line, fade reveals |
-| **AI Systems** `[V1]` | Stage-card pipeline: nodes grouped into ordered `stage` cards, edges as connector labels between stages | `[V1]` static-but-interactive; `[V2]` pinned moment #2: stages light up top-to-bottom scrubbed to scroll (desktop-only; reduced-motion → static), chip ring ⇄ explainer line morph on hover/pin | Hover/pin a service chip → explanation expands beneath the stage; Escape unpins | Static stage cards, still fully interactive |
+| **AI Systems** `[DEFERRED — spec kept for a future section]` | Stage-card pipeline: nodes grouped into ordered `stage` cards, edges as connector labels between stages | `[V1]` static-but-interactive; `[V2]` pinned moment #2: stages light up top-to-bottom scrubbed to scroll (desktop-only; reduced-motion → static), chip ring ⇄ explainer line morph on hover/pin | Hover/pin a service chip → explanation expands beneath the stage; Escape unpins | Static stage cards, still fully interactive |
 | **Toolbox** `[V1]` | Grouped technologies, cross-linked to projects | `[V1]` grouped list; `[V2]` filterable, items re-flow with `layout` animation, active pill slides between categories | Hover reveals usage context + related projects | No filter animation, still functional |
 | **Philosophy** `[V1]` | Editorial manifesto, large type | `[V1]` reveal; `[V2]` one kinetic device: scrubbed word/line highlight | — | Static, plain lines |
 | **Contact** `[V1]` | Closing statement + one CTA | Reveal; CSS caret blink | CTA | Static CTA |
@@ -210,8 +214,9 @@ and schema-validated; site copy authored.
 - Global background system (base gradient + fixed noise overlay + subtle ambient light).
 - Sticky glass nav: shrinks while scrolling, current-section indicator, smooth scroll,
   single line at desktop, mobile menu.
-- All 8 sections (Hero, Featured Work, Engineering, AI Systems, Timeline, Toolbox,
+- All 7 sections (Hero, Featured Work, Engineering, Timeline, Toolbox,
   Philosophy, Contact) as typed, content-driven skeletons with real rhythm.
+  (The PRD's 8th section, AI Systems, is deferred — see decision log.)
 - Baseline semantics: landmarks, headings order, focus-visible states.
 
 **Done when:** full scroll structure renders from content JSON; nav works; keyboard
@@ -269,6 +274,10 @@ motion audit passes for this section.
 **Done when:** full page complete; one contact label site-wide; CTA contrast ≥ WCAG AA.
 
 ### Phase 6a — AI Systems [V2]
+
+> Status (Sep 2026): partially complete. The diagram capability ships and is
+> exercised via Featured Work case studies; the standalone section was never
+> built and is deferred (see decision log).
 
 **Goal:** demonstrate AI systems, not just mention them.
 
@@ -462,3 +471,13 @@ Record of notable calls. Revisit only with a written reason.
   and returns focus to the card's button on close. Reduced-motion = plain fade,
   no morph. The `V1` "plain expand" fallback row in the section spec is superseded
   by the plain fade dialog.
+- **AI Systems ships inside Featured Work, not as a section (Sep 2026).** Audit
+  found no AI Systems section in `src/app/page.tsx` or nav, and no caller passes
+  `scrubbed` to `ArchitectureDiagram` — the Aug 2026 "Phase 6a complete" note
+  overstated reality. Corrected: the three AI systems (documents-assistant RAG,
+  transcriptosense speech/LLM pipeline, anomaly-detection-agent MCP agent) are
+  demonstrated through the shared stage-card diagrams inside Featured Work case
+  studies, where the chip ring ⇄ explainer morph is exercised. The standalone
+  section, its scrubbed stage reveal, and its module budget stay deferred; the
+  `scrubbed` prop is retained (documented as unused) for that future section.
+  Revisit only with a written reason and a lazy-loading plan.

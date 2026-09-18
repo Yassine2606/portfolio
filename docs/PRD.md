@@ -100,7 +100,7 @@ Featured Work
 
 Engineering
 
-AI Systems
+AI Systems (deferred — demonstrated inside Featured Work, Sep 2026)
 
 Timeline
 
@@ -355,6 +355,9 @@ Project filtering
 ---
 
 # AI Systems
+
+> Status (Sep 2026): deferred as a standalone section. AI systems are currently
+> demonstrated through the architecture diagrams inside Featured Work case studies.
 
 Purpose
 

@@ -29,8 +29,8 @@ interface ArchitectureDiagramProps {
   /**
    * V2: scrubbed reveal — stages light up top-to-bottom as the card crosses
    * the viewport. Gated: desktop only, and reduced-motion falls back to the
-   * static diagram. Featured Work passes nothing; only the AI Systems section
-   * opts in.
+   * static diagram. No caller passes it today (Featured Work passes nothing);
+   * reserved for a future AI Systems section (deferred — see decision log).
    */
   scrubbed?: boolean;
 }
