@@ -98,7 +98,12 @@
       { "title": "Categorical features have no natural binning for PSI", "resolution": "Handled with a chi-square test over normalized category frequencies instead." },
       { "title": "Interpreting a raw PSI or KS number is not actionable", "resolution": "Every statistic is paired with a plain-language interpretation and a documented threshold table in the README." }
     ],
-    "results": [],
+    "results": [
+      { "metric": "Ordered notebooks", "value": "5", "source": "notebooks 01→05 (CRISP-DM flow)" },
+      { "metric": "Reusable modules", "value": "5", "source": "src/ (drift, validation, metrics, training, impact)" },
+      { "metric": "Statistical tests", "value": "3", "source": "PSI + KS-test + chi-square" },
+      { "metric": "Degradation flag", "value": "−5% relative", "source": "impact_analysis per-window monitor" }
+    ],
     "lessons": [
       "The statistical methods are sound and genuinely reusable, but nothing in the repo proves the end-to-end run: every notebook is unexecuted, and models/ and reports/ are empty, so the drift report the README promises has never been committed.",
       "A notebook-driven pipeline is fine for exploration, but production monitoring needs a scheduled job, an API, and alerting; none of those exist here.",

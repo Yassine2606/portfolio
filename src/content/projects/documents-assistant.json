@@ -127,7 +127,12 @@
       { "title": "Answers cut off at the token limit", "resolution": "A continuation prompt resumes the answer from the detected overlap point instead of restarting it." },
       { "title": "Old chunks surviving re-ingestion of a document", "resolution": "Re-indexing deletes the previous chunks for that document and user before inserting new ones, so stale evidence cannot be retrieved." }
     ],
-    "results": [],
+    "results": [
+      { "metric": "End-to-end pipeline stages", "value": "9", "source": "upload → parsing → chunking → retrieval → verification → cited answer" },
+      { "metric": "Architecture services", "value": "8", "source": "React UI → Express API → BullMQ → FastAPI → pgvector + models" },
+      { "metric": "Document formats", "value": "4 + OCR", "source": "PDF, DOCX, Markdown, text + scanned images" },
+      { "metric": "LLM providers with failover", "value": "2", "source": "Gemini 2.5 Flash + NVIDIA NIM (hybrid mode)" }
+    ],
     "lessons": [
       "Reliability of a RAG system depends on retrieval quality and corpus governance, not on the model choice; the biggest errors come from bad evidence, versioning, and OCR noise (the repo's own error analysis, in remarks.md, says the same).",
       "A separate verification step is worth its extra model call: it is the main defense against fluent but unsupported answers, and the retry path doubles as cheap query refinement.",

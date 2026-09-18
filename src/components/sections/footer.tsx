@@ -32,8 +32,8 @@ export function Footer({ site }: FooterProps) {
                 <a
                   key={link.label}
                   href={link.href!}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={link.href?.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={link.href?.startsWith("mailto:") ? undefined : "noopener noreferrer"}
                   className="inline-flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-foreground"
                 >
                   <LinkIcon size={14} />

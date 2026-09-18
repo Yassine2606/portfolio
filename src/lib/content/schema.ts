@@ -220,7 +220,8 @@ export const siteSchema = z.object({
     links: z.array(
       z.object({
         label: z.string(),
-        href: z.string().url().nullable(),
+        // External URLs plus site-relative files (e.g. "/resume.pdf").
+        href: z.union([z.string().url(), z.string().startsWith("/")]).nullable(),
       })
     ),
   }),

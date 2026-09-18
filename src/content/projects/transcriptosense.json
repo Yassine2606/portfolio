@@ -99,7 +99,12 @@
       { "title": "Long audio >1h risks context pressure", "resolution": "Documented chunking as the current boundary, with the config-level design making a chunked runner a new pipeline mode, not a fork." },
       { "title": "Windows audio/torch variations", "resolution": "torchaudio fallbacks and a Windows setup script keep the sensitivity off the audio path." }
     ],
-    "results": [],
+    "results": [
+      { "metric": "Languages", "value": "3", "source": "French, Arabic, Moroccan Darija" },
+      { "metric": "Export formats", "value": "5", "source": "JSON, DOCX, PDF, CSV, ICS" },
+      { "metric": "Complexity tiers", "value": "4", "source": "bronze → platinum (pipeline.yaml)" },
+      { "metric": "Pipeline stages", "value": "6", "source": "Client → API → Audio → ASR → Semantics → Export" }
+    ],
     "lessons": [
       "License-gated models are a first-class deployment tax: a token + license acceptance step is unavoidable and must be documented as setup, not an edge-case error.",
       "An API-mode ASR provider made the whole system runnable without a GPU — a bigger trade than a cost decision, because it made the demo always executable.",

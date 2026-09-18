@@ -146,7 +146,7 @@
     "links": [
       { "label": "GitHub", "href": "https://github.com/Yassine2606" },
       { "label": "Email", "href": "mailto:yassine.ben.romdhanee@gmail.com" },
-      { "label": "Resume", "href": null }
+      { "label": "Resume", "href": "/resume.pdf" }
     ]
   }
 }

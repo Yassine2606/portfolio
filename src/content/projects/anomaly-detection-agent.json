@@ -99,7 +99,10 @@
       { "title": "Alerts without context are noise", "resolution": "Every anomaly goes through the Gemini agent, which attaches severity, a plain-language explanation, and a concrete fix with effort estimates before it reaches a developer." }
     ],
     "results": [
-      { "metric": "Scan targets per run", "value": "3 databases + every API route", "source": "docker-compose demo stack" }
+      { "metric": "Database connectors", "value": "3", "source": "PostgreSQL, MySQL, MongoDB (read-only)" },
+      { "metric": "MCP tools", "value": "4", "source": "src/mcp_server.py (FastMCP stdio)" },
+      { "metric": "API endpoints", "value": "5", "source": "src/api/main.py (/scan, /reports, /configure, /health)" },
+      { "metric": "Anomaly classes", "value": "3", "source": "data-quality, performance, endpoint" }
     ],
     "lessons": [
       "An MCP server is a surface, not a system: the tools here exist and run, but the real connectors aren't wired into them. The scaffold proved the protocol path; the integration is the actual work.",

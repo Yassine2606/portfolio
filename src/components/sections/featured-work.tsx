@@ -14,6 +14,7 @@ import {
   GithubLogo,
   Lightbulb,
   ListChecks,
+  Lock,
   Stack,
   Warning,
   WarningCircle,
@@ -270,7 +271,7 @@ function ProjectCard({
         >
           Read the case study
         </button>
-        {project.links.github && (
+        {project.links.github ? (
           <a
             href={project.links.github}
             target="_blank"
@@ -280,6 +281,14 @@ function ProjectCard({
             <GithubLogo size={16} />
             GitHub
           </a>
+        ) : (
+          <span
+            title="Private repository — details available on request"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-faint"
+          >
+            <Lock size={14} />
+            Private repo
+          </span>
         )}
       </div>
     </motion.article>

@@ -9,7 +9,7 @@ import {
   useTransform,
   type MotionStyle,
 } from "motion/react";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight, FileText } from "@phosphor-icons/react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import type { SiteContent } from "@/lib/content/schema";
 import { handleAnchorClick } from "@/lib/scroll-to";
@@ -318,6 +318,24 @@ export function Hero({ site, projectSlugs }: HeroProps) {
                   />
                 </a>
               </motion.div>
+
+              {site.contact.links.find((l) => l.label === "Resume")?.href && (
+                <motion.div
+                  initial={reduceMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.6, ease: EASE }}
+                >
+                  <a
+                    href={site.contact.links.find((l) => l.label === "Resume")!.href!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-faint underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                  >
+                    <FileText size={13} />
+                    Resume (PDF)
+                  </a>
+                </motion.div>
+              )}
             </div>
 
             {/* Session terminal — a typed log of real content */}
