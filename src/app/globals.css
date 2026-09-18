@@ -114,9 +114,9 @@
   --foreground-rgb: 13, 23, 19;
   --surface-rgb: 251, 253, 251;
 
-  --accent: #1f8a5e;
-  --accent-rgb: 31, 138, 94;
-  --accent-hover: #1a7450;
+  --accent: #1a7450; /* floor for AA: ≥4.5:1 as text on light surfaces AND as bg under accent-ink — do not lighten past #1a7450 */
+  --accent-rgb: 26, 116, 80;
+  --accent-hover: #146247;
   --accent-strong: #146247;
   --accent-ink: #f4fbf7;
   --accent-faint: rgba(var(--accent-rgb), 0.12);

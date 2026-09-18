@@ -481,3 +481,17 @@ Record of notable calls. Revisit only with a written reason.
   section, its scrubbed stage reveal, and its module budget stay deferred; the
   `scrubbed` prop is retained (documented as unused) for that future section.
   Revisit only with a written reason and a lazy-loading plan.
+- **Phase 8 measured in sandbox, budget missed on JS (Sep 2026).** Production
+  build served locally, Lighthouse via headless Chromium. Desktop
+  100/100/96/100 and mobile 85/100/96/100 (perf/a11y/best-practices/SEO); the
+  96 is the `/_vercel/insights/script.js` 404 that only happens off Vercel
+  (prod serves it), so prod best-practices reads 100. Mobile LCP 3.3s misses the
+  2.5s budget and first-load JS is ~280 KB gz vs the 150 KB V1 budget (1.87x
+  over) with 87 KiB flagged unused — the known no-code-splitting debt, now
+  quantified: every section and both dialogs ship in one client bundle. Fix is
+  `next/dynamic` for the dialogs + lazy sections, not smaller tokens. Same run
+  caught 54 light-theme contrast failures (accent `#1f8a5e` ≈ 4.0:1 as text and
+  under ink — the Aug AA pass only covered dark); light `--accent` moved to
+  `#1a7450` with `--accent-hover` at `#146247` (both pairs ≥5.2:1), re-run shows
+  0 failures. Sandbox numbers flatter than mid-tier phones — re-run on real
+  hardware before claiming the budgets green.
