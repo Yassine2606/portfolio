@@ -24,7 +24,7 @@ export default function Home() {
         <FeaturedWork projects={projects} />
         <Engineering site={site} projects={projects} />
         <Timeline site={site} />
-        <Toolbox site={site} />
+        <Toolbox site={site} projects={projects} />
         <Philosophy site={site} />
         <Contact site={site} />
       </main>

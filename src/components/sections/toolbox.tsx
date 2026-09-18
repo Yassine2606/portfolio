@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
+  ArrowUpRight,
   Brain,
   Cloud,
   Cpu,
@@ -42,11 +43,13 @@ import {
   SiVite,
   SiZod,
 } from "@icons-pack/react-simple-icons";
-import type { SiteContent } from "@/lib/content/schema";
+import type { Project, SiteContent } from "@/lib/content/schema";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { handleAnchorClick } from "@/lib/scroll-to";
 
 interface ToolboxProps {
   site: SiteContent;
+  projects: Project[];
 }
 
 /** Toolbox category glyph — keyed by the group category in site.json. */
@@ -108,7 +111,7 @@ const TECH_ICONS: Record<string, Icon> = {
  * re-flow with a layout animation. Reduced-motion: filtering still works, but
  * the pill swap is instant and cards fade — no slide, no reflow animation.
  */
-export function Toolbox({ site }: ToolboxProps) {
+export function Toolbox({ site, projects }: ToolboxProps) {
   const reduceMotion = useReducedMotion();
   const categories = site.toolbox.groups.map((g) => g.category);
   const [filter, setFilter] = useState<string>("all");
@@ -117,6 +120,22 @@ export function Toolbox({ site }: ToolboxProps) {
     filter === "all"
       ? site.toolbox.groups
       : site.toolbox.groups.filter((g) => g.category === filter);
+
+  // V1 cross-linking: every toolbox item maps to the projects whose verified
+  // stack actually contains it (case-insensitive). Derived from content, so a
+  // technology can never claim a project it wasn't used in.
+  const stackOf = (p: Project) =>
+    [
+      ...p.stack.ai,
+      ...p.stack.backend,
+      ...p.stack.frontend,
+      ...p.stack.infra,
+      ...p.stack.data,
+    ].map((s) => s.toLowerCase());
+  const relatedFor = (item: string): Project[] => {
+    const key = item.toLowerCase();
+    return projects.filter((p) => stackOf(p).includes(key));
+  };
 
   return (
     <section id="toolbox" className="mx-auto max-w-6xl px-4 py-24 sm:px-8">
@@ -180,9 +199,15 @@ export function Toolbox({ site }: ToolboxProps) {
               <ul className="mt-4 flex flex-wrap gap-2">
                 {group.items.map((item) => {
                   const ItemIcon = TECH_ICONS[item] ?? PuzzlePiece;
+                  const related = relatedFor(item);
                   return (
                     <li
                       key={item}
+                      title={
+                        related.length > 0
+                          ? `Used in: ${related.map((p) => p.shortName).join(", ")}`
+                          : undefined
+                      }
                       className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-sm text-muted transition-colors hover:border-accent/50 hover:text-foreground"
                     >
                       <ItemIcon size={14} className="shrink-0" />
@@ -191,6 +216,40 @@ export function Toolbox({ site }: ToolboxProps) {
                   );
                 })}
               </ul>
+              {(() => {
+                const seen = new Map<string, Project>();
+                for (const item of group.items) {
+                  for (const p of relatedFor(item)) {
+                    if (!seen.has(p.slug)) seen.set(p.slug, p);
+                  }
+                }
+                const related = [...seen.values()];
+                if (related.length === 0) return null;
+                return (
+                  <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t border-border pt-4">
+                    <span className="font-mono text-[11px] tracking-tight text-muted-faint">
+                      Used in
+                    </span>
+                    <span className="flex flex-wrap gap-2" role="list">
+                      {related.map((p) => (
+                        <a
+                          key={p.slug}
+                          href="#featured-work"
+                          onClick={(e) => handleAnchorClick(e, "#featured-work")}
+                          className="group inline-flex items-center gap-1 rounded-full border border-border bg-background px-2.5 py-1 font-mono text-[11px] text-accent transition-colors hover:border-accent/50 hover:text-foreground"
+                          role="listitem"
+                        >
+                          {p.shortName}
+                          <ArrowUpRight
+                            size={10}
+                            className="text-muted-faint transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                          />
+                        </a>
+                      ))}
+                    </span>
+                  </div>
+                );
+              })()}
             </motion.div>
             );
           })}
