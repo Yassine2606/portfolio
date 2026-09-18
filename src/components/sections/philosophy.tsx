@@ -21,7 +21,7 @@ export function Philosophy({ site }: PhilosophyProps) {
   const enabled = isDesktop && !reduceMotion;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-24 sm:px-8">
+    <section id="philosophy" className="mx-auto max-w-6xl px-4 py-24 sm:px-8">
       <SectionHeading eyebrow="Philosophy" title={site.philosophy.title} intro={site.philosophy.intro} />
 
       <div className="mt-14 grid grid-cols-1 gap-10 md:grid-cols-2">

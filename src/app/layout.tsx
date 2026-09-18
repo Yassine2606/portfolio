@@ -23,6 +23,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: `${site.name} — ${site.role}`,
     description: site.hero.subtext,
     metadataBase: new URL(base),
+    alternates: { canonical: base },
+    authors: [{ name: site.name }],
+    creator: site.name,
     openGraph: {
       title: `${site.name} — ${site.role}`,
       description: site.hero.subtext,

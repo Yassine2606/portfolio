@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { GithubLogo } from "@phosphor-icons/react";
 import {
   motion,
@@ -25,7 +25,12 @@ interface TimelineProps {
  * static dots (no scrub, no rotation).
  */
 export function Timeline({ site }: TimelineProps) {
-  const events = [...site.timeline].sort((a, b) => b.year.localeCompare(a.year));
+  // Sorted once per content change — a fresh array every render would tear
+  // down and re-create the IntersectionObserver below on every render.
+  const events = useMemo(
+    () => [...site.timeline].sort((a, b) => b.year.localeCompare(a.year)),
+    [site.timeline]
+  );
   const reduceMotion = useReducedMotion();
   // The pin (line draw + node rotation) is desktop-only per the motion spec;
   // mobile keeps the static rail and still-interactive events.

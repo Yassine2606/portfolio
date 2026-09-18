@@ -188,7 +188,7 @@ export function Nav({ site }: NavProps) {
                 href={link.href}
                 onClick={(e) => handleAnchorClick(e, link.href)}
                 className="relative py-1 text-sm text-muted transition-colors hover:text-foreground"
-                aria-current={active ? "true" : undefined}
+                aria-current={active ? "page" : undefined}
               >
                 {link.label}
                 {active && (
@@ -288,7 +288,7 @@ export function Nav({ site }: NavProps) {
                         handleAnchorClick(e, link.href);
                       }}
                       className="border-b border-border py-3 text-sm text-muted transition-colors hover:text-foreground"
-                      aria-current={active ? "true" : undefined}
+                      aria-current={active ? "page" : undefined}
                     >
                       {link.label}
                     </a>
