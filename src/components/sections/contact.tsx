@@ -372,6 +372,8 @@ function ContactDialog({
     const name = String(formData.get("name") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim();
     const message = String(formData.get("message") ?? "").trim();
+    // Honeypot (hidden input below): bots fill it, humans never do.
+    const company = String(formData.get("company") ?? "");
 
     const nextErrors: FieldErrors = {};
     if (name.length < 2) nextErrors.name = "Please tell me your name.";
@@ -391,7 +393,7 @@ function ContactDialog({
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message, company }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as
@@ -663,6 +665,16 @@ const ContactFace = forwardRef<HTMLDivElement, ContactFaceProps>(function Contac
               </p>
             )}
           </div>
+
+          {/* Honeypot: invisible to humans, irresistible to bots. */}
+          <input
+            type="text"
+            name="company"
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="hidden"
+          />
 
           <div aria-live="polite">
             {serverError && (

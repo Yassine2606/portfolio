@@ -20,7 +20,9 @@ Copy `.env.example` to `.env.local` for local contact-form testing. The site run
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical URL for metadata, sitemap, robots, OG. Falls back to the production domain in `src/lib/site.ts`. |
 | `RESEND_API_KEY` | For contact form | Sends via Resend. Unset → `POST /api/contact` returns 503. |
-| `CONTACT_EMAIL` | No | Inbox for form messages. Defaults to the owner address in `src/app/api/contact/route.ts`. |
+| `CONTACT_EMAIL` | No | Inbox for form messages. Defaults to the site contact email (`site.json`) when unset. |
+
+The contact endpoint is rate-limited (5 messages per 10 minutes per IP, `429` + `Retry-After`) and silently drops honeypot submissions.
 
 ## Content
 
