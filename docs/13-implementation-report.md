@@ -65,18 +65,18 @@ Build fails if a slug mismatches its filename, a frontmatter field is missing, a
 
 Run from `v2/` on 27 Oct 2026.
 
-| Check              | Command                         | Result                                                                                        |
-| ------------------ | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| Types              | `npm run typecheck`             | Pass                                                                                          |
-| Lint               | `npm run lint`                  | Pass, 0 errors / 0 warnings                                                                   |
-| Format             | `npm run format:check`          | Pass                                                                                          |
-| Production build   | `npm run build`                 | Pass; 12 static outputs, all four case studies prerendered                                    |
-| Desktop sweep      | Playwright, 1440×1000           | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                |
-| Mobile sweep       | Playwright, 390×844             | Same 8 routes: no horizontal overflow                                                         |
-| Evidence rendering | Playwright + HTML inspection    | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs      |
-| Availability copy  | Playwright, 1440×1000 / 390×844 | “Available immediately” in header, hero, footer, mobile menu, about, contact; no overflow     |
-| Keyboard           | Playwright                      | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                  |
-| Print              | Playwright, print media         | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed |
+| Check              | Command                         | Result                                                                                                      |
+| ------------------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Types              | `npm run typecheck`             | Pass                                                                                                        |
+| Lint               | `npm run lint`                  | Pass, 0 errors / 0 warnings                                                                                 |
+| Format             | `npm run format:check`          | Pass                                                                                                        |
+| Production build   | `npm run build`                 | Pass; 12 static outputs, all four case studies prerendered                                                  |
+| Desktop sweep      | Playwright, 1440×1000           | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                              |
+| Mobile sweep       | Playwright, 390×844             | Same 8 routes: no horizontal overflow                                                                       |
+| Evidence rendering | Playwright + HTML inspection    | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs                    |
+| Availability copy  | Playwright, 1440×1000 / 390×844 | “Available immediately” plus remote/hybrid/on-site and relocation in hero card, about, contact; no overflow |
+| Keyboard           | Playwright                      | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                                |
+| Print              | Playwright, print media         | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed               |
 
 ### What was checked visually
 
@@ -126,7 +126,9 @@ These are shipped on purpose:
 
 Resolved 27 Oct 2026: availability — available immediately, with no notice period. The site uses “Available immediately” in the header, hero, footer, mobile menu, about, and contact copy.
 
-- [ ] Remote / hybrid / on-site preference, relocation, work authorization.
+Resolved 27 Oct 2026: work modes — remote, hybrid, or on-site, and open to relocation. Work authorization remains open.
+
+- [ ] Work authorization: whether roles outside Tunisia require visa sponsorship.
 - [ ] Capgemini disclosure scope: stay partially private, or approve screenshots/demo.
 - [ ] Permission for Sadine, RFID, and Wave visuals.
 - [ ] Flagship demo format: synthetic corpus, recorded walkthrough, or both.
@@ -137,7 +139,7 @@ Resolved 27 Oct 2026: availability — available immediately, with no notice per
 - [ ] Language proficiency labels.
 - [ ] Target role priority.
 
-The site currently avoids the unconfirmed claims: no remote-friendly promise, no LinkedIn link, no portrait, no phone, no language levels.
+The site currently avoids the unconfirmed claims: no work-authorization claim, no LinkedIn link, no portrait, no phone, no language levels.
 
 ### Evidence sprint
 

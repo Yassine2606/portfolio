@@ -26,9 +26,10 @@ export function ContactSection() {
             </span>
           </h2>
           <p className="text-ink-soft mt-6 max-w-[52ch] text-[17px] leading-[1.6]">
-            I&rsquo;m available immediately for AI engineering roles, with no notice period.
-            I&rsquo;m based in {site.location}, {site.timezone}. The fastest way to start is email —
-            I read everything, and I answer with specifics.
+            I&rsquo;m available immediately for AI engineering roles (remote, hybrid, or on-site),
+            with no notice period. I&rsquo;m based in {site.location} ({site.timezone}), and open to
+            relocation. The fastest way to start is email — I read everything, and I answer with
+            specifics.
           </p>
           <div className="mt-8">
             <CopyEmail email={site.email} />

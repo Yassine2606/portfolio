@@ -120,7 +120,9 @@ The archive rows are real builds that do not get a case file. They carry a title
 | Resume                                     | `public/resume.pdf` is the old CV, pending the rewritten one-page version.                                                 |
 | Experience, education, Wardrobe            | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file. |
 | Availability and notice                    | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.     |
-| Remote / relocation / authorization        | Not confirmed. The site lists Monastir and CET+1 only; no remote-friendly promise.                                         |
+| Remote / hybrid / on-site                  | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.          |
+| Relocation                                 | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                         |
+| Work authorization                         | Not confirmed. No visa, permit, or sponsorship claim is published.                                                         |
 | Client permissions                         | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                          |
 | Domain                                     | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                               |
 | LinkedIn, phone, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                               |
@@ -145,3 +147,4 @@ The archive rows are real builds that do not get a case file. They carry a title
 | 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.    |
 | 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps. |
 | 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.    |
+| 2026-10-27 | Added confirmed remote/hybrid/on-site work and relocation willingness; left authorization unclaimed.  |

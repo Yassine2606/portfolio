@@ -14,6 +14,8 @@ export const site = {
   availability: {
     label: "Available immediately",
     detail: "Monastir, Tunisia · CET+1",
+    workModes: "Remote · Hybrid · On-site",
+    relocation: "Open to relocation",
   },
 
   focus: "RAG, agents, and reliability",

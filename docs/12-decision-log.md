@@ -239,18 +239,18 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 
 ## Open decisions
 
-| #   | Question                                                                                  | Owner   | Needed by   |
-| --- | ----------------------------------------------------------------------------------------- | ------- | ----------- |
-| 1   | Availability and notice — resolved: available immediately, no notice period (27 Oct 2026) | Yassine | Done        |
-| 2   | Remote / relocation / work authorization                                                  | Yassine | Phase 0     |
-| 3   | Capgemini disclosure scope                                                                | Yassine | Phase 0     |
-| 4   | Flagship demo format (synthetic corpus vs recording)                                      | Yassine | Phase 1     |
-| 5   | Domain choice                                                                             | Yassine | Phase 0     |
-| 6   | Phone number on the public resume                                                         | Yassine | Phase 1     |
-| 7   | Portrait yes/no                                                                           | Yassine | Phase 4     |
-| 8   | Fifth case study (Wave vs Wardrobe)                                                       | Yassine | Post-launch |
-| 9   | Contact form after 30 days                                                                | Yassine | Post-launch |
-| 10  | Dark mode after launch                                                                    | Yassine | Post-launch |
+| #   | Question                                                                                   | Owner   | Needed by   |
+| --- | ------------------------------------------------------------------------------------------ | ------- | ----------- |
+| 1   | Availability and notice — resolved: available immediately, no notice period (27 Oct 2026)  | Yassine | Done        |
+| 2   | Work authorization — work modes and relocation resolved 27 Oct 2026; sponsorship need open | Yassine | Phase 0     |
+| 3   | Capgemini disclosure scope                                                                 | Yassine | Phase 0     |
+| 4   | Flagship demo format (synthetic corpus vs recording)                                       | Yassine | Phase 1     |
+| 5   | Domain choice                                                                              | Yassine | Phase 0     |
+| 6   | Phone number on the public resume                                                          | Yassine | Phase 1     |
+| 7   | Portrait yes/no                                                                            | Yassine | Phase 4     |
+| 8   | Fifth case study (Wave vs Wardrobe)                                                        | Yassine | Post-launch |
+| 9   | Contact form after 30 days                                                                 | Yassine | Post-launch |
+| 10  | Dark mode after launch                                                                     | Yassine | Post-launch |
 
 ---
 

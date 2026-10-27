@@ -124,7 +124,8 @@ export default function AboutPage() {
                 An AI engineering role on a team that ships to production and measures what it
                 ships: retrieval and agents, applied ML, or a backend-leaning AI role where
                 reliability is part of the job. I&rsquo;m available immediately, with no notice
-                period, and based in {site.location}, {site.timezone}.
+                period. I&rsquo;m based in {site.location} ({site.timezone}), open to remote,
+                hybrid, or on-site work, and willing to relocate.
               </p>
               <Link
                 href="/#contact"
@@ -155,6 +156,18 @@ export default function AboutPage() {
                   Status
                 </dt>
                 <dd className="text-status text-right text-sm">{site.availability.label}</dd>
+              </div>
+              <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
+                <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
+                  Work mode
+                </dt>
+                <dd className="text-ink-soft text-right text-sm">{site.availability.workModes}</dd>
+              </div>
+              <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
+                <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
+                  Relocation
+                </dt>
+                <dd className="text-ink-soft text-right text-sm">{site.availability.relocation}</dd>
               </div>
               <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
                 <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">

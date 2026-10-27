@@ -4,6 +4,7 @@ A recruiter-facing portfolio for an AI engineer. Four systems are documented as 
 
 **Status:** built and verified locally (v1.0). Not deployed.
 **Availability:** immediate, no notice period.
+**Work:** remote, hybrid, or on-site; open to relocation.
 **Design direction:** engineering dossier — warm paper, blue-black ink, one vermillion signal, editorial type, evidence in the margin.
 **Tagline:** _AI systems, with the receipts._
 
@@ -49,7 +50,7 @@ Also shipped: header and footer, focus-trapped mobile menu, home Index with tabs
 ### What is deliberately not shipped
 
 - No contact form, dark mode, blog, analytics script, or animation runtime.
-- No deployment, custom domain, or remote. The canonical fallback is the old Vercel origin until `NEXT_PUBLIC_SITE_URL` is set.
+- No deployment, custom domain, or git remote. The canonical fallback is the old Vercel origin until `NEXT_PUBLIC_SITE_URL` is set.
 - No screenshots or recorded demos. The figures are architecture maps, not interface captures.
 - No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
 - No rewritten CV. `public/resume.pdf` is the old one.
@@ -164,13 +165,13 @@ Read in order the first time. After that, use it as a working reference.
 
 These block launch or would materially strengthen it:
 
-1. **Work arrangement:** remote / hybrid / on-site preference; relocation; work authorization. Availability is confirmed: immediate, no notice period.
+1. **Work authorization:** whether roles outside Tunisia require visa sponsorship. Work modes (remote, hybrid, on-site) and relocation are confirmed.
 2. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
 3. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
 4. **Identity and contact:** custom domain, LinkedIn URL, phone policy for the CV, portrait yes/no, language proficiency labels, target-role priority.
 5. **Resume and audit:** rewritten one-page CV; CI plus axe, Lighthouse, screen-reader, and cross-browser passes.
 
-The site avoids unconfirmed claims: no remote-friendly promise, LinkedIn placeholder, portrait, phone number, or language levels.
+The site avoids unconfirmed claims: no work-authorization claim, LinkedIn placeholder, portrait, phone number, or language levels.
 
 ---
 

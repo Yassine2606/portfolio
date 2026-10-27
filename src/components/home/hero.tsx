@@ -91,6 +91,13 @@ export function Hero() {
             </div>
             <div className="py-4">
               <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
+                Work mode
+              </dt>
+              <dd className="text-ink-soft mt-2 text-sm">{site.availability.workModes}</dd>
+              <dd className="text-ink-soft mt-1 text-sm">{site.availability.relocation}</dd>
+            </div>
+            <div className="py-4">
+              <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
                 Last shipped
               </dt>
               <dd className="text-ink-soft mt-2 text-sm">{site.lastShipped}</dd>
