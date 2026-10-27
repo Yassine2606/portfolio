@@ -36,7 +36,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Read `01`–`12`; sign off on the brief and the four-project selection.
 - [ ] Answer every owner input in `docs/README.md`:
   - availability date / notice (resolved: available immediately)
-  - work authorization (remote/hybrid/on-site and relocation resolved)
+  - work authorization (resolved: visa sponsorship required outside Tunisia)
   - Capgemini permission + redaction rules
   - Sadine / RFID / Wave permission
   - demo plan for the flagship

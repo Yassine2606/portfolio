@@ -224,7 +224,7 @@ Answer these before Phase 1. They are repeated in `docs/README.md` and the roadm
 
 - [x] Availability: immediate, no notice period (resolved 27 Oct 2026).
 - [x] Work modes: remote, hybrid, or on-site; open to relocation (resolved 27 Oct 2026).
-- [ ] Work authorization: visa sponsorship needs outside Tunisia.
+- [x] Work authorization: visa sponsorship required outside Tunisia (resolved 27 Oct 2026).
 - [ ] What Capgemini allows: architecture, screenshots, metrics, name, logo.
 - [ ] Permission for Sadine, RFID, Wave visuals; redaction rules.
 - [ ] Demo plan for the flagship: hosted synthetic corpus, recorded walkthrough, or both.

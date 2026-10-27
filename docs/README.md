@@ -71,7 +71,6 @@ Review cadence: end of each phase; then quarterly.
 
 These still block launch or would strengthen it. Defaults that were shipped without confirmation are marked as such.
 
-- [ ] Work authorization: whether roles outside Tunisia require visa sponsorship. **Default applied:** no authorization claim. Work modes (remote, hybrid, on-site) and relocation are confirmed.
 - [ ] Capgemini permission: what can be shown, what must be anonymized, whether screenshots are allowed. **Default applied:** partially private, no screenshots or repository link (ADR-021).
 - [ ] Permission for Sadine, RFID, and Wave visuals. **Default applied:** no visuals; system maps only.
 - [ ] Public demo plan for the flagship: synthetic corpus, recorded walkthrough, or both.
@@ -84,6 +83,6 @@ These still block launch or would strengthen it. Defaults that were shipped with
 
 Resolved 27 Oct 2026: availability — available immediately, with no notice period. The site says “Available immediately” in the header, hero, footer, mobile menu, about, and contact copy.
 
-Resolved 27 Oct 2026: work modes — remote, hybrid, or on-site, and open to relocation. Work authorization remains open.
+Resolved 27 Oct 2026: work authorization — remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
 
 The full shipped state and verification log are in `13-implementation-report.md`.

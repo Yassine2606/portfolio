@@ -16,6 +16,7 @@ export const site = {
     detail: "Monastir, Tunisia · CET+1",
     workModes: "Remote · Hybrid · On-site",
     relocation: "Open to relocation",
+    visaSponsorship: "Required outside Tunisia",
   },
 
   focus: "RAG, agents, and reliability",

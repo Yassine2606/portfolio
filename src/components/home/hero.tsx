@@ -98,6 +98,12 @@ export function Hero() {
             </div>
             <div className="py-4">
               <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
+                Sponsorship
+              </dt>
+              <dd className="text-ink-soft mt-2 text-sm">{site.availability.visaSponsorship}</dd>
+            </div>
+            <div className="py-4">
+              <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
                 Last shipped
               </dt>
               <dd className="text-ink-soft mt-2 text-sm">{site.lastShipped}</dd>

@@ -125,7 +125,8 @@ export default function AboutPage() {
                 ships: retrieval and agents, applied ML, or a backend-leaning AI role where
                 reliability is part of the job. I&rsquo;m available immediately, with no notice
                 period. I&rsquo;m based in {site.location} ({site.timezone}), open to remote,
-                hybrid, or on-site work, and willing to relocate.
+                hybrid, or on-site work, and willing to relocate. Roles outside Tunisia would
+                require visa sponsorship.
               </p>
               <Link
                 href="/#contact"
@@ -168,6 +169,14 @@ export default function AboutPage() {
                   Relocation
                 </dt>
                 <dd className="text-ink-soft text-right text-sm">{site.availability.relocation}</dd>
+              </div>
+              <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
+                <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
+                  Sponsorship
+                </dt>
+                <dd className="text-ink-soft text-right text-sm">
+                  {site.availability.visaSponsorship}
+                </dd>
               </div>
               <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
                 <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
