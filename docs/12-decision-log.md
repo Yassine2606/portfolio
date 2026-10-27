@@ -91,6 +91,7 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 **Consequences:** Less code, no spam, no PII storage, no 503 states. Cost: no in-page message capture; some visitors prefer a form.
 **Alternatives:** Resend form (scope), Formspree (third party), mailto only (less friendly).
 **Revisit if:** 30-day analytics show high contact-section engagement and low email clicks, or a recruiter explicitly asks for a form.
+**Update · 27 Oct 2026:** The LinkedIn URL was not supplied before the local v1.0 build, so the shipped contact block carries email, GitHub, and the resume only. Add LinkedIn when the owner supplies the profile URL; do not ship a placeholder.
 
 ---
 
@@ -222,6 +223,17 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 **Decision:** Launch with four. Revisit Wave or Wardrobe after launch if real screenshots and a demo exist. Do not add a fifth page without the same evidence standard.
 **Consequences:** Focus; the archive still shows range. Cost: less breadth on the work index.
 **Revisit if:** the four launch files are complete and a fifth has strong visuals plus a measured result.
+
+---
+
+## ADR-021 — Launch with partial proof, never borrowed proof
+
+**Status:** Accepted · 27 Oct 2026
+**Context:** The flagship, Documents Assistant, is client work. The repository is private, the interface cannot be published, and the retrieval benchmark is designed but not run. Leaving it out would remove the strongest AI case file. Publishing a mock dashboard or an invented evaluation number would break the site's central rule.
+**Decision:** Ship the flagship as **partially private**. Use a code-generated system map drawn from the documented architecture; show structural metrics as artifacts; state plainly that the benchmark, screenshots, and demo do not exist. Apply the same rule to Sadine and RFID. Do not use stock photos, fake UI, invented metrics, or a screenshot of another product.
+**Consequences:** The site has less visual proof than a public demo would provide. It gains a claim it can defend line by line. A recruiter can inspect architecture, tradeoffs, failure paths, and code paths, and can ask for a walkthrough. The missing proof remains visible instead of hidden.
+**Alternatives:** Omit the flagship (weaker AI signal), publish a synthetic demo without labelling it (dishonest), invent a benchmark (disqualifying), use a stock dashboard (generic and false).
+**Revisit if:** Capgemini approves a redacted demo or screenshots, or a synthetic corpus demo is recorded. At that point, add the artifact and downgrade the “not measured” note only when the number exists.
 
 ---
 

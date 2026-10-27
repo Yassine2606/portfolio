@@ -10,21 +10,23 @@ Review cadence: end of each phase; then quarterly.
 
 ## Status
 
-| Doc                              | Status      | Last decision                                 |
-| -------------------------------- | ----------- | --------------------------------------------- |
-| `01-brief.md`                    | Locked v1.0 | Audience, positioning, success tests, scope   |
-| `02-recruiter-research.md`       | Locked v1.0 | Evidence hierarchy and scan paths             |
-| `03-content-strategy.md`         | Locked v1.0 | Four featured projects + three archive cards  |
-| `04-information-architecture.md` | Locked v1.0 | Home, /work, /work/[slug], /about, PDF        |
-| `05-design-system.md`            | Locked v1.0 | Dossier direction, OKLCH tokens, type stack   |
-| `06-motion-and-interaction.md`   | Locked v1.0 | Polish + restraint; Index and evidence margin |
-| `07-technical-architecture.md`   | Locked v1.0 | Next.js static-first, MDX + zod, Vercel       |
-| `08-quality-standards.md`        | Locked v1.0 | WCAG 2.2 AA, CWV budgets, SEO, security       |
-| `09-build-roadmap.md`            | Locked v1.0 | 8 phases, evidence-first critical path        |
-| `10-quality-gates.md`            | Locked v1.0 | 9 launch gates + manual scripts               |
-| `11-content-templates.md`        | Locked v1.0 | Case study, screenshots, resume, prompt       |
-| `12-decision-log.md`             | Living      | ADR index; append, never rewrite history      |
-| `prompts/project-scoping.md`     | Locked v1.0 | Agent prompt for evidence extraction          |
+| Doc                              | Status      | Last decision                                        |
+| -------------------------------- | ----------- | ---------------------------------------------------- |
+| `01-brief.md`                    | Locked v1.0 | Audience, positioning, success tests, scope          |
+| `02-recruiter-research.md`       | Locked v1.0 | Evidence hierarchy and scan paths                    |
+| `03-content-strategy.md`         | Locked v1.0 | Four featured projects + three archive cards         |
+| `04-information-architecture.md` | Locked v1.0 | Home, /work, /work/[slug], /about, PDF               |
+| `05-design-system.md`            | Locked v1.0 | Dossier direction, OKLCH tokens, type stack          |
+| `06-motion-and-interaction.md`   | Locked v1.0 | Polish + restraint; Index and evidence margin        |
+| `07-technical-architecture.md`   | Locked v1.0 | Next.js static-first, MDX + zod, Vercel              |
+| `08-quality-standards.md`        | Locked v1.0 | WCAG 2.2 AA, CWV budgets, SEO, security              |
+| `09-build-roadmap.md`            | Locked v1.0 | 8 phases, evidence-first critical path               |
+| `10-quality-gates.md`            | Locked v1.0 | 9 launch gates + manual scripts                      |
+| `11-content-templates.md`        | Locked v1.0 | Case study, screenshots, resume, prompt              |
+| `12-decision-log.md`             | Living      | ADR index; append, never rewrite history             |
+| `13-implementation-report.md`    | Shipped     | What was built, verified, and left open              |
+| `evidence-ledger.md`             | Shipped     | 16 evidence notes, 16 scope metrics, 3 archive facts |
+| `prompts/project-scoping.md`     | Locked v1.0 | Agent prompt for evidence extraction                 |
 
 "Locked" means the direction is decided. Small corrections are fine; changing a locked decision requires an ADR entry and a written reason.
 
@@ -67,16 +69,18 @@ Review cadence: end of each phase; then quarterly.
 
 ## Open owner inputs
 
-These block Phase 1 and are copied into the roadmap:
+These still block launch or would strengthen it. Defaults that were shipped without confirmation are marked as such.
 
-- [ ] Exact availability date and notice period.
-- [ ] Remote / hybrid / on-site preference; relocation willingness; work authorization.
-- [ ] Capgemini permission: what can be shown, what must be anonymized, whether screenshots are allowed.
-- [ ] Permission for Sadine, RFID, and Wave visuals.
+- [ ] Exact availability date and notice period. Copy says “Open to AI engineering roles” with no date.
+- [ ] Remote / hybrid / on-site preference; relocation willingness; work authorization. **Default applied:** no remote-friendly promise; the site lists Monastir and CET+1 only.
+- [ ] Capgemini permission: what can be shown, what must be anonymized, whether screenshots are allowed. **Default applied:** partially private, no screenshots or repository link (ADR-021).
+- [ ] Permission for Sadine, RFID, and Wave visuals. **Default applied:** no visuals; system maps only.
 - [ ] Public demo plan for the flagship: synthetic corpus, recorded walkthrough, or both.
-- [ ] LinkedIn URL and preferred contact channel.
-- [ ] Custom domain choice and budget.
-- [ ] Languages to list (Arabic / French / English) and proficiency labels.
-- [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer.
-- [ ] Whether a portrait is used (recommended: one candid photo on /about only).
-- [ ] Phone number on the public resume: keep, remove, or replace with email only.
+- [ ] LinkedIn URL and preferred contact channel. **Default applied:** LinkedIn omitted; email and GitHub only.
+- [ ] Custom domain choice and budget. **Default applied:** fallback Vercel URL until the domain is set (ADR-019).
+- [ ] Languages to list (Arabic / French / English) and proficiency labels. **Default applied:** languages listed without levels.
+- [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer. Copy targets AI engineering roles.
+- [ ] Whether a portrait is used (recommended: one candid photo on /about only). **Default applied:** no portrait; the work is the introduction.
+- [ ] Phone number on the public resume: keep, remove, or replace with email only. The site omits it; the temporary old PDF still contains it.
+
+The full shipped state and verification log are in `13-implementation-report.md`.

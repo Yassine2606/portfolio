@@ -362,7 +362,7 @@ CSS:
 ### 15. Contact block
 
 - Headline (display-l), one sentence, email address in 20–24px, Copy button.
-- Links: Email, GitHub, LinkedIn, Resume; 44px targets; external links `rel="me noreferrer"`.
+- Links: Email, GitHub, Resume; 44px targets; external links `rel="me noreferrer"`. Add LinkedIn only when the owner supplies the URL.
 - Copy confirmation: `aria-live="polite"`, label changes to "Copied" for 2s.
 - No form at launch.
 

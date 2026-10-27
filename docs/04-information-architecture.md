@@ -61,9 +61,9 @@ The home page earns the click. The case file closes the argument. They are diffe
 ### Footer
 
 ```
-Yassine Ben Romdhane                         Email · GitHub · LinkedIn · Resume
+Yassine Ben Romdhane                         Email · GitHub · Resume
 AI engineer · Monastir, Tunisia (CET+1)
-Open to AI roles · Remote-friendly
+Open to AI engineering roles
 Set in Bricolage Grotesque, Instrument Sans, JetBrains Mono.  Last updated Oct 2026.
 ```
 
@@ -138,7 +138,7 @@ That is five content sections, not eight. The old Toolbox, Engineering clusters,
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  05 / CONTACT                                                                │
 │  "Let's build something that survives production."                           │
-│  [ Email ]  [ Copy address ]  [ GitHub ]  [ LinkedIn ]                       │
+│  [ Email ]  [ Copy address ]  [ GitHub ]  [ Resume ]                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -229,7 +229,7 @@ Four rows maximum on the home page. Role, company/context, one line of scope, ye
 - Headline: "Let's build something that survives production."
 - One sentence: role types, location/remote.
 - Email as a visible address + Copy button (`aria-live` confirmation).
-- GitHub, LinkedIn, Resume.
+- GitHub, Resume. Add LinkedIn only when the owner supplies the URL.
 - No form at launch. No "contact me" that opens a mail client with no context.
 
 ---

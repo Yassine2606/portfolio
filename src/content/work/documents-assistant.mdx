@@ -1,0 +1,201 @@
+---
+title: "Documents Assistant"
+slug: "documents-assistant"
+tagline: "A conversational RAG agent that answers from your documents and shows the evidence."
+descriptor: "Enterprise RAG · cited answers"
+summary: "A private-document assistant with a TypeScript API, a Python RAG service, asynchronous ingestion, hybrid retrieval, and a verification pass that checks each answer against its sources before streaming."
+year: 2026
+role: "Solo"
+duration: "Final-year project (PFE)"
+status: "in-development"
+featured: true
+order: 1
+confidentiality: "partially-private"
+contract:
+  problem: "Private project documentation is scattered across formats, and a fluent answer without a source is worse than no answer."
+  constraint: "Client material: no screenshots, no repository link, no customer data. Architecture and code paths only."
+  proof: "Working local stack, documented pipeline, and an explicit list of what is not yet measured."
+capabilities: ["RAG", "Tool calling", "Hybrid retrieval", "Verification", "Async pipelines"]
+stack:
+  ai: ["Gemini 2.5 Flash", "NVIDIA NIM", "sentence-transformers"]
+  backend: ["Node.js", "Express", "TypeScript", "FastAPI", "Python", "BullMQ"]
+  frontend: ["React", "Vite", "TanStack Query"]
+  infra: ["Docker", "Redis", "PostgreSQL"]
+  data: ["PostgreSQL", "pgvector"]
+links: []
+metrics:
+  - label: "Pipeline stages"
+    value: "9"
+    kind: "artifact"
+    source: "upload → queue → parse → chunk → embed → retrieve → fuse → verify → cite"
+    measuredAt: "2026-10-27"
+  - label: "Retrieval tools"
+    value: "4"
+    kind: "artifact"
+    source: "list documents, search passages, read structure, list topics"
+    measuredAt: "2026-10-27"
+  - label: "Embedding dimensions"
+    value: "384"
+    kind: "artifact"
+    source: "all-MiniLM-L6-v2, running locally on CPU"
+    measuredAt: "2026-10-27"
+  - label: "Answer providers"
+    value: "2"
+    kind: "artifact"
+    source: "Gemini 2.5 Flash + NVIDIA NIM, with failover"
+    measuredAt: "2026-10-27"
+evidence:
+  - id: "ev-1"
+    claim: "A separate verification call returns a pass/fail verdict before an answer streams."
+    source: "ai-service/app/services/verification.py"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-2"
+    claim: "Retrieval fuses dense cosine and Postgres full-text results with reciprocal rank fusion."
+    source: "ai-service/app/services/retrieval.py"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-3"
+    claim: "The retrieval benchmark is designed but not run; no outcome numbers are published."
+    source: "remarks.md — evaluation plan (unmeasured)"
+    kind: "doc"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-4"
+    claim: "Provider failover tries NVIDIA first and falls back to Gemini on errors."
+    source: "ai-service/app/services/llm_provider.py"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+seo:
+  title: "Documents Assistant — RAG with cited answers"
+  description: "A private-document RAG assistant with hybrid retrieval, a tool-calling agent, and a verification pass that checks answers against evidence before streaming."
+  ogAlt: "Documents Assistant system map: ingest, retrieve, verify, cite."
+---
+
+## Context
+
+Engineering teams keep their knowledge in PDF reports, Word documents, Markdown specs, and scanned paper. Finding an answer means opening files one by one, and finding a paragraph does not prove it is current, complete, or allowed to be seen. The brief was narrower than "search": a user uploads their own documents, asks a question in plain language, and gets an answer with the supporting passages attached.
+
+I built it as my final-year project (PFE) at Capgemini Engineering, under the CRISP-DM methodology. The setting added the constraints a demo usually skips: documents are private to each user, formats are messy, LLM providers rate-limit, ingestion is slow, and a hallucinated answer in front of a client is worse than no answer.
+
+<Claim
+  id="ev-1"
+  n="1"
+  source="ai-service/app/services/verification.py"
+  kind="repo"
+  isPrivate
+  note="Private repository. The file is the verification service, not a mock-up."
+>
+  The system does not trust the generator. After an answer is drafted, a separate model call
+  receives the answer and the retrieved evidence and returns a pass/fail JSON verdict.
+</Claim>
+
+## Problem
+
+Four constraints shaped every decision.
+
+- **Isolation.** Every retrieval query is scoped by user ID. A user cannot retrieve another user's chunks even if the query would match them.
+- **Messy input.** PDF, DOCX, Markdown, text, and scanned images all enter the same pipeline; OCR and table-structure inference run before chunking.
+- **Slow ingestion.** Parsing and embedding cannot block the chat, and a failed job must be retryable.
+- **Unsupported answers.** The product cannot ship fluent guesses. When the evidence is insufficient, the assistant must ask a clarifying question instead.
+
+## Architecture
+
+<Architecture project="documents-assistant" />
+
+## Decisions
+
+### Hand-written retrieval instead of a framework
+
+No LangChain, no vector-store SDK, no orchestration runtime. Parsing, chunking, embedding, RRF fusion, and the tool loop are explicit code. The cost is more surface area to maintain. The benefit is that every retrieval decision is inspectable and every failure has a location — which matters when the product claim is "the answer is grounded."
+
+### Verification as a second model call
+
+A single generation call is cheaper and faster. It also cannot tell you whether it followed the evidence. The separate verifier adds latency and cost per answer, but it converts "the model usually cites sources" into a checkable gate. On failure, the query is refined once; if it still cannot be grounded, the assistant asks a clarifying question.
+
+### Asynchronous ingestion with a degraded mode
+
+BullMQ and Redis make uploads non-blocking and retries explicit. The interesting decision is what happens when Redis disappears: the queue marks itself unavailable and processes inline, then reconnects. This is more code than a hard dependency, but document processing does not die because one service restarted.
+
+### Local embeddings, with a known weakness
+
+all-MiniLM-L6-v2 runs locally, costs nothing per query, and keeps documents off a third-party embedding API. It is also English-centric. On French and Arabic content, retrieval quality is the weak link. A multilingual model or hosted embedding service is the upgrade path; the current choice is a deliberate cost and privacy trade, not a claim of multilingual quality.
+
+### Summary memory instead of unbounded history
+
+Long conversations are folded into a structured summary stored on the conversation row. This loses detail. It also keeps the context window bounded and predictable, which is the difference between a demo that works for three turns and a product that works for thirty.
+
+## Evidence
+
+The architecture is the evidence that exists today: a running local stack, a documented pipeline, and code paths for each stage.
+
+<Claim
+  id="ev-2"
+  n="2"
+  source="ai-service/app/services/retrieval.py"
+  kind="repo"
+  isPrivate
+  note="Private repository. Hybrid retrieval is implemented directly, not delegated to a vector-store library."
+>
+  Retrieval runs two searches at once — cosine similarity over pgvector and Postgres full-text —
+  then fuses the ranked lists with reciprocal rank fusion, adds a phrase boost, and caps how many
+  chunks one document can contribute.
+</Claim>
+
+What does **not** exist is equally important: there is no annotated benchmark, no screenshot of the private interface, and no public demo. Those are missing artifacts, not hidden weaknesses. The interface is a React client with streamed answers, agent steps, and sources, but it runs against private project documentation and cannot be published as-is.
+
+<Claim
+  id="ev-3"
+  n="3"
+  source="remarks.md — evaluation plan (unmeasured)"
+  kind="doc"
+  isPrivate
+  note="The project's own remarks file lists the missing evaluation. This page repeats it rather than inventing a number."
+>
+  The benchmark that would justify an outcome claim — recall@5, MRR, citation accuracy, abstention
+  rate, and latency over an annotated question set — is specified but not yet run. Until it is, this
+  case study claims architecture and behavior, not retrieval quality.
+</Claim>
+
+## Reliability
+
+| Failure                           | What the system does                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| Provider rate limit or outage     | Tries the next provider in the chain; maps the failure to a stream error the UI can render |
+| Redis unavailable                 | Degrades to inline document processing, then reconnects                                    |
+| Answer cut off at the token limit | Resumes from the detected overlap instead of restarting                                    |
+| Stale chunks after re-upload      | Deletes the document's previous chunks before inserting new ones                           |
+| Unsupported answer                | Fails verification, retries once with a refined query, then asks a clarifying question     |
+| User cancels a stream             | Abort controller stops the request; the optimistic message is reconciled                   |
+
+<Claim
+  id="ev-4"
+  n="4"
+  source="ai-service/app/services/llm_provider.py"
+  kind="repo"
+  isPrivate
+  note="Private repository. Two providers sit behind one interface; failover is configuration, not a rewrite."
+>
+  Generation and tool calling run through a provider interface with Gemini and NVIDIA
+  implementations. The chain is ordered, so a failing provider is skipped rather than retried
+  forever.
+</Claim>
+
+The honest limits: there are no automated tests around the retrieval or agent loops, and the multilingual embedding weakness is real. Those are the first two items in the next section.
+
+## Outcome
+
+A working end-to-end system, not a measured product. The pipeline has nine stages across eight services; ingestion is asynchronous; retrieval is hybrid; every answer passes a verification gate before it reaches the user. The private repository contains the implementation.
+
+That distinction is the point of the evidence margin. The system is real; the proof is partial; the page says which is which.
+
+## Next
+
+- Run a 50-question annotated benchmark and publish Recall@5, MRR, citation accuracy, abstention, and p95 latency with the methodology.
+- Replace the English-centric embedding model and re-run the benchmark per language.
+- Add integration tests for retrieval, verification, and the tool loop, plus CI.
+- Add document versioning so two versions of the same file cannot both be retrieved as current evidence.
+- Capture a redacted demo: synthetic corpus, no client names, no private UI chrome.

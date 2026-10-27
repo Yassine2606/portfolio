@@ -1,0 +1,201 @@
+---
+title: "Anomaly Detection Agent"
+slug: "anomaly-detection-agent"
+tagline: "A read-only monitoring agent that turns database and endpoint anomalies into fixes a developer can act on."
+descriptor: "MCP · database monitoring"
+summary: "A FastAPI service that monitors PostgreSQL, MySQL, and MongoDB with read-only connectors, classifies data-quality and performance anomalies, and sends findings to Gemini for severity, impact, and a concrete fix. Ships a React dashboard and an MCP server."
+year: 2025
+role: "Solo"
+duration: "2025"
+status: "in-development"
+featured: true
+order: 3
+confidentiality: "public"
+contract:
+  problem: "Databases rot silently; alerts say something is wrong but not what to fix."
+  constraint: "Read-only access only, and a demo that runs without live infrastructure."
+  proof: "Public repository, three connectors, four MCP tools, and a documented list of gaps."
+capabilities: ["MCP", "Tool calling", "FastAPI", "Read-only monitoring", "React"]
+stack:
+  ai: ["Gemini 2.5 Flash", "MCP"]
+  backend: ["Python", "FastAPI", "SQLAlchemy"]
+  frontend: ["React", "Vite", "Zustand", "Recharts"]
+  infra: ["Docker", "Docker Compose"]
+  data: ["PostgreSQL", "MySQL", "MongoDB"]
+links:
+  - label: "Repository"
+    href: "https://github.com/Yassine2606/anomaly-detection-agent"
+    kind: "repo"
+metrics:
+  - label: "Database connectors"
+    value: "3"
+    kind: "artifact"
+    source: "PostgreSQL, MySQL, MongoDB — read-only"
+    measuredAt: "2026-10-27"
+  - label: "MCP tools"
+    value: "4"
+    kind: "artifact"
+    source: "FastMCP over stdio"
+    measuredAt: "2026-10-27"
+  - label: "HTTP routes"
+    value: "9"
+    kind: "artifact"
+    source: "health, mock scan, scan, reports, history, chat, endpoint check, database health, stats"
+    measuredAt: "2026-10-27"
+  - label: "Anomaly classes"
+    value: "3"
+    kind: "artifact"
+    source: "data quality, performance, endpoint"
+    measuredAt: "2026-10-27"
+evidence:
+  - id: "ev-1"
+    claim: "The scan path only reads: SELECT queries, counts, and read-only aggregations. No scan step writes."
+    source: "src/monitors/database.py + src/api/main.py"
+    kind: "repo"
+    href: "https://github.com/Yassine2606/anomaly-detection-agent"
+    private: false
+    verifiedAt: "2026-10-27"
+
+  - id: "ev-2"
+    claim: "The MCP server only accepts the mock scan type; real connectors are not wired into it yet."
+    source: "src/mcp_server.py"
+    kind: "repo"
+    href: "https://github.com/Yassine2606/anomaly-detection-agent"
+    private: false
+    verifiedAt: "2026-10-27"
+  - id: "ev-3"
+    claim: "All three connectors implement the same read methods, so one detector rule set scans PostgreSQL, MySQL, and MongoDB."
+    source: "src/monitors/database.py + src/api/main.py"
+    kind: "repo"
+    href: "https://github.com/Yassine2606/anomaly-detection-agent"
+    private: false
+    verifiedAt: "2026-10-27"
+  - id: "ev-4"
+    claim: "The README advertises pytest, but no tests directory is committed."
+    source: "README.md + repository tree"
+    kind: "doc"
+    href: "https://github.com/Yassine2606/anomaly-detection-agent"
+    private: false
+    verifiedAt: "2026-10-27"
+seo:
+  title: "Anomaly Detection Agent — monitoring with MCP"
+  description: "A read-only agent that monitors PostgreSQL, MySQL, and MongoDB, classifies anomalies, and uses Gemini to explain severity and fixes. Public repository."
+  ogAlt: "Anomaly Detection Agent system map: monitor, detect, explain, serve."
+---
+
+## Context
+
+Databases degrade without announcing it. Nulls accumulate, keys duplicate, schemas drift, queries slow down, endpoints start returning 500s. General observability tools raise an alert, but "table scans increased" still leaves a developer to work out what changed and what to do.
+
+The brief was an agent that reads databases and endpoints with read-only access, detects data-quality, performance, and availability anomalies, and hands each finding to an LLM that writes a plain-language explanation, a severity, and a fix with an impact and effort estimate. Two constraints shaped it: the monitor must never write to a production database, and the whole system must run as a demonstrable product without live infrastructure.
+
+## Problem
+
+The project had to solve four things at once:
+
+- **Three dialects.** PostgreSQL, MySQL, and MongoDB expose schemas and samples differently. Detectors should not care which database produced a signal.
+- **Rules before prose.** An LLM cannot reliably find a missing index. Detection stays deterministic; the model explains findings rather than inventing them.
+- **A demo with no infrastructure.** The system ships with fixtures for all three databases and an in-memory report store, so a full scan runs anywhere.
+- **A protocol surface.** The MCP server had to expose scans and reports as tools, not just exist as a library.
+
+## Architecture
+
+<Architecture project="anomaly-detection-agent" />
+
+## Decisions
+
+### Read-only in the scan path
+
+The connectors expose read methods for schema metadata, counts, samples, and query statistics. No scan step issues a write, and the constraint is visible in the code rather than in a README promise.
+
+<Claim
+  id="ev-1"
+  n="1"
+  source="src/monitors/database.py + src/api/main.py"
+  kind="repo"
+  href="https://github.com/Yassine2606/anomaly-detection-agent"
+  note="Public repository. The read-only rule covers the monitor methods; it is a code-level constraint, not a database grant."
+>
+  The PostgreSQL, MySQL, and MongoDB monitors only read schema metadata, row counts, null counts,
+  and duplicate keys. The scan flow contains no INSERT, UPDATE, DELETE, or write aggregation.
+</Claim>
+
+### Detection is deterministic; the model explains
+
+Gemini is not asked "find anomalies." Detectors classify signals with explicit rules — null ratios, duplicate keys, schema consistency, foreign-key violations, slow-query flags, missing-index heuristics, status-code and latency regressions. Only flagged findings reach the model, which returns severity, explanation, and a recommendation. This keeps the expensive, non-deterministic step away from the detection boundary.
+
+### A seeded store instead of a live dependency
+
+The demo strategy is an in-memory store seeded from fixtures for all three databases. It makes a full scan reproducible on any machine. It also hides persistence, scale, and recovery questions — which is why the case study labels it a demo strategy, not an architecture.
+
+### MCP as a real surface, with an honest boundary
+
+The FastMCP server exposes four tools over stdio: scan anomalies, get anomalies, get statistics, and clear anomalies. It is a working protocol surface. It is not yet the real system.
+
+<Claim
+  id="ev-2"
+  n="2"
+  source="src/mcp_server.py"
+  kind="repo"
+  href="https://github.com/Yassine2606/anomaly-detection-agent"
+  note="Public repository. The limitation is in the code and repeated here."
+>
+  `scan_anomalies` accepts only the `mock` scan type today. The real database monitors are not wired
+  into the MCP tools; the server reads the seeded store.
+</Claim>
+
+That boundary is the most useful part of the project. It separates "the protocol path works" from "the product is integrated," and it is the difference between a demo and a claim.
+
+## Evidence
+
+<Claim
+  id="ev-3"
+  n="3"
+  source="src/monitors/database.py + src/api/main.py"
+  kind="repo"
+  href="https://github.com/Yassine2606/anomaly-detection-agent"
+  note="Public repository. The shared connector contract is in the abstract base class."
+>
+  All three connectors implement the same read methods and return the same value shapes. The scan
+  loop feeds those values into one detector rule set, so a null-ratio check behaves the same whether
+  the source is Postgres or Mongo.
+</Claim>
+
+The public repository is the evidence: connectors, detectors, the Gemini agent, the FastAPI surface, the MCP server, the dashboard, and the Docker Compose stack. There is no hosted demo. A reviewer can run the seeded stack and reproduce a scan.
+
+## Reliability
+
+The reliability story is mostly about refusing to overstate what exists.
+
+<Claim
+  id="ev-4"
+  n="4"
+  source="README.md + repository tree"
+  kind="doc"
+  href="https://github.com/Yassine2606/anomaly-detection-agent"
+  note="Public repository. The missing tests directory is visible in the tree."
+>
+  The README documents a pytest command, but no `tests/` directory is committed. The test gap is
+  stated here and in the repository's own lessons rather than papered over with a badge.
+</Claim>
+
+| Risk                      | Current behaviour             | What is missing                                  |
+| ------------------------- | ----------------------------- | ------------------------------------------------ |
+| Real database through MCP | Mock scan only                | Connector wiring into the MCP tools              |
+| Restart or scale          | In-memory store loses reports | Durable report storage                           |
+| Test coverage             | No committed tests            | Unit tests for detectors, API, and agent parsing |
+| Recommendation quality    | Model output is advisory      | A labeled benchmark of findings and fixes        |
+| Credential scope          | Read-only connectors          | A documented least-privilege role per database   |
+
+## Outcome
+
+The system works end to end on seeded data: three read-only connectors, three anomaly classes, a Gemini explanation layer, nine HTTP routes, a React dashboard, and an MCP server with four tools. The public repository lets someone verify each of those claims.
+
+It is not a production monitoring product. The MCP integration is partial, persistence is in-memory, and the recommendation layer is unevaluated. Those are the next three pieces of work, in that order.
+
+## Next
+
+- Wire the real connectors into the MCP server and remove the mock-only limitation.
+- Add durable report storage and a scheduled scan runner.
+- Write the missing tests, starting with detector rules and API contracts.
+- Build a labeled set of anomalies and measure explanation precision before calling the recommendations reliable.

@@ -309,7 +309,7 @@ The CV is part of the content system, not a separate document.
 - Lead with the Capgemini RAG engagement and Sadine; then Anomaly, RFID, Wave.
 - Every bullet: **action + system + constraint + result (or honest scope)**.
 - Mirror job-description keywords only where true.
-- Link: portfolio URL, GitHub, LinkedIn, email. No phone unless Yassine wants it public.
+- Link: portfolio URL, GitHub, email. Add LinkedIn only when Yassine supplies the URL. No phone unless Yassine wants it public.
 - File name: `Yassine-Ben-Romdhane-AI-Engineer.pdf`.
 - Re-generate after any metric changes; update the "last updated" note on `/about`.
 

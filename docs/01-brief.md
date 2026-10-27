@@ -180,7 +180,7 @@ The hero's **Index** is the visual delivery: four systems, keyboard-switchable, 
 - Standalone Toolbox, Philosophy, Engineering, or AI Systems sections.
 - Testimonials, client logos, "trusted by".
 - CMS, i18n, auth, database.
-- Contact form (email + LinkedIn first; revisit only if data says otherwise).
+- Contact form (email first; revisit only if data says otherwise).
 
 ### Later (only after launch proves itself)
 

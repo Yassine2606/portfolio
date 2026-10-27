@@ -4,6 +4,8 @@ Status: Locked v1.0 · 27 Oct 2026
 Owner: Yassine · Solo build
 Rule: **content before code; gates before launch; never fake a project to fill a grid.**
 
+> **Status · 27 Oct 2026:** This is the original build plan, kept for sequencing and decisions. The site shipped locally at v1.0 with a reduced evidence scope. The authoritative record of what was built, verified, and left open is `13-implementation-report.md`; the claim-to-source mapping is `evidence-ledger.md`. Checkboxes below were not maintained as a live tracker after the plan was locked.
+
 ---
 
 ## Shape of the work
@@ -95,7 +97,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Rewrite one page, ATS-safe, text-based PDF.
 - [ ] Lead with Capgemini RAG + Sadine; then Anomaly, RFID, Wave.
 - [ ] Same names/metrics/dates as the site.
-- [ ] Links: site, GitHub, LinkedIn, email.
+- [ ] Links: site, GitHub, email. Add LinkedIn only when supplied.
 - [ ] File: `public/resume.pdf` → `Yassine-Ben-Romdhane-AI-Engineer.pdf` at export.
 - [ ] Test text extraction in an ATS parser or `pdftotext`.
 
@@ -147,7 +149,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] How I work: three principles, each linked to evidence.
 - [ ] Experience: four rows, correct titles/dates.
 - [ ] About preview + optional portrait.
-- [ ] Contact: email, copy, GitHub, LinkedIn, Resume.
+- [ ] Contact: email, copy, GitHub, Resume. Add LinkedIn only when supplied.
 - [ ] Footer: links, colophon, last updated.
 - [ ] `/work`: four featured cards + three archive rows.
 - [ ] Empty/loading/error states for images and links.

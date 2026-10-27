@@ -4,21 +4,36 @@ export default function NotFound() {
   return (
     <main
       id="main"
-      className="mx-auto flex min-h-dvh max-w-[1440px] flex-col justify-center px-5 py-20 md:px-10"
+      className="mx-auto flex min-h-[60vh] max-w-[1440px] flex-col justify-center px-5 py-20 md:px-10"
     >
       <p className="text-ink-faint font-mono text-[10px] tracking-[0.14em] uppercase">404</p>
-      <h1 className="font-display mt-5 max-w-3xl text-5xl leading-[0.95] font-semibold tracking-[-0.04em] md:text-7xl">
+      <h1 className="font-display mt-5 max-w-3xl text-[clamp(2.75rem,6vw,5rem)] leading-[0.92] font-semibold tracking-[-0.045em]">
         This page is not in the dossier.
       </h1>
-      <p className="measure text-ink-soft mt-6 text-lg">
-        The link may be old, or the case study may still be in the evidence sprint.
+      <p className="measure text-ink-soft mt-6 text-[17px]">
+        The link may be old, or the case file may still be in the evidence sprint. The work index is
+        the shortest way back.
       </p>
-      <Link
-        href="/"
-        className="rounded-card bg-ink text-paper hover:bg-signal-text mt-8 inline-flex min-h-11 w-fit items-center px-5 py-3 text-sm font-medium transition-colors"
-      >
-        Back to the index
-      </Link>
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Link
+          href="/work"
+          className="rounded-card bg-ink text-paper hover:bg-signal-text inline-flex min-h-11 items-center px-5 py-3 text-sm font-medium transition-colors"
+        >
+          See the work
+        </Link>
+        <Link
+          href="/"
+          className="decoration-line-strong hover:decoration-signal-text inline-flex min-h-11 items-center text-sm font-medium underline decoration-1 underline-offset-4"
+        >
+          Back home
+        </Link>
+        <a
+          href="/resume.pdf"
+          className="decoration-line-strong hover:decoration-signal-text inline-flex min-h-11 items-center text-sm font-medium underline decoration-1 underline-offset-4"
+        >
+          Resume
+        </a>
+      </div>
     </main>
   );
 }

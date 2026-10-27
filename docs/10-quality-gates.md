@@ -169,7 +169,7 @@ npm run lighthouse
 - [ ] Every `mailto:` opens the correct address.
 - [ ] Copy-email writes the address and announces "Copied".
 - [ ] Resume downloads from header, contact, footer; correct filename and content type.
-- [ ] GitHub/LinkedIn links open the right profiles.
+- [ ] GitHub link opens the right profile; LinkedIn only if supplied.
 - [ ] Prev/next case files work; no self-link.
 - [ ] Mobile menu links work and close the menu.
 - [ ] Index links navigate to the correct case file.
@@ -227,7 +227,7 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 - [ ] Resume PII decision documented (phone yes/no).
 - [ ] No cookies; no consent banner.
 - [ ] Error page exposes no stack traces.
-- [ ] Contact is mailto/LinkedIn; no form backend.
+- [ ] Contact is mailto; no form backend.
 - [ ] Domain: HTTPS, valid certificate, HSTS.
 - [ ] Vercel project access limited to the owner.
 
@@ -310,7 +310,7 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 1. Click Resume from header, contact, footer.
 2. PDF opens/downloads; filename correct; one page; text selectable.
 3. `pdftotext` output includes name, email, Capgemini, Sadine, Anomaly, RFID.
-4. Links in the PDF work (portfolio, GitHub, LinkedIn, email).
+4. Links in the PDF work (portfolio, GitHub, email; LinkedIn only if supplied).
 
 ### Social preview
 

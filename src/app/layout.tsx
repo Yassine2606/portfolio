@@ -5,6 +5,9 @@ import {
   Instrument_Serif,
   JetBrains_Mono,
 } from "next/font/google";
+import { site } from "@/content/site";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -33,28 +36,47 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yassine-ben-romdhane.vercel.app";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(site.url),
   title: {
     default: "Yassine Ben Romdhane — AI Engineer",
     template: "%s — Yassine Ben Romdhane",
   },
   description:
-    "AI engineer building production RAG systems, agents, and the backend infrastructure that keeps them honest. Selected work documented end to end.",
+    "AI engineer building production RAG systems, agents, and the backend infrastructure that keeps them honest. Four systems documented end to end.",
   applicationName: "Yassine Ben Romdhane — Portfolio",
-  authors: [{ name: "Yassine Ben Romdhane" }],
-  creator: "Yassine Ben Romdhane",
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Yassine Ben Romdhane",
+    url: site.url,
+    siteName: site.name,
+    title: "Yassine Ben Romdhane — AI Engineer",
+    description:
+      "AI systems, with the receipts. Four production-oriented systems documented end to end: RAG, agents, IoT, and platform engineering.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "AI systems, with the receipts. — Yassine Ben Romdhane, AI engineer.",
+      },
+    ],
   },
-  robots: {
-    index: true,
-    follow: true,
+  twitter: {
+    card: "summary_large_image",
+    title: "Yassine Ben Romdhane — AI Engineer",
+    description: "AI systems, with the receipts.",
+    images: [
+      {
+        url: "/og.png",
+        alt: "AI systems, with the receipts. — Yassine Ben Romdhane, AI engineer.",
+      },
+    ],
   },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -72,11 +94,13 @@ export default function RootLayout({
       lang="en"
       className={`${bricolage.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
     >
-      <body className="grain">
+      <body className="grain flex min-h-dvh flex-col">
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <SiteHeader />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
       </body>
     </html>
   );

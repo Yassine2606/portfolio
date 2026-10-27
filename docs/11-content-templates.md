@@ -334,11 +334,11 @@ Rules:
 
 ### 50 words
 
-> I'm Yassine, an AI engineer in Monastir, Tunisia. I build retrieval systems, agents, and the backend that keeps them reliable — and I document the tradeoffs. I'm open to AI engineering roles, remote or on-site.
+> I'm Yassine, an AI engineer in Monastir, Tunisia. I build retrieval systems, agents, and the backend that keeps them reliable — and I document the tradeoffs. I'm open to AI engineering roles. [Remote, hybrid, or on-site — confirm.]
 
 ### 100 words
 
-> I'm Yassine, an AI engineer based in Monastir, Tunisia. I build systems where retrieval, model behavior, backend services, and interface meet — and I care most about the part after the demo: failure modes, latency, cost, and whether an answer can be trusted. My work includes an enterprise RAG assistant at Capgemini Engineering, a three-locale travel platform, an MCP monitoring agent, and an IoT access-control system. I write the docs before the code, measure before I claim, and leave a trail from every statement on this site to its source. I'm open to AI engineering roles, remote or on-site.
+> I'm Yassine, an AI engineer based in Monastir, Tunisia. I build systems where retrieval, model behavior, backend services, and interface meet — and I care most about the part after the demo: failure modes, latency, cost, and whether an answer can be trusted. My work includes an enterprise RAG assistant at Capgemini Engineering, a three-locale travel platform, an MCP monitoring agent, and an IoT access-control system. I write the docs before the code, measure before I claim, and leave a trail from every statement on this site to its source. I'm open to AI engineering roles. [Remote, hybrid, or on-site — confirm.]
 
 ### 200 words
 
@@ -348,7 +348,7 @@ Rules:
 >
 > Lately I've focused on applied AI: a RAG assistant for private documentation with hybrid retrieval, citation-grounded answers, verification, and provider failover; an MCP agent that monitors databases and endpoints and explains what it finds. I write the plan before the code, keep the architecture explainable to a founder and an engineer, and measure before I make a claim.
 >
-> I'm open to AI engineering roles where reliability matters as much as the model. Remote or on-site; happy to talk about the hard part.
+> I'm open to AI engineering roles where reliability matters as much as the model. [Remote, hybrid, or on-site — confirm.] Happy to talk about the hard part.
 
 Rules: no childhood story, no "journey", no list of every tool, no claims without evidence.
 

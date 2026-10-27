@@ -174,3 +174,412 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Hero entrance — transform only; the H1 is never opacity: 0.         */
+/* ------------------------------------------------------------------ */
+
+.hero-line {
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line-inner {
+    animation: line-rise 620ms var(--ease-expo-token) both;
+  }
+
+  .hero-line:nth-child(2) .hero-line-inner {
+    animation-delay: 80ms;
+  }
+
+  .hero-rise {
+    animation: rise-in 520ms var(--ease-expo-token) both;
+  }
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(24px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile menu                                                         */
+/* ------------------------------------------------------------------ */
+
+.menu-sheet {
+  animation: menu-in var(--dur-ui) var(--ease-expo-token) both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Case-study prose                                                    */
+/* ------------------------------------------------------------------ */
+
+.prose-dossier {
+  counter-reset: dossier-section;
+}
+
+.prose-dossier > p,
+.prose-dossier > ul,
+.prose-dossier > ol {
+  max-width: 68ch;
+}
+
+.prose-dossier > h2:first-child {
+  margin-top: 0;
+}
+
+.prose-dossier h2 {
+  counter-increment: dossier-section;
+  font-family: var(--font-display-family);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 6rem;
+}
+
+.prose-dossier h2::before {
+  content: counter(dossier-section, decimal-leading-zero) " / ";
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.prose-dossier h3 {
+  font-family: var(--font-display-family);
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin-top: 2.25rem;
+}
+
+.prose-dossier p {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-top: 1rem;
+}
+
+.prose-dossier > p:first-of-type {
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.prose-dossier ul,
+.prose-dossier ol {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.prose-dossier li {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.prose-dossier ul {
+  list-style: square;
+}
+
+.prose-dossier ol {
+  list-style: decimal;
+}
+
+.prose-dossier li::marker {
+  color: var(--signal-text);
+  font-family: var(--font-mono-family);
+  font-size: 0.75em;
+}
+
+.prose-dossier a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition:
+    text-decoration-color 120ms ease,
+    color 120ms ease;
+}
+
+.prose-dossier a:hover {
+  color: var(--signal-text);
+  text-decoration-color: var(--signal-text);
+}
+
+.prose-dossier code {
+  font-family: var(--font-mono-family);
+  font-size: 0.875em;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  padding: 0.1em 0.32em;
+  border-radius: 2px;
+}
+
+.prose-dossier pre {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.prose-dossier pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose-dossier table {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.prose-dossier th,
+.prose-dossier td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.65rem 0.75rem 0.65rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-dossier th {
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.prose-dossier td {
+  color: var(--ink-soft);
+}
+
+.prose-dossier strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose-dossier blockquote {
+  margin-top: 1.5rem;
+  border-left: 2px solid var(--signal);
+  padding-left: 1rem;
+  font-family: var(--font-serif-family);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ */
+/* Claim + evidence margin                                             */
+/* ------------------------------------------------------------------ */
+
+.claim {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.claim__body p {
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.claim__body > p + p {
+  margin-top: 1rem;
+}
+
+.claim__note {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  border-left: 2px solid var(--signal);
+  padding-left: 0.75rem;
+}
+
+.claim__label {
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal-text);
+  margin-bottom: 0.25rem;
+}
+
+.claim__source {
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1200px) {
+  .claim {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: 2rem;
+  }
+
+  .claim__note {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 0.5rem;
+    margin-top: 0.35rem;
+  }
+}
+
+.claim__note:target {
+  background: var(--signal-wash);
+  outline: 1px solid var(--signal-wash);
+}
+
+sup.evidence-ref {
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  line-height: 1;
+  vertical-align: super;
+  margin-left: 0.15em;
+}
+
+sup.evidence-ref a {
+  color: var(--signal-text);
+  text-decoration: none;
+}
+
+sup.evidence-ref a:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Case-study figures reveal (progressive, case pages only)            */
+/* ------------------------------------------------------------------ */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Print — a case file should survive on paper                         */
+/* ------------------------------------------------------------------ */
+
+@media print {
+  header,
+  footer,
+  nav[aria-label="On this page"],
+  .no-print {
+    display: none !important;
+  }
+
+  .case-body {
+    display: block !important;
+  }
+
+  .case-body > aside {
+    display: none !important;
+  }
+
+  .claim__note a[href^="#"] {
+    display: none !important;
+  }
+
+  .prose-dossier a[href^="#"]::after {
+    content: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .prose-dossier {
+    max-width: none;
+  }
+
+  .prose-dossier a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+  }
+
+  .claim {
+    display: block;
+  }
+
+  .claim__note {
+    border-left: 0;
+    border-top: 1px solid #999;
+    padding-left: 0;
+  }
+
+  figure,
+  table {
+    break-inside: avoid;
+  }
+}

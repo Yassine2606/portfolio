@@ -1,39 +1,146 @@
 # Evidence ledger
 
-Status: Template · started 27 Oct 2026
-Every checkable claim on the site gets a row. If it is not here, it does not ship.
+Status: Shipped v1.0 · public re-check 27 Oct 2026
+Scope: the 16 evidence notes and 16 scope metrics rendered in the four case files, plus the three archive rows.
 
-| #   | Claim                                                           | Project                 | Kind     | Source                                    | Verified   | Owner   |
-| --- | --------------------------------------------------------------- | ----------------------- | -------- | ----------------------------------------- | ---------- | ------- |
-| 1   | Answers are verified against retrieved chunks before streaming. | Documents Assistant     | repo     | `ai-service/app/verification/verifier.py` | 2026-10-27 | Yassine |
-| 2   | The client UI is private; the demo uses a synthetic corpus.     | Documents Assistant     | doc      | Permission note, 27 Oct 2026              | 2026-10-27 | Yassine |
-| 3   | 41 Prisma models.                                               | Sadine Tours            | scope    | `sadine-back/prisma/schema.prisma`        | 2026-10-27 | Yassine |
-| 4   | 26 backend modules.                                             | Sadine Tours            | scope    | `sadine-back/src/modules/`                | 2026-10-27 | Yassine |
-| 5   | 224 route handlers.                                             | Sadine Tours            | scope    | `sadine-back/src/modules/` (grep)         | 2026-10-27 | Yassine |
-| 6   | 3 locales: en/fr/ar.                                            | Sadine Tours            | artifact | `sadine-front/src/messages/`              | 2026-10-27 | Yassine |
-| 7   | Quote acceptance rejects expired quotes inside the transaction. | Sadine Tours            | repo     | `quotes.service.ts`                       | 2026-10-27 | Yassine |
-| 8   | MCP server exposes scans and reports as tools.                  | Anomaly Detection Agent | repo     | `src/mcp_server.py`                       | 2026-10-27 | Yassine |
-| 9   | 4 MCP tools.                                                    | Anomaly Detection Agent | scope    | `src/mcp_server.py`                       | 2026-10-27 | Yassine |
-| 10  | 3 database connectors, read-only.                               | Anomaly Detection Agent | artifact | PostgreSQL, MySQL, MongoDB connectors     | 2026-10-27 | Yassine |
-| 11  | Offline detection within 3 missed heartbeats.                   | RFID Access Control     | repo     | retained status + Last Will               | 2026-10-27 | Yassine |
-| 12  | 8 Prisma models, 11 backend modules, 5 migrations.              | RFID Access Control     | scope    | `backend/prisma`, `backend/src/modules`   | 2026-10-27 | Yassine |
-| 13  | Push receipts are polled every 60s.                             | Wave                    | repo     | `workers/pushWorker.ts`                   | 2026-10-27 | Yassine |
-| 14  | ~30 API route modules.                                          | Wave                    | scope    | `back/routes/`                            | 2026-10-27 | Yassine |
-| 15  | 3 languages: French, Arabic, Darija.                            | TranscriptoSense        | artifact | pipeline config                           | 2026-10-27 | Yassine |
-| 16  | 5 export formats.                                               | TranscriptoSense        | artifact | JSON, DOCX, PDF, CSV, ICS                 | 2026-10-27 | Yassine |
-| 17  | PSI + KS + chi-square drift tests.                              | Data Drift              | repo     | `src/`                                    | 2026-10-27 | Yassine |
+This ledger covers the claims the site renders as evidence notes and scope metrics. Narrative paragraphs explain those claims; they are not a second claim set. If a new number, guarantee, or outcome is added to a case file, it must be added here in the same commit.
 
-## How to add a row
+## How to read the tables
 
-1. Write the claim exactly as it appears (or will appear) on the site.
-2. Name the project.
-3. Choose a kind: `repo`, `deploy`, `screenshot`, `benchmark`, `doc`, `commit`, `scope`, `artifact`.
-4. Give a path, URL, or method. If private, say so.
-5. Set `verifiedAt` to the date you checked.
-6. If it cannot be verified, remove the claim from the site — do not leave the row blank.
+| Basis               | Meaning                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Public re-check** | Re-checked on 27 Oct 2026 against a shallow clone of the public repository's default branch. Paths are relative to its root. |
+| **Owner record**    | Supplied from the private project's repository or delivery record. Not independently re-checked and not publishable.         |
+| **Unmeasured**      | Designed but not run. No outcome number exists, and the site says so.                                                        |
 
-## Review
+`Artifact` means a structural count or configuration fact. It is not a benchmark, a customer outcome, or a quality score.
 
-- Before launch: every row verified; every metric has a method and a date.
-- Quarterly: re-verify; demote stale claims.
-- After a project update: update the row and the case study in the same commit.
+---
+
+## A. Evidence notes — 16
+
+These are the numbered notes rendered in each case file. The claim text matches the evidence register.
+
+| #   | Project             | Claim                                                                                                                | Source                                            | Kind | Basis                    |
+| --- | ------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---- | ------------------------ |
+| 01  | Documents Assistant | A separate verification call returns a pass/fail verdict before an answer streams.                                   | `ai-service/app/services/verification.py`         | repo | Owner record · private   |
+| 02  | Documents Assistant | Retrieval fuses dense cosine and Postgres full-text results with reciprocal rank fusion.                             | `ai-service/app/services/retrieval.py`            | repo | Owner record · private   |
+| 03  | Documents Assistant | The retrieval benchmark is designed but not run; no outcome numbers are published.                                   | `remarks.md` — evaluation plan                    | doc  | **Unmeasured** · private |
+| 04  | Documents Assistant | Provider failover tries NVIDIA first and falls back to Gemini on errors.                                             | `ai-service/app/services/llm_provider.py`         | repo | Owner record · private   |
+| 05  | Sadine Tours        | Quote acceptance runs in a transaction, rejects non-sent quotes, and enforces expiry.                                | `src/modules/quotes/quote.service.ts`             | repo | Owner record · private   |
+| 06  | Sadine Tours        | Decimal money leaves the API as strings; the client formats but never calculates.                                    | `src/modules/bookings/booking.service.ts`         | repo | Owner record · private   |
+| 07  | Sadine Tours        | Auth, role, and owner checks are declared as middleware contracts on privileged routes.                              | `src/plugins/auth.ts`                             | repo | Owner record · private   |
+| 08  | Sadine Tours        | The repository contains 41 Prisma models and 26 backend modules.                                                     | `prisma/schema.prisma` + `src/modules/`           | repo | Owner record · private   |
+| 09  | Anomaly Detection   | The scan path only reads: SELECT queries, counts, and read-only aggregations. No scan step writes.                   | `src/monitors/database.py` + `src/api/main.py`    | repo | **Public re-check**      |
+| 10  | Anomaly Detection   | The MCP server only accepts the mock scan type; real connectors are not wired into it yet.                           | `src/mcp_server.py`                               | repo | **Public re-check**      |
+| 11  | Anomaly Detection   | All three connectors implement the same read methods, so one detector rule set scans PostgreSQL, MySQL, and MongoDB. | `src/monitors/database.py` + `src/api/main.py`    | repo | **Public re-check**      |
+| 12  | Anomaly Detection   | The README advertises pytest, but no tests directory is committed.                                                   | `README.md` + repository tree                     | doc  | **Public re-check**      |
+| 13  | RFID Access Control | MQTT payloads are Zod-validated before dispatch; business logic lives in services, not callbacks.                    | `backend/src/modules/mqtt/mqtt.consumer.ts`       | repo | Owner record · private   |
+| 14  | RFID Access Control | Device presence is derived from heartbeats, retained status, and the broker Last Will.                               | `backend/src/modules/devices/presence.service.ts` | repo | Owner record · private   |
+| 15  | RFID Access Control | Every decision records the failed rule, so a denial can be explained after the fact.                                 | `backend/src/modules/access/access.service.ts`    | repo | Owner record · private   |
+| 16  | RFID Access Control | A serial-to-MQTT bridge exercises the identical consumer path without physical readers.                              | `scripts/serial-mqtt-bridge.ts`                   | repo | Owner record · private   |
+
+### What the public re-check found
+
+The four public evidence notes and four public metrics all held at the snapshot below. Two earlier claims did not: the API count said five routes when the repository exposes nine, and an evidence note described a dialect-normalization step that lives in the connector contract rather than in the detectors. Both were corrected on the site and in this ledger.
+
+| Check                             | Command / path                                                                       | Result                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| Concrete database connectors      | `src/monitors/database.py`                                                           | PostgreSQL, MySQL, MongoDB — three                             |
+| MCP tools                         | `grep -c '@mcp.tool' src/mcp_server.py`                                              | 4                                                              |
+| HTTP routes                       | `grep -c '@app\.' src/api/main.py`                                                   | 9                                                              |
+| Write statements in the monitor   | `grep -nEi 'insert\|update\|delete\|drop\|alter\|truncate' src/monitors/database.py` | No matches                                                     |
+| Test directory                    | `tests/`                                                                             | Absent; `README.md` still documents `pytest tests/`            |
+| Shared connector contract         | abstract methods in `DatabaseConnector`                                              | All three connectors implement the same seven read methods     |
+| Gemini model                      | `src/config/settings.py`                                                             | `gemini-2.5-flash`                                             |
+| TranscriptoSense languages        | `config/pipeline.yaml`, `README.md`                                                  | French, Arabic, Darija present                                 |
+| TranscriptoSense semantic modules | `src/audio/diarization.py`, `src/semantic/`                                          | Speakers, topics, action items present; tests directory exists |
+| Data Drift algorithms             | `src/drift/drift_detection.py`, `src/monitoring/`                                    | PSI and KS-test, plus degradation/impact analysis; no tests    |
+
+Snapshot: shallow clones of `Yassine2606/anomaly-detection-agent`, `Yassine2606/TranscriptoSense`, and `Yassine2606/Data-Drift-Decision-Intelligence-System`, default branch, 27 Oct 2026. Public repositories change; re-run the checks before launch.
+
+---
+
+## B. Scope metrics — 16
+
+These are the numbers in each case file's key-facts strip. Every row is labelled `artifact` on the site.
+
+| #   | Project             | Metric               | Value | Source / method                                                                         | Basis                  | What it does not prove                                           |
+| --- | ------------------- | -------------------- | ----- | --------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
+| 01  | Documents Assistant | Pipeline stages      | 9     | upload → queue → parse → chunk → embed → retrieve → fuse → verify → cite                | Owner record · private | Latency, throughput, or retrieval quality                        |
+| 02  | Documents Assistant | Retrieval tools      | 4     | list documents, search passages, read structure, list topics                            | Owner record · private | Tool-use accuracy; the private implementation is not public      |
+| 03  | Documents Assistant | Embedding dimensions | 384   | `all-MiniLM-L6-v2`, running locally on CPU                                              | Owner record · private | Retrieval quality; dimension is a model property                 |
+| 04  | Documents Assistant | Answer providers     | 2     | Gemini 2.5 Flash + NVIDIA NIM, with failover                                            | Owner record · private | Failover success rate; no failure-injection test is published    |
+| 05  | Sadine Tours        | Prisma models        | 41    | `prisma/schema.prisma`                                                                  | Owner record · private | Schema quality, usage, or business outcomes                      |
+| 06  | Sadine Tours        | Backend modules      | 26    | `src/modules/`                                                                          | Owner record · private | Code quality or test coverage                                    |
+| 07  | Sadine Tours        | Route handlers       | 224   | grep across `src/modules/`                                                              | Owner record · private | That all routes are reachable, tested, or correct                |
+| 08  | Sadine Tours        | Locales              | 3     | en / fr / ar message bundles                                                            | Owner record · private | Translation quality or coverage                                  |
+| 09  | Anomaly Detection   | Database connectors  | 3     | PostgreSQL, MySQL, MongoDB — read-only                                                  | **Public re-check**    | Coverage or reliability; one connector per database type         |
+| 10  | Anomaly Detection   | MCP tools            | 4     | FastMCP over stdio                                                                      | **Public re-check**    | That real monitors are wired into MCP; note 10 says they are not |
+| 11  | Anomaly Detection   | HTTP routes          | 9     | health, mock scan, scan, reports, history, chat, endpoint check, database health, stats | **Public re-check**    | That every route is exercised or tested                          |
+| 12  | Anomaly Detection   | Anomaly classes      | 3     | data quality, performance, endpoint                                                     | **Public re-check**    | Detection accuracy; no labelled evaluation                       |
+| 13  | RFID Access Control | Prisma models        | 8     | employees, skills, devices, machines, reservations, logs, alerts, admins                | Owner record · private | Coverage of the access domain                                    |
+| 14  | RFID Access Control | Backend modules      | 11    | `backend/src/modules/`                                                                  | Owner record · private | Code quality or test coverage                                    |
+| 15  | RFID Access Control | Schema migrations    | 5     | versioned Prisma migrations; no auto-sync                                               | Owner record · private | Deployment safety or rollback                                    |
+| 16  | RFID Access Control | Offline detection    | 3     | missed heartbeats, retained state, broker Last Will                                     | Owner record · private | Measured detection latency across networks; it is a threshold    |
+
+---
+
+## C. Archive facts — 3
+
+The archive rows are real builds that do not get a case file. They carry a title, one line, a year, and a link or a private label.
+
+| Project          | Line on the site                                                              | Basis                  | Notes                                                                                                                                              |
+| ---------------- | ----------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wave             | Campus community app: events, carpooling, housing, deals, tutoring, and chat. | Owner record · private | No public repository or demo. No user, revenue, or growth number is claimed.                                                                       |
+| TranscriptoSense | French, Arabic, and Darija audio into speakers, topics, and action items.     | **Public re-check**    | ASR languages, diarization, topic detection, and action extraction are present; five test modules exist. No accuracy benchmark is claimed.         |
+| Data Drift       | PSI and KS-tests that flag distribution shift and quantify the model impact.  | **Public re-check**    | PSI and KS-test are implemented; impact analysis tracks degradation. No tests directory; notebooks are the pipeline. No outcome metric is claimed. |
+
+---
+
+## D. Proof gaps
+
+### Project evidence
+
+| Gap                                    | Where it appears             | Status                                                                                                               |
+| -------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Flagship benchmark not run             | Documents Assistant, note 03 | 50-question annotated benchmark is designed. No Recall@5, MRR, citation accuracy, abstention, or p95 latency exists. |
+| Flagship interface not published       | Documents Assistant, ADR-021 | No screenshot, demo, or repository link. Architecture and code paths only.                                           |
+| MCP integration is partial             | Anomaly Detection, note 10   | `scan_anomalies` accepts only `mock`; real database monitors are not wired into the MCP tools.                       |
+| Anomaly has no tests                   | Anomaly Detection, note 12   | `README.md` documents `pytest tests/`; no `tests/` directory is committed.                                           |
+| Private repositories cannot be audited | Sadine, RFID, Documents      | Source paths and counts are owner-supplied. No independent reviewer can inspect them.                                |
+| No interface captures on any case      | All four cases               | The figures are code-generated architecture maps, not screenshots of a running product.                              |
+| No external accessibility audit        | Site-wide                    | Internal Playwright checks only. No axe-core, Lighthouse, screen-reader, or cross-browser pass.                      |
+| No outcome metrics                     | All four cases               | No adoption, revenue, latency, accuracy, or customer numbers are published. That is deliberate.                      |
+
+### Site and launch
+
+| Gap                                        | Status                                                                                                                     |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Resume                                     | `public/resume.pdf` is the old CV, pending the rewritten one-page version.                                                 |
+| Experience, education, Wardrobe            | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file. |
+| Availability and notice                    | Copy says “Open to AI engineering roles” with no date or notice period.                                                    |
+| Remote / relocation / authorization        | Not confirmed. The site lists Monastir and CET+1 only; no remote-friendly promise.                                         |
+| Client permissions                         | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                          |
+| Domain                                     | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                               |
+| LinkedIn, phone, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                               |
+| Per-case OG cards                          | Deferred. The default `public/og.png` card is used on every page.                                                          |
+
+---
+
+## E. Re-verification procedure
+
+1. Clone each public repository at its default branch.
+2. Inspect the paths in table A and recompute the counts in table B. The commands in “What the public re-check found” are the starting point.
+3. Update the case frontmatter (`verifiedAt`) and this ledger in the same commit.
+4. If a private claim cannot be re-confirmed by the owner, remove the claim from the case file instead of weakening the source.
+5. If a screenshot, demo, or benchmark lands, replace the corresponding gap with the artifact and its method. Do not upgrade a claim because a related artifact exists.
+6. Re-check before launch and quarterly after launch. A stale claim is worse than no claim.
+
+## F. Change log
+
+| Date       | Change                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| 2026-10-27 | Replaced the template with the 16 shipped evidence notes, 16 scope metrics, and three archive facts.  |
+| 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.    |
+| 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps. |

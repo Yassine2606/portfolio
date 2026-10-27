@@ -337,7 +337,7 @@ export function buildMetadata(input: {
 
 ### JSON-LD
 
-- Home: `Person` with `name`, `jobTitle`, `url`, `sameAs` (GitHub, LinkedIn), `knowsAbout`, `alumniOf`, `address` (city/country only).
+- Home: `Person` with `name`, `jobTitle`, `url`, `sameAs` (GitHub; LinkedIn added only when supplied), `knowsAbout`, `alumniOf`, `address` (city/country only).
 - Case study: `CreativeWork` with `name`, `description`, `author` (Person), `dateCreated`, `keywords`, `url`, `image`.
 - `/work`: `CollectionPage` + `ItemList`.
 - Breadcrumbs: `BreadcrumbList` on case studies.
@@ -378,7 +378,7 @@ No form. The contact block contains:
 
 - `mailto:yassine.ben.romdhanee@gmail.com` (visible address).
 - A Copy button (`navigator.clipboard.writeText`, fallback to selecting the text).
-- GitHub, LinkedIn, Resume.
+- GitHub, Resume. Add LinkedIn only when the owner supplies the URL.
 - `aria-live="polite"` confirmation: "Email copied".
 
 This removes Resend, rate limiting, spam, and a server route from the launch scope. If a form is added later (ADR-009), it needs: server action or route handler, zod validation, honeypot, rate limit (Upstash or Vercel KV), Turnstile if spam appears, accessible success/error states, and a no-JS fallback (`mailto`). Do not add a form without those.

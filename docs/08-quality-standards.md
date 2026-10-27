@@ -202,7 +202,7 @@ No keyword stuffing. One phrase per page is enough; the case-study titles do the
 - [ ] Screenshots redacted; EXIF stripped; no client names, emails, tokens, or customer records.
 - [ ] Resume PII decision made (phone?); email is public by design.
 - [ ] No cookies; no consent banner.
-- [ ] Contact is `mailto`/LinkedIn; no form backend at launch.
+- [ ] Contact is `mailto`; no form backend at launch.
 - [ ] If a form is added: zod validation, honeypot, rate limit, Turnstile if needed, no PII in logs.
 - [ ] Error page exposes no stack traces.
 - [ ] Backups: the repo is the source; Vercel keeps deployments; export the final content quarterly.
