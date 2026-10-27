@@ -1,3 +1,4 @@
+import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 export function Status({ className }: { className?: string }) {
@@ -10,7 +11,7 @@ export function Status({ className }: { className?: string }) {
     >
       <span aria-hidden="true" className="bg-status size-1.5 rounded-full" />
       <span className="text-status font-mono text-[10px] leading-none tracking-[0.1em] uppercase">
-        Open to AI engineering roles
+        {site.availability.label}
       </span>
     </span>
   );

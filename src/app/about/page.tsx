@@ -123,7 +123,8 @@ export default function AboutPage() {
               <p className="text-ink-soft measure mt-3 text-[15px] leading-[1.65]">
                 An AI engineering role on a team that ships to production and measures what it
                 ships: retrieval and agents, applied ML, or a backend-leaning AI role where
-                reliability is part of the job. I&rsquo;m based in {site.location}, {site.timezone}.
+                reliability is part of the job. I&rsquo;m available immediately, with no notice
+                period, and based in {site.location}, {site.timezone}.
               </p>
               <Link
                 href="/#contact"
@@ -153,7 +154,7 @@ export default function AboutPage() {
                 <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
                   Status
                 </dt>
-                <dd className="text-status text-right text-sm">Open to AI roles</dd>
+                <dd className="text-status text-right text-sm">{site.availability.label}</dd>
               </div>
               <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
                 <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">

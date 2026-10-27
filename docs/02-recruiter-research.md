@@ -33,7 +33,7 @@ Design consequence: the home page must survive a 20-second scan, and a case stud
 | Is there a CV?          | One click, every page                                |
 | How do I contact them?  | Email and LinkedIn, visible, not hidden in a footer  |
 
-**What wins:** a clear title; a specific headline; "Open to AI engineering roles"; a stack line with the tools that appear in the job description; a case study card with a real screenshot; a CV button that works.
+**What wins:** a clear title; a specific headline; "Available immediately" plus a role target; a stack line with the tools that appear in the job description; a case study card with a real screenshot; a CV button that works.
 
 **What loses:** "I turn ideas into reality"; an availability badge that says "open to opportunities" but no role; a CV link that opens a generic Google Drive folder; a contact page with only a form.
 

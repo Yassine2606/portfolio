@@ -206,7 +206,7 @@ Airy, not empty. The page should feel like a well-set document: generous margins
 ### 3. Status
 
 - Pill: 24px height, 1px `line` border, 6px dot `status`, mono 10px uppercase.
-- Text: `Open to AI roles` (or `Open to staff roles`, etc.). Never "available for opportunities".
+- Text: `Available immediately` (or the current confirmed status). Never "available for opportunities".
 - On paper, `status` text is 4.68:1; the dot is decorative but paired with text.
 
 ### 4. Section heading

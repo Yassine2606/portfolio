@@ -63,7 +63,7 @@ export function Hero() {
             <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
               Availability
             </dt>
-            <dd className="text-status mt-1 text-sm">Open to AI roles</dd>
+            <dd className="text-status mt-1 text-sm">{site.availability.label}</dd>
           </div>
         </dl>
       </div>

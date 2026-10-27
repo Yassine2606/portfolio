@@ -222,7 +222,7 @@ The hero's **Index** is the visual delivery: four systems, keyboard-switchable, 
 
 Answer these before Phase 1. They are repeated in `docs/README.md` and the roadmap.
 
-- [ ] Availability date and notice period.
+- [x] Availability: immediate, no notice period (resolved 27 Oct 2026).
 - [ ] Remote / hybrid / on-site; relocation; work authorization.
 - [ ] What Capgemini allows: architecture, screenshots, metrics, name, logo.
 - [ ] Permission for Sadine, RFID, Wave visuals; redaction rules.

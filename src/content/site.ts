@@ -12,7 +12,7 @@ export const site = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://yassine-ben-romdhane.vercel.app",
 
   availability: {
-    label: "Open to AI engineering roles",
+    label: "Available immediately",
     detail: "Monastir, Tunisia · CET+1",
   },
 

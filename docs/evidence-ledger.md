@@ -119,7 +119,7 @@ The archive rows are real builds that do not get a case file. They carry a title
 | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Resume                                     | `public/resume.pdf` is the old CV, pending the rewritten one-page version.                                                 |
 | Experience, education, Wardrobe            | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file. |
-| Availability and notice                    | Copy says “Open to AI engineering roles” with no date or notice period.                                                    |
+| Availability and notice                    | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.     |
 | Remote / relocation / authorization        | Not confirmed. The site lists Monastir and CET+1 only; no remote-friendly promise.                                         |
 | Client permissions                         | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                          |
 | Domain                                     | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                               |
@@ -144,3 +144,4 @@ The archive rows are real builds that do not get a case file. They carry a title
 | 2026-10-27 | Replaced the template with the 16 shipped evidence notes, 16 scope metrics, and three archive facts.  |
 | 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.    |
 | 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps. |
+| 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.    |

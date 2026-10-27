@@ -71,7 +71,6 @@ Review cadence: end of each phase; then quarterly.
 
 These still block launch or would strengthen it. Defaults that were shipped without confirmation are marked as such.
 
-- [ ] Exact availability date and notice period. Copy says “Open to AI engineering roles” with no date.
 - [ ] Remote / hybrid / on-site preference; relocation willingness; work authorization. **Default applied:** no remote-friendly promise; the site lists Monastir and CET+1 only.
 - [ ] Capgemini permission: what can be shown, what must be anonymized, whether screenshots are allowed. **Default applied:** partially private, no screenshots or repository link (ADR-021).
 - [ ] Permission for Sadine, RFID, and Wave visuals. **Default applied:** no visuals; system maps only.
@@ -82,5 +81,7 @@ These still block launch or would strengthen it. Defaults that were shipped with
 - [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer. Copy targets AI engineering roles.
 - [ ] Whether a portrait is used (recommended: one candid photo on /about only). **Default applied:** no portrait; the work is the introduction.
 - [ ] Phone number on the public resume: keep, remove, or replace with email only. The site omits it; the temporary old PDF still contains it.
+
+Resolved 27 Oct 2026: availability — available immediately, with no notice period. The site says “Available immediately” in the header, hero, footer, mobile menu, about, and contact copy.
 
 The full shipped state and verification log are in `13-implementation-report.md`.

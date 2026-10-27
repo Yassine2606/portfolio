@@ -38,7 +38,7 @@ The home page earns the click. The case file closes the argument. They are diffe
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ Yassine Ben Romdhane        Work   About        ● Open to roles  Resume│
+│ Yassine Ben Romdhane        Work   About        ● Available    Resume│
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -63,7 +63,7 @@ The home page earns the click. The case file closes the argument. They are diffe
 ```
 Yassine Ben Romdhane                         Email · GitHub · Resume
 AI engineer · Monastir, Tunisia (CET+1)
-Open to AI engineering roles
+Available immediately
 Set in Bricolage Grotesque, Instrument Sans, JetBrains Mono.  Last updated Oct 2026.
 ```
 
@@ -98,7 +98,7 @@ That is five content sections, not eight. The old Toolbox, Engineering clusters,
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ Yassine Ben Romdhane            Work  About           ● Open to roles  Resume│
+│ Yassine Ben Romdhane            Work  About           ● Available      Resume│
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  AI ENGINEER · MONASTIR, TUNISIA · CET+1                                     │
@@ -149,7 +149,7 @@ That is five content sections, not eight. The old Toolbox, Engineering clusters,
 │ YBR                 Menu     │
 ├──────────────────────────────┤
 │ AI ENGINEER · MONASTIR       │
-│ ● Open to AI roles           │
+│ ● Available immediately      │
 │                              │
 │ AI systems,                  │
 │ with the receipts.           │
