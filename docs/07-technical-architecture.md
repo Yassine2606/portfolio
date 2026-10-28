@@ -8,18 +8,18 @@ Principle: **static-first, content-safe, cheap to run, hard to break.**
 
 ## Stack
 
-| Layer     | Choice                                | Version                                  | Why                                                                                |
-| --------- | ------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
-| Framework | Next.js App Router                    | 16.4                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small |
-| UI        | React                                 | 19.2                                     | Server components by default; small islands for interaction                        |
-| Language  | TypeScript                            | 5.x, strict + `noUncheckedIndexedAccess` | Content and UI contracts fail at build                                             |
-| Styling   | Tailwind CSS v4 + semantic CSS tokens | 4.x                                      | Token discipline without a runtime CSS-in-JS cost                                  |
-| Content   | MDX + `gray-matter` + zod             | latest                                   | Long-form case studies with typed frontmatter and reusable components              |
-| Fonts     | `next/font/google`                    | —                                        | Self-hosted, subset, zero layout shift                                             |
-| Analytics | None at launch                        | —                                        | Planned: Vercel Analytics + Speed Insights; footer claims no tracking              |
-| Hosting   | Vercel                                | —                                        | Not deployed; static build verified locally                                        |
-| Tests     | Playwright + axe-core                 | 1.64, 4.14                               | `npm run audit:a11y`: 8 routes × 3 widths; Vitest/Lighthouse CI are planned        |
-| CI        | GitHub Actions                        | —                                        | Not configured; local gates only                                                   |
+| Layer     | Choice                                   | Version                                  | Why                                                                                       |
+| --------- | ---------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Framework | Next.js App Router                       | 16.4                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small        |
+| UI        | React                                    | 19.2                                     | Server components by default; small islands for interaction                               |
+| Language  | TypeScript                               | 5.x, strict + `noUncheckedIndexedAccess` | Content and UI contracts fail at build                                                    |
+| Styling   | Tailwind CSS v4 + semantic CSS tokens    | 4.x                                      | Token discipline without a runtime CSS-in-JS cost                                         |
+| Content   | MDX + `gray-matter` + zod + `remark-gfm` | latest                                   | Long-form case studies with typed frontmatter, GFM tables, and reusable components        |
+| Fonts     | `next/font/google`                       | —                                        | Self-hosted, subset, zero layout shift                                                    |
+| Analytics | None at launch                           | —                                        | Planned: Vercel Analytics + Speed Insights; footer claims no tracking                     |
+| Hosting   | Vercel                                   | —                                        | Not deployed; static build verified locally                                               |
+| Tests     | Playwright + axe-core                    | 1.64, 4.14                               | `npm run audit:a11y`: 8 routes × 3 widths; Chromium + Firefox scripted checks; CI planned |
+| CI        | GitHub Actions                           | —                                        | Not configured; local gates only                                                          |
 
 **Not in the stack at launch:** Motion/Framer Motion, anime.js, Three.js, GSAP, a CMS, a database, auth, i18n, a contact form backend, a state manager, a component library. Add only with an ADR and a measured reason.
 

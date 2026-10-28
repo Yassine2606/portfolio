@@ -97,7 +97,7 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is re
 
 ### Measurement
 
-- **Lighthouse:** one local production run on 28 Oct 2026 passed the mobile budget on four routes (99/100/100/100). CI with a three-run median is still required.
+- **Lighthouse:** local production runs on 28 Oct 2026 passed the mobile budget on four routes (96–99/100/100/100). Home was run three times (96, 99, 96); the other routes once. CI with a three-run median is still required.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
@@ -278,13 +278,16 @@ All of the following true:
 - [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
 - [ ] Keyboard-only pass on every route.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 99/100/100/100 on 28 Oct 2026.
+- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 96–99/100/100/100 on 28 Oct 2026.
 - [x] LCP ≤ 1.8s lab and CLS ≤ 0.05 on 28 Oct 2026 (single run).
 - [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz.
-- [x] No horizontal scroll at 320px.
+- [x] No horizontal scroll at 320px; all case tables fit.
+- [x] HTML validator: 0 errors and 0 warnings on 8 routes.
+- [x] 200% zoom equivalent, text-spacing overrides, and reduced motion pass.
+- [ ] Cross-browser: Chromium and Firefox pass; Safari/WebKit, Edge, iOS, Android pending.
 - [ ] No broken links; no dead buttons.
 - [ ] Metadata + OG + JSON-LD validated.
-- [ ] Security headers + CSP report-only.
+- [x] Security headers + CSP report-only.
 - [ ] Content ledger complete; banned words absent.
 - [ ] Real-device test on Android + iPhone.

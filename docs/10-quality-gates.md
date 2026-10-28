@@ -82,23 +82,23 @@ The first run needs `npx playwright install chromium`.
 
 - [x] axe: 0 violations on `/`, `/work`, every case study, `/about`, and a 404 at 320, 390, and 1440px. The open mobile menu is included.
 - [x] Lighthouse accessibility = 100 on `/`, `/work`, the flagship, and `/about`.
-- [ ] HTML validator: no duplicate IDs, no invalid nesting.
+- [x] HTML validator: Nu HTML Checker 26.10.12, 0 errors and 0 warnings on 8 routes. Only informational self-closing-void notes remain.
 
 **Manual**
 
 - [x] Skip link is the first Tab stop; jumps to `<main>`.
 - [x] Mobile menu: Escape closes; focus returns; Tab stays inside while open; body scroll locked.
 - [ ] Keyboard-only: full header → menu → Index → cards → case study → contact journey; Index arrow keys; focus ring on every surface; sticky-header anchor offsets.
-- [x] 320px: no horizontal scroll; all content readable.
+- [x] 320px: no horizontal scroll; all content readable; all four case tables fit.
 - [ ] VoiceOver (Safari) or NVDA (Firefox): headings, landmarks, evidence notes, figures, links.
-- [ ] 200% zoom at 1280px: no clipping, no horizontal scroll.
-- [ ] Text spacing overrides: no clipping.
-- [ ] Reduced motion: no transforms, autoplay, view transitions, or smooth scroll.
-- [ ] Contrast: every token pair in `05` verified; no signal text on paper below 4.5:1.
-- [ ] Video captions render; controls keyboard accessible.
+- [x] 200% zoom at 1280px equivalent (640 CSS px): 8 routes, no clipping or horizontal scroll.
+- [x] Text spacing overrides: 8 routes at 1440px and 390px; email breaks, tables scroll inside their wrapper.
+- [x] Reduced motion: 0 running animations and `scroll-behavior: auto` on `/` and the flagship.
+- [ ] Contrast: every token pair in `05` verified; axe reports no contrast violations on the shipped pairs.
+- [x] No video shipped; the architecture section uses code-generated maps.
 - [ ] No colour-only meaning.
 
-**Evidence:** `npm run audit:a11y` output (0 violations, 28 Oct 2026); Lighthouse results recorded in Gate 3; screen-reader notes and 200% screenshots still pending.
+**Evidence:** `npm run audit:a11y` output (0 violations, 28 Oct 2026); Nu HTML Checker (0 errors/warnings); Lighthouse results in Gate 3; reflow and reduced-motion runs (28 Oct 2026). Screen-reader notes and the full manual keyboard journey are still pending.
 
 ---
 
@@ -117,17 +117,17 @@ Lighthouse ships its own Chrome launcher; set `CHROME_PATH` if it cannot find on
 
 **Recorded run — 28 Oct 2026**
 
-Lighthouse 13.6.0, mobile emulation, one run per route against `next start`:
+Lighthouse 13.6.0, mobile emulation, against `next start`. Home was run three times; the other routes once:
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/`                         | 99          | 1.0s | 0   | 110ms |
-| `/work`                     | 99          | 1.0s | 0   | 130ms |
+| `/` (median of 3)           | 96          | 1.0s | 0   | 220ms |
+| `/work`                     | 99          | 1.1s | 0   | 140ms |
 | `/work/documents-assistant` | 99          | 1.1s | 0   | 130ms |
 | `/about`                    | 99          | 0.8s | 0   | 130ms |
 | `/` desktop preset          | 100         | 0.3s | 0   | 10ms  |
 
-Accessibility, best practices, and SEO scored 100 on every route. These are single lab runs, not a median; field INP and real-device timings are still pending.
+Home performance was 96, 99, 96 across the three runs (TBT 230, 110, 220ms). Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -210,20 +210,20 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 ## Gate 6 — Cross-browser and responsive
 
-| Browser        | Check                                   |
-| -------------- | --------------------------------------- |
-| Chrome desktop | Full pass                               |
-| Safari macOS   | Fonts, sticky, view transitions, focus  |
-| Firefox        | Fonts, focus, sticky                    |
-| Edge           | Smoke                                   |
-| iOS Safari     | Menu, Index, video, 100dvh, tap targets |
-| Android Chrome | Menu, Index, video, 4G                  |
+| Browser        | Check                                           |
+| -------------- | ----------------------------------------------- |
+| Chrome desktop | Scripted pass (Chromium 1248)                   |
+| Safari macOS   | Not run (WebKit blocked by missing `libavif16`) |
+| Firefox        | Scripted pass (Firefox 157)                     |
+| Edge           | Not run (Chromium engine covered above)         |
+| iOS Safari     | Not run                                         |
+| Android Chrome | Not run on device                               |
 
-**Viewports:** 320, 360, 390, 768, 1024, 1280, 1440, 1920, 2560.
+**Viewports tested:** 320, 360, 390, 640 (200% zoom equivalent), 1440. Not yet run: 768, 1024, 1280, 1920, 2560.
 
-- [ ] No horizontal scroll at any width.
-- [ ] No overlap of sticky header, TOC, or evidence notes.
-- [ ] Text does not clip at 200% zoom.
+- [x] No horizontal page overflow at 320, 360, 390, 640, and 1440; data tables scroll inside their wrapper.
+- [ ] No overlap of sticky header, TOC, or evidence notes at every listed viewport.
+- [x] Text does not clip at 200% zoom equivalent (640 CSS px).
 - [ ] Tap targets ≥44px on touch.
 - [ ] Hover states not required on touch.
 - [ ] No layout shift when fonts load.
@@ -340,17 +340,17 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 ## Sign-off
 
-| Gate               | Result | Evidence                                                                 | Date       | Owner   |
-| ------------------ | ------ | ------------------------------------------------------------------------ | ---------- | ------- |
-| 0 Content          | ⬜     |                                                                          |            | Yassine |
-| 1 Recruiter tests  | ⬜     |                                                                          |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0 violations at 320/390/1440; Lighthouse a11y 100; manual items open | 2026-10-28 | Yassine |
-| 3 Performance      | ◐      | Local Lighthouse mobile 99; desktop 100; field/real-device pending       | 2026-10-28 | Yassine |
-| 4 SEO              | ⬜     | Lighthouse SEO 100; validator/preview checks pending                     |            | Yassine |
-| 5 Functional       | ⬜     |                                                                          |            | Yassine |
-| 6 Cross-browser    | ⬜     | Chromium only                                                            |            | Yassine |
-| 7 Security         | ⬜     |                                                                          |            | Yassine |
-| 8 Analytics/launch | ⬜     |                                                                          |            | Yassine |
+| Gate               | Result | Evidence                                                                                             | Date       | Owner   |
+| ------------------ | ------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- |
+| 0 Content          | ⬜     |                                                                                                      |            | Yassine |
+| 1 Recruiter tests  | ⬜     |                                                                                                      |            | Yassine |
+| 2 Accessibility    | ◐      | axe 0 violations; HTML valid; 200%/spacing/reduced motion pass; screen-reader and full keyboard open | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Local Lighthouse mobile 96–99; desktop 100; field/real-device pending                                | 2026-10-28 | Yassine |
+| 4 SEO              | ◐      | SEO 100; 8 routes HTML-valid; JSON-LD/social previews still unverified                               | 2026-10-28 | Yassine |
+| 5 Functional       | ◐      | Scripted routes, menu, Index, copy, CV files pass; manual journey and form-free contact pending      | 2026-10-28 | Yassine |
+| 6 Cross-browser    | ◐      | Chromium + Firefox scripted pass; Safari/WebKit, Edge, iOS, Android not run                          | 2026-10-28 | Yassine |
+| 7 Security         | ◐      | Headers, CSP report-only, 0 audit vulnerabilities; domain/deploy controls open                       | 2026-10-28 | Yassine |
+| 8 Analytics/launch | ⬜     |                                                                                                      |            | Yassine |
 
 ◐ = the automated portion passed; the manual or field portion is still open.
 

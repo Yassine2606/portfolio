@@ -57,7 +57,7 @@ Also shipped: header and footer, focus-trapped mobile menu, home Index with tabs
 - No deployment, custom domain, or git remote. The canonical fallback is the old Vercel origin until `NEXT_PUBLIC_SITE_URL` is set.
 - No screenshots or recorded demos. The figures are architecture maps, not interface captures.
 - No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
-- No CI, axe, Lighthouse, screen-reader, or cross-browser pass yet. Internal checks were run in Chromium at desktop and mobile widths.
+- No CI, screen-reader, or WebKit/Safari pass yet. Chromium and Firefox scripted checks pass at desktop and mobile widths.
 - No LinkedIn link, portrait, or language proficiency levels. The CV PDFs include the phone number; site copy uses email only.
 
 ---
@@ -95,27 +95,35 @@ The full claim-to-source mapping is [`docs/evidence-ledger.md`](docs/evidence-le
 
 Last full run: 28 Oct 2026, from this directory.
 
-| Check              | Command                | Result                                                                        |
-| ------------------ | ---------------------- | ----------------------------------------------------------------------------- |
-| Types              | `npm run typecheck`    | Pass                                                                          |
-| Lint               | `npm run lint`         | Pass, 0 errors / 0 warnings                                                   |
-| Format             | `npm run format:check` | Pass                                                                          |
-| Production build   | `npm run build`        | Pass; all four case studies prerendered                                       |
-| Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                |
-| Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                                         |
-| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow                                         |
-| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu                |
-| Lighthouse mobile  | Lighthouse 13.6.0      | 99 performance on all four routes; 100 accessibility, best practices, and SEO |
-| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                                             |
-| Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs                         |
-| Security headers   | `curl -I`              | nosniff, referrer, frame, permissions, HSTS, CSP report-only                  |
-| Dependencies       | `npm audit`            | 0 vulnerabilities; Next.js upgraded to 16.4.3                                 |
-| Keyboard           | Playwright             | First Tab reaches the skip link; mobile menu restores focus                   |
-| Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept                        |
+| Check              | Command                | Result                                                                  |
+| ------------------ | ---------------------- | ----------------------------------------------------------------------- |
+| Types              | `npm run typecheck`    | Pass                                                                    |
+| Lint               | `npm run lint`         | Pass, 0 errors / 0 warnings                                             |
+| Format             | `npm run format:check` | Pass                                                                    |
+| Production build   | `npm run build`        | Pass; all four case studies prerendered                                 |
+| Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`          |
+| Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                                   |
+| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow; tables fit at 320                |
+| Reflow and spacing | Playwright, 640/390    | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass        |
+| Reduced motion     | Playwright             | 0 running animations; `scroll-behavior` returns to `auto`               |
+| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu          |
+| HTML validity      | Nu HTML Checker 26.10  | 8 routes: 0 errors, 0 warnings (informational self-closing notes only)  |
+| Lighthouse mobile  | Lighthouse 13.6.0      | 96–99 performance; 100 accessibility, best practices, and SEO           |
+| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                                       |
+| Cross-browser      | Playwright             | Chromium 1248 and Firefox 157: 8 routes, menu, Index, copy, no overflow |
+| Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs                   |
+| Security headers   | `curl -I`              | nosniff, referrer, frame, permissions, HSTS, CSP report-only            |
+| Dependencies       | `npm audit`            | 0 vulnerabilities; Next.js upgraded to 16.4.3                           |
+| Keyboard           | Playwright             | First Tab reaches the skip link; mobile menu restores focus             |
+| Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept                  |
 
 The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 320, 390, and 1440px. It found five accessibility issues on 28 Oct 2026, all fixed: the home link name, overlong card and archive link names, the French ATS link name, and the skip link landmark. A separate 320px sweep found contact-section overflow, also fixed. The script is `scripts/audit-a11y.mjs`.
 
-Not run: NVDA/VoiceOver, cross-browser, real-device, load, or CI. The Lighthouse result is one local run, not a median or an external certification.
+Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
+
+Lighthouse home performance was 96, 99, 96 across three runs; the other routes are one run each. Results are local lab runs, not field data or a CI median.
+
+Not run: NVDA/VoiceOver, WebKit/Safari, real-device, load, or CI. WebKit could not launch because the host is missing `libavif16`.
 
 Public-repository claims were re-checked against shallow clones on 27 Oct 2026. The anomaly route count was corrected from 5 to 9, and two overbroad read-only/normalization sentences were narrowed. Details and commands are in the evidence ledger.
 
@@ -180,7 +188,7 @@ These block launch or would materially strengthen it:
 1. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
 2. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
 3. **Identity and contact:** custom domain, LinkedIn URL, portrait yes/no, language proficiency labels, target-role priority.
-4. **Audit:** CI plus axe, Lighthouse, screen-reader, and cross-browser passes.
+4. **Audit:** CI, screen-reader, WebKit/Safari, and real-device passes.
 
 The site avoids unconfirmed claims: no LinkedIn placeholder, portrait, phone number, or language levels.
 

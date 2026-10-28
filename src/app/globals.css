@@ -373,9 +373,18 @@
   font-size: inherit;
 }
 
+.prose-table-wrap {
+  margin-top: 1.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose-table-wrap table {
+  margin-top: 0;
+}
+
 .prose-dossier table {
   width: 100%;
-  margin-top: 1.5rem;
   border-collapse: collapse;
   font-size: 0.9375rem;
 }
@@ -399,6 +408,17 @@
 
 .prose-dossier td {
   color: var(--ink-soft);
+}
+
+@media (max-width: 360px) {
+  .prose-dossier table {
+    font-size: 0.8125rem;
+  }
+
+  .prose-dossier th,
+  .prose-dossier td {
+    padding: 0.5rem 0.625rem 0.5rem 0;
+  }
 }
 
 .prose-dossier strong {

@@ -47,6 +47,8 @@ Build fails if a slug mismatches its filename, a frontmatter field is missing, a
 
 **MDX constraint:** `next-mdx-remote`'s RSC mode strips JSX expression attributes for safety. Props must be string literals in MDX (`n="1"`, not `n={1}`). `Claim` also derives the number from the `id` as a fallback. This is a library security behaviour, not a bug in the site.
 
+**Tables:** `remark-gfm` parses the Markdown tables in all four case files. Each table is wrapped in a keyboard-focusable `.prose-table-wrap` scroll container; at 320px the table type scales down so the three-column failure tables fit without page overflow.
+
 ### Design and motion
 
 - Warm paper, blue-black ink, one vermillion signal; OKLCH tokens in `src/app/globals.css`.
@@ -81,25 +83,29 @@ The CSP is report-only on purpose: Next injects inline bootstrap scripts, so enf
 
 Run from `v2/` on 27–28 Oct 2026.
 
-| Check              | Command                                 | Result                                                                                               |
-| ------------------ | --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Types              | `npm run typecheck`                     | Pass                                                                                                 |
-| Lint               | `npm run lint`                          | Pass, 0 errors / 0 warnings                                                                          |
-| Format             | `npm run format:check`                  | Pass                                                                                                 |
-| Production build   | `npm run build`                         | Pass; 12 static outputs, all four case studies prerendered                                           |
-| Desktop sweep      | Playwright, 1440×1000                   | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                       |
-| Mobile sweep       | Playwright, 390×844                     | Same 8 routes: no horizontal overflow                                                                |
-| Narrow sweep       | Playwright, 320×800                     | Same 8 routes: no horizontal overflow                                                                |
-| Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs             |
-| Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow |
-| CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                               |
-| Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and CSP report-only on every route                 |
-| Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                  |
-| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                    |
-| Lighthouse mobile  | Lighthouse 13.6.0, production build     | 99 performance on all four routes; 100 accessibility/BP/SEO on all four                              |
-| Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                       |
-| Keyboard           | Playwright                              | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                         |
-| Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed        |
+| Check              | Command                                 | Result                                                                                                    |
+| ------------------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Types              | `npm run typecheck`                     | Pass                                                                                                      |
+| Lint               | `npm run lint`                          | Pass, 0 errors / 0 warnings                                                                               |
+| Format             | `npm run format:check`                  | Pass                                                                                                      |
+| Production build   | `npm run build`                         | Pass; 12 static outputs, all four case studies prerendered                                                |
+| Desktop sweep      | Playwright, 1440×1000                   | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                            |
+| Mobile sweep       | Playwright, 390×844                     | Same 8 routes: no horizontal overflow                                                                     |
+| Narrow sweep       | Playwright, 320×800                     | 8 routes: no horizontal overflow; all four case tables fit at 320                                         |
+| Reflow and spacing | Playwright, 640×512 / 390×900           | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides: 8 routes, no page overflow                   |
+| Reduced motion     | Playwright, media emulation             | 0 running animations and `scroll-behavior: auto` on `/` and the flagship                                  |
+| HTML validity      | Nu HTML Checker 26.10.12                | 8 routes: 0 errors, 0 warnings; only informational self-closing-void notes                                |
+| Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs                  |
+| Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow      |
+| CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                                    |
+| Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and CSP report-only on every route                      |
+| Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                       |
+| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                         |
+| Lighthouse mobile  | Lighthouse 13.6.0, production build     | 96–99 performance; 100 accessibility/BP/SEO; home 96, 99, 96 across three runs                            |
+| Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                            |
+| Cross-browser      | Playwright, Chromium 1248 + Firefox 157 | 8 routes, mobile menu, Index keyboard, copy email, no overflow; WebKit blocked by host dependency missing |
+| Keyboard           | Playwright                              | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                              |
+| Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed             |
 
 ### Accessibility audit
 
@@ -113,21 +119,38 @@ The first run found five violations, all fixed before the clean run:
 4. The French ATS link said “French CV” but its visible text was “Français”.
 5. The skip link sat outside every landmark; it now has a labelled navigation wrapper.
 
-A separate 320px sweep found the contact email forcing a 25px horizontal overflow. The email now scales down at narrow widths, and both contact columns allow shrinking. The audit is repeatable with `npm run audit:a11y` after `npm run build && npm start`. Install the browser once with `npx playwright install chromium`.
+A separate 320px sweep found the contact email forcing a 25px horizontal overflow. The email now scales down at narrow widths, allows breaking under text-spacing overrides, and both contact columns allow shrinking. The audit is repeatable with `npm run audit:a11y` after `npm run build && npm start`. Install the browser once with `npx playwright install chromium`.
+
+### Reflow, text spacing, and motion
+
+- **200% zoom equivalent:** a 1280px desktop laid out at a 640px viewport. All 8 routes pass with no horizontal page overflow.
+- **WCAG 1.4.12 text spacing:** line-height 1.5, letter-spacing 0.12em, word-spacing 0.16em, paragraph spacing 2em. All 8 routes pass at 1440px and 390px. The email link breaks rather than forcing the page wider; data tables scroll inside their wrapper, which WCAG permits for two-dimensional content.
+- **Reduced motion:** with `prefers-reduced-motion: reduce`, `document.getAnimations()` returns no running animations and `scroll-behavior` is `auto` on `/` and the flagship.
+- **Tables at 320px:** `remark-gfm` now parses the Markdown tables. Before the fix they rendered as literal pipe text and overflowed in Firefox. All four case tables fit at 320px; a focusable scroll wrapper remains for text-spacing overrides.
+
+### HTML validity
+
+Nu HTML Checker 26.10.12 validates the served HTML for all 8 routes. Result: 0 errors and 0 warnings. The 281 remaining messages are `info` notes about React's self-closing void elements (`<meta />`, `<br />`), which HTML5 ignores.
+
+### Cross-browser
+
+Chromium 1248 and Firefox 157 were driven with Playwright at 1440×1000 and 390×844. All 8 routes return the expected status with no page overflow or console errors (the 404 request itself is expected). The mobile menu opens, moves focus inside, closes on Escape, and returns focus to the trigger; the Index responds to ArrowDown in both engines; the copy-email button reaches its `Copied` state in both.
+
+WebKit/Safari was not run: Playwright's WebKit build needs `libavif16`, which is not installed on this host. This is a missing environment dependency, not a passing result.
 
 ### Lighthouse
 
-One local run per route against `next start`, using Lighthouse 13.6.0's mobile emulation:
+The home page was run three times; the other routes once, against `next start`, using Lighthouse 13.6.0's mobile emulation:
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/`                         | 99          | 100           | 100            | 100 | 1.0s | 0   | 110ms |
-| `/work`                     | 99          | 100           | 100            | 100 | 1.0s | 0   | 130ms |
+| `/` (median of 3)           | 96          | 100           | 100            | 100 | 1.0s | 0   | 220ms |
+| `/work`                     | 99          | 100           | 100            | 100 | 1.1s | 0   | 140ms |
 | `/work/documents-assistant` | 99          | 100           | 100            | 100 | 1.1s | 0   | 130ms |
 | `/about`                    | 99          | 100           | 100            | 100 | 0.8s | 0   | 130ms |
 | `/` desktop preset          | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
-These are single lab runs on a local server, not field data, a median, or a CI assertion. Scores will vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+Home performance was 96, 99, 96 across the three runs (TBT 230, 110, 220ms). These are local lab runs, not field data or a CI assertion. Scores will vary by machine. `TBT` is used as a lab proxy; INP needs field data.
 
 ### What was checked visually
 
@@ -147,12 +170,12 @@ No public claim about TranscriptoSense or Data Drift was found false. Public rep
 ### What was not run
 
 - No screen-reader pass (NVDA/VoiceOver).
-- No cross-browser pass beyond Chromium.
+- No WebKit/Safari pass; Chromium and Firefox passed.
 - No real-device test.
 - No load test; the site is static.
 - No link checker; external links were checked manually (GitHub repositories).
-- No Lighthouse CI: one local run per route, not a three-run median.
-- No CI: the four build gates and the axe audit run locally only.
+- No Lighthouse CI: home was run three times, the other routes once, not a CI median.
+- No CI: the build gates, axe audit, and cross-browser checks run locally only.
 
 Automated axe and Lighthouse passes are evidence, not certification. The quality gates in `10-quality-gates.md` still apply.
 
@@ -168,7 +191,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and one local Lighthouse run scores 99 performance and 100 accessibility, best practices, and SEO. Screen-reader, cross-browser, real-device, and CI runs remain.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and local Lighthouse runs score 96–99 performance and 100 accessibility, best practices, and SEO. Chromium and Firefox pass a scripted cross-browser check. Screen-reader, WebKit, real-device, and CI runs remain.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
@@ -206,8 +229,8 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 
 - [ ] Add CI: install, typecheck, lint, format check, build, and `npm run audit:a11y`.
 - [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
-- [ ] Add Lighthouse CI with a three-run median; the local single-run scores are recorded above.
-- [ ] Cross-browser and screen-reader pass.
+- [ ] Add Lighthouse CI with a three-run median; the local runs are recorded above.
+- [ ] Screen-reader pass; WebKit/Safari run once the host has `libavif16`.
 - [ ] Per-case OG images (optional; default card works).
 - [ ] Decide on cookieless analytics; if added, update the footer copy.
 - [ ] Configure the domain and 301 the old Vercel origin (ADR-019).

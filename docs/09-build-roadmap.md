@@ -212,8 +212,10 @@ Phase 9  Post-launch                       ongoing
 - [ ] VoiceOver or NVDA pass on home + flagship.
 - [ ] Contrast audit of every token pair; light-only.
 - [x] 320px reflow.
-- [ ] 200% zoom and text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 99 performance, 100 accessibility/BP/SEO.
+- [x] 200% zoom equivalent and WCAG text-spacing overrides.
+- [x] Lighthouse mobile on `/` and flagship; 96–99 performance, 100 accessibility/BP/SEO.
+- [x] HTML validator: 0 errors/warnings on 8 routes.
+- [x] Cross-browser scripted pass: Chromium and Firefox.
 - [ ] Bundle analyzer; first-load JS ≤120KB; Index island ≤3KB.
 - [ ] Image audit: sizes, formats, lazy loading, no CLS.
 - [ ] Font audit: two preloads, swap, no layout shift.

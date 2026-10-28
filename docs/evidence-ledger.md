@@ -102,35 +102,35 @@ The archive rows are real builds that do not get a case file. They carry a title
 
 ### Project evidence
 
-| Gap                                    | Where it appears             | Status                                                                                                                                          |
-| -------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flagship benchmark not run             | Documents Assistant, note 03 | 50-question annotated benchmark is designed. No Recall@5, MRR, citation accuracy, abstention, or p95 latency exists.                            |
-| Flagship interface not published       | Documents Assistant, ADR-021 | No screenshot, demo, or repository link. Architecture and code paths only.                                                                      |
-| MCP integration is partial             | Anomaly Detection, note 10   | `scan_anomalies` accepts only `mock`; real database monitors are not wired into the MCP tools.                                                  |
-| Anomaly has no tests                   | Anomaly Detection, note 12   | `README.md` documents `pytest tests/`; no `tests/` directory is committed.                                                                      |
-| Private repositories cannot be audited | Sadine, RFID, Documents      | Source paths and counts are owner-supplied. No independent reviewer can inspect them.                                                           |
-| No interface captures on any case      | All four cases               | The figures are code-generated architecture maps, not screenshots of a running product.                                                         |
-| No manual accessibility audit          | Site-wide                    | axe-core 4.14.0 reports 0 violations at 320/390/1440 and Lighthouse accessibility is 100. No screen-reader, cross-browser, or real-device pass. |
-| No outcome metrics                     | All four cases               | No adoption, revenue, latency, accuracy, or customer numbers are published. That is deliberate.                                                 |
+| Gap                                    | Where it appears             | Status                                                                                                                                                                              |
+| -------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flagship benchmark not run             | Documents Assistant, note 03 | 50-question annotated benchmark is designed. No Recall@5, MRR, citation accuracy, abstention, or p95 latency exists.                                                                |
+| Flagship interface not published       | Documents Assistant, ADR-021 | No screenshot, demo, or repository link. Architecture and code paths only.                                                                                                          |
+| MCP integration is partial             | Anomaly Detection, note 10   | `scan_anomalies` accepts only `mock`; real database monitors are not wired into the MCP tools.                                                                                      |
+| Anomaly has no tests                   | Anomaly Detection, note 12   | `README.md` documents `pytest tests/`; no `tests/` directory is committed.                                                                                                          |
+| Private repositories cannot be audited | Sadine, RFID, Documents      | Source paths and counts are owner-supplied. No independent reviewer can inspect them.                                                                                               |
+| No interface captures on any case      | All four cases               | The figures are code-generated architecture maps, not screenshots of a running product.                                                                                             |
+| No manual accessibility audit          | Site-wide                    | axe-core 4.14.0 reports 0 violations at 320/390/1440 and Lighthouse accessibility is 100. Chromium and Firefox pass scripted checks; no screen-reader, WebKit, or real-device pass. |
+| No outcome metrics                     | All four cases               | No adoption, revenue, latency, accuracy, or customer numbers are published. That is deliberate.                                                                                     |
 
 ### Site and launch
 
-| Gap                                 | Status                                                                                                                         |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Resume                              | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10.          |
-| Experience, education, Wardrobe     | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.     |
-| Availability and notice             | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.         |
-| Remote / hybrid / on-site           | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.              |
-| Relocation                          | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                             |
-| Work authorization                  | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact.   |
-| Client permissions                  | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                              |
-| Domain                              | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                   |
-| LinkedIn, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                   |
-| Phone                               | Appears in the CV PDFs; site copy uses email only.                                                                             |
-| Per-case OG cards                   | Deferred. The default `public/og.png` card is used on every page.                                                              |
-| Automated accessibility             | Passed 28 Oct 2026: axe-core 4.14.0, 0 violations across 8 routes at 320/390/1440 plus the open mobile menu.                   |
-| Lighthouse                          | Passed 28 Oct 2026: one local run per route; mobile performance 99, accessibility/BP/SEO 100; desktop `/` 100 across all four. |
-| Security headers                    | Enforced 28 Oct 2026: nosniff, referrer, frame DENY, permissions, HSTS; CSP report-only.                                       |
+| Gap                                 | Status                                                                                                                                                                     |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Resume                              | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10.                                                      |
+| Experience, education, Wardrobe     | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.                                                 |
+| Availability and notice             | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.                                                     |
+| Remote / hybrid / on-site           | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.                                                          |
+| Relocation                          | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                                                                         |
+| Work authorization                  | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact.                                               |
+| Client permissions                  | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                                                                          |
+| Domain                              | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                                                               |
+| LinkedIn, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                                                               |
+| Phone                               | Appears in the CV PDFs; site copy uses email only.                                                                                                                         |
+| Per-case OG cards                   | Deferred. The default `public/og.png` card is used on every page.                                                                                                          |
+| Automated accessibility             | Passed 28 Oct 2026: axe-core 4.14.0, 0 violations across 8 routes at 320/390/1440 plus the open mobile menu.                                                               |
+| Lighthouse                          | Passed 28 Oct 2026: home 96/99/96 across three local runs; other routes one run each; mobile performance 96–99, accessibility/BP/SEO 100; desktop `/` 100 across all four. |
+| Security headers                    | Enforced 28 Oct 2026: nosniff, referrer, frame DENY, permissions, HSTS; CSP report-only.                                                                                   |
 
 ---
 
@@ -162,6 +162,8 @@ The EN/FR CVs are generated from `Documents/cv/source/cv-data.json`; `Documents/
 | 2026-10-27 | Synced the new EN/FR designed and ATS CVs from `Documents/cv/output/`; all four are one page.         |
 | 2026-10-28 | Fixed five axe violations (home link, card/archive link names, French ATS label, skip landmark).      |
 | 2026-10-28 | Fixed 320px contact overflow; added `npm run audit:a11y`; axe now reports 0 violations.               |
-| 2026-10-28 | Recorded local Lighthouse 13.6.0 results: 99 mobile performance, 100 accessibility/BP/SEO.            |
+| 2026-10-28 | Recorded local Lighthouse 13.6.0 results: 96–99 mobile performance, 100 accessibility/BP/SEO.         |
 | 2026-10-28 | Added enforced security headers and a report-only CSP; upgraded Next.js to 16.4.3 for the audit fix.  |
 | 2026-10-28 | `npm audit` reports 0 vulnerabilities after the Next.js upgrade.                                      |
+| 2026-10-28 | Enabled `remark-gfm`; case tables were rendering as raw pipes and overflowed in Firefox.              |
+| 2026-10-28 | 200% zoom, text-spacing, reduced-motion, HTML validation, and Chromium/Firefox checks passed.         |

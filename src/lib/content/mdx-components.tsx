@@ -7,4 +7,9 @@ export const mdxComponents: MDXComponents = {
   Architecture: ArchitectureView,
   h2: (props) => <h2 {...props} />,
   h3: (props) => <h3 {...props} />,
+  table: (props) => (
+    <div className="prose-table-wrap" role="group" aria-label="Data table" tabIndex={0}>
+      <table {...props} />
+    </div>
+  ),
 };

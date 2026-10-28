@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import {
   getFeaturedWork,
@@ -121,7 +122,9 @@ export default async function CaseStudyPage({ params }: PageProps) {
               <MDXRemote
                 source={work.body}
                 components={mdxComponents}
-                options={{ mdxOptions: { rehypePlugins: [rehypeSlug] } }}
+                options={{
+                  mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] },
+                }}
               />
             </div>
 

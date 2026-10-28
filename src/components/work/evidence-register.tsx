@@ -33,11 +33,11 @@ export function EvidenceRegister({ evidence }: { evidence: Evidence[] }) {
             <span className="text-ink-faint font-mono text-[10px] sm:col-span-1">
               [{index + 1}]
             </span>
-            <span className="text-ink-soft text-sm leading-snug sm:col-span-6">{item.claim}</span>
+            <span className="text-ink-soft text-sm leading-snug sm:col-span-5">{item.claim}</span>
             <span className="text-ink-faint font-mono text-[10px] leading-relaxed break-words sm:col-span-4">
               {item.source}
             </span>
-            <span className="text-ink-faint font-mono text-[9px] tracking-[0.08em] uppercase sm:col-span-1 sm:text-right">
+            <span className="text-ink-faint font-mono text-[9px] tracking-[0.08em] uppercase sm:col-span-2 sm:text-right">
               {item.private ? "Private" : kindLabel[item.kind]}
             </span>
           </li>
