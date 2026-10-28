@@ -97,7 +97,7 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is re
 
 ### Measurement
 
-- **Lighthouse:** one local production run on 28 Oct 2026 passed the mobile budget on four routes (98–100/100/100/100). CI with a three-run median is still required.
+- **Lighthouse:** one local production run on 28 Oct 2026 passed the mobile budget on four routes (99/100/100/100). CI with a three-run median is still required.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
@@ -194,17 +194,17 @@ No keyword stuffing. One phrase per page is enough; the case-study titles do the
 
 ## Security and privacy
 
-- [ ] No secrets in the repo or client bundle; only `NEXT_PUBLIC_SITE_URL` is public.
-- [ ] Security headers: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS.
-- [ ] CSP in report-only, then enforced; no `unsafe-eval`.
-- [ ] Dependencies audited; high-severity issues fixed before launch.
-- [ ] No third-party scripts besides analytics.
+- [x] No secrets in the repo or client bundle; only `NEXT_PUBLIC_SITE_URL` is public.
+- [x] Security headers: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS.
+- [x] CSP in report-only; no `unsafe-eval`. Enforcement with nonces or hashes is still planned.
+- [x] Dependencies audited; `npm audit` reports 0 vulnerabilities (28 Oct 2026).
+- [x] No third-party scripts; no analytics at launch.
 - [ ] Screenshots redacted; EXIF stripped; no client names, emails, tokens, or customer records.
 - [x] Resume PII decision made: phone is included in the CV PDFs; site copy uses email only.
-- [ ] No cookies; no consent banner.
-- [ ] Contact is `mailto`; no form backend at launch.
+- [x] No cookies; no consent banner.
+- [x] Contact is `mailto:`; no form backend at launch.
 - [ ] If a form is added: zod validation, honeypot, rate limit, Turnstile if needed, no PII in logs.
-- [ ] Error page exposes no stack traces.
+- [x] Error page exposes no stack traces.
 - [ ] Backups: the repo is the source; Vercel keeps deployments; export the final content quarterly.
 
 ---
@@ -278,7 +278,7 @@ All of the following true:
 - [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
 - [ ] Keyboard-only pass on every route.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 98–100/100/100/100 on 28 Oct 2026.
+- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 99/100/100/100 on 28 Oct 2026.
 - [x] LCP ≤ 1.8s lab and CLS ≤ 0.05 on 28 Oct 2026 (single run).
 - [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz.

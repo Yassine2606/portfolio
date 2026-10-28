@@ -10,7 +10,7 @@ Principle: **static-first, content-safe, cheap to run, hard to break.**
 
 | Layer     | Choice                                | Version                                  | Why                                                                                |
 | --------- | ------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
-| Framework | Next.js App Router                    | 16.3                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small |
+| Framework | Next.js App Router                    | 16.4                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small |
 | UI        | React                                 | 19.2                                     | Server components by default; small islands for interaction                        |
 | Language  | TypeScript                            | 5.x, strict + `noUncheckedIndexedAccess` | Content and UI contracts fail at build                                             |
 | Styling   | Tailwind CSS v4 + semantic CSS tokens | 4.x                                      | Token discipline without a runtime CSS-in-JS cost                                  |

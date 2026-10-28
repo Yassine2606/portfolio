@@ -95,21 +95,23 @@ The full claim-to-source mapping is [`docs/evidence-ledger.md`](docs/evidence-le
 
 Last full run: 28 Oct 2026, from this directory.
 
-| Check              | Command                | Result                                                         |
-| ------------------ | ---------------------- | -------------------------------------------------------------- |
-| Types              | `npm run typecheck`    | Pass                                                           |
-| Lint               | `npm run lint`         | Pass, 0 errors / 0 warnings                                    |
-| Format             | `npm run format:check` | Pass                                                           |
-| Production build   | `npm run build`        | Pass; all four case studies prerendered                        |
-| Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN` |
-| Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                          |
-| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow                          |
-| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu |
-| Lighthouse mobile  | Lighthouse 13.6.0      | 98–100 performance; 100 accessibility, best practices, and SEO |
-| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                              |
-| Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs          |
-| Keyboard           | Playwright             | First Tab reaches the skip link; mobile menu restores focus    |
-| Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept         |
+| Check              | Command                | Result                                                                        |
+| ------------------ | ---------------------- | ----------------------------------------------------------------------------- |
+| Types              | `npm run typecheck`    | Pass                                                                          |
+| Lint               | `npm run lint`         | Pass, 0 errors / 0 warnings                                                   |
+| Format             | `npm run format:check` | Pass                                                                          |
+| Production build   | `npm run build`        | Pass; all four case studies prerendered                                       |
+| Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                |
+| Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                                         |
+| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow                                         |
+| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu                |
+| Lighthouse mobile  | Lighthouse 13.6.0      | 99 performance on all four routes; 100 accessibility, best practices, and SEO |
+| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                                             |
+| Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs                         |
+| Security headers   | `curl -I`              | nosniff, referrer, frame, permissions, HSTS, CSP report-only                  |
+| Dependencies       | `npm audit`            | 0 vulnerabilities; Next.js upgraded to 16.4.3                                 |
+| Keyboard           | Playwright             | First Tab reaches the skip link; mobile menu restores focus                   |
+| Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept                        |
 
 The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 320, 390, and 1440px. It found five accessibility issues on 28 Oct 2026, all fixed: the home link name, overlong card and archive link names, the French ATS link name, and the skip link landmark. A separate 320px sweep found contact-section overflow, also fixed. The script is `scripts/audit-a11y.mjs`.
 
@@ -134,7 +136,7 @@ Before deploying:
 
 ## Stack
 
-- Next.js 16.3.5 (App Router, RSC, static-first) · React 19.2.8 · TypeScript strict with `noUncheckedIndexedAccess`
+- Next.js 16.4.3 (App Router, RSC, static-first) · React 19.2.8 · TypeScript strict with `noUncheckedIndexedAccess`
 - Tailwind CSS v4 with an OKLCH semantic token layer
 - MDX via `next-mdx-remote` 6, `gray-matter`, `rehype-slug`, and zod validation
 - CSS-first motion; no animation runtime (ADR-006)

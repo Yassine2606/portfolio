@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
-    "next": "16.3.5",
+    "next": "16.4.3",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -28,7 +28,7 @@
     "@types/react-dom": "^19",
     "axe-core": "^4.14.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.4.3",
     "playwright": "^1.64.1",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",

@@ -55,6 +55,19 @@ Build fails if a slug mismatches its filename, a frontmatter field is missing, a
 - Motion is CSS only: hero rise, mobile sheet, scroll-driven figure reveal behind `@supports (animation-timeline: view())`, all behind `prefers-reduced-motion` guards.
 - Print stylesheet hides navigation, collapses the article grid, removes hash-link artefacts, and keeps case files readable on paper.
 
+### Security
+
+`next.config.ts` sends these headers on every route:
+
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `X-Frame-Options: DENY`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+- `Content-Security-Policy-Report-Only` with `default-src 'self'`, self-hosted fonts and images, and `frame-ancestors 'none'`
+
+The CSP is report-only on purpose: Next injects inline bootstrap scripts, so enforcement needs a nonce strategy or build-time hashes. The other headers are enforced. There is no form backend, no analytics, and no cookie at launch.
+
 ### SEO and sharing
 
 - Per-page title, description, canonical URL, Open Graph, and Twitter metadata.
@@ -80,8 +93,10 @@ Run from `v2/` on 27–28 Oct 2026.
 | Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs             |
 | Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow |
 | CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                               |
+| Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and CSP report-only on every route                 |
+| Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                  |
 | Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                    |
-| Lighthouse mobile  | Lighthouse 13.6.0, production build     | `/` 99, `/work` 99, flagship 98, `/about` 99 performance; 100 accessibility/BP/SEO on all four       |
+| Lighthouse mobile  | Lighthouse 13.6.0, production build     | 99 performance on all four routes; 100 accessibility/BP/SEO on all four                              |
 | Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                       |
 | Keyboard           | Playwright                              | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                         |
 | Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed        |
@@ -106,10 +121,10 @@ One local run per route against `next start`, using Lighthouse 13.6.0's mobile e
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/`                         | 99          | 100           | 100            | 100 | 1.0s | 0   | 120ms |
-| `/work`                     | 99          | 100           | 100            | 100 | 1.1s | 0   | 110ms |
-| `/work/documents-assistant` | 98          | 100           | 100            | 100 | 1.2s | 0   | 170ms |
-| `/about`                    | 99          | 100           | 100            | 100 | 0.9s | 0   | 140ms |
+| `/`                         | 99          | 100           | 100            | 100 | 1.0s | 0   | 110ms |
+| `/work`                     | 99          | 100           | 100            | 100 | 1.0s | 0   | 130ms |
+| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 1.1s | 0   | 130ms |
+| `/about`                    | 99          | 100           | 100            | 100 | 0.8s | 0   | 130ms |
 | `/` desktop preset          | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
 These are single lab runs on a local server, not field data, a median, or a CI assertion. Scores will vary by machine. `TBT` is used as a lab proxy; INP needs field data.
@@ -153,7 +168,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and one local Lighthouse run scores 98–100 performance and 100 accessibility, best practices, and SEO. Screen-reader, cross-browser, real-device, and CI runs remain.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and one local Lighthouse run scores 99 performance and 100 accessibility, best practices, and SEO. Screen-reader, cross-browser, real-device, and CI runs remain.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---

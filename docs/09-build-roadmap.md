@@ -213,14 +213,14 @@ Phase 9  Post-launch                       ongoing
 - [ ] Contrast audit of every token pair; light-only.
 - [x] 320px reflow.
 - [ ] 200% zoom and text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 99 and 98 performance, 100 accessibility/BP/SEO.
+- [x] Lighthouse mobile on `/` and flagship; 99 performance, 100 accessibility/BP/SEO.
 - [ ] Bundle analyzer; first-load JS ≤120KB; Index island ≤3KB.
 - [ ] Image audit: sizes, formats, lazy loading, no CLS.
 - [ ] Font audit: two preloads, swap, no layout shift.
 - [ ] Metadata audit: titles, descriptions, canonical, OG, Twitter.
 - [ ] JSON-LD validation.
 - [ ] Sitemap + robots + 404 status.
-- [ ] Security headers + CSP report-only.
+- [x] Security headers + CSP report-only.
 - [ ] Link check; no dead buttons.
 - [ ] Content audit against the ledger; banned words; spelling.
 - [ ] Real-device test: mid-range Android + iPhone on 4G.
