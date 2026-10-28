@@ -95,6 +95,7 @@ Run from `v2/` on 27–28 Oct 2026.
 | Viewport sweep     | Playwright, 320–2560 in 10 steps        | 5 routes per width, no horizontal overflow; 50 checks pass                                             |
 | Reflow and spacing | Playwright, 640×512 / 390×900           | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides: 8 routes, no page overflow                |
 | Reduced motion     | Playwright, media emulation             | 0 running animations and `scroll-behavior: auto` on `/` and the flagship                               |
+| No JavaScript      | `npm run audit:nojs`                    | 8 routes × 390/1440 with JS on and off; 4 stacked Index items; 4 header links; no overflow             |
 | HTML validity      | Nu HTML Checker 26.10.12                | 8 routes: 0 errors, 0 warnings; only informational self-closing-void notes                             |
 | Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs               |
 | Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow   |
@@ -131,6 +132,15 @@ A separate 320px sweep found the contact email forcing a 25px horizontal overflo
 - **WCAG 1.4.12 text spacing:** line-height 1.5, letter-spacing 0.12em, word-spacing 0.16em, paragraph spacing 2em. All 8 routes pass at 1440px and 390px. The email link breaks rather than forcing the page wider; data tables scroll inside their wrapper, which WCAG permits for two-dimensional content.
 - **Reduced motion:** with `prefers-reduced-motion: reduce`, `document.getAnimations()` returns no running animations and `scroll-behavior` is `auto` on `/` and the flagship.
 - **Tables at 320px:** `remark-gfm` now parses the Markdown tables. Before the fix they rendered as literal pipe text and overflowed in Firefox. All four case tables fit at 320px; a focusable scroll wrapper remains for text-spacing overrides.
+
+### No JavaScript
+
+The site is server-rendered, so content and links exist before hydration. Two controls needed a fallback:
+
+- **Home Index:** the interactive tablist/accordion is paired with a stacked list of the same four projects. `@media (scripting: none)` hides the island and shows the stack; each item keeps its title, descriptor, outcome, stack tags, and case link.
+- **Header at narrow widths:** the menu trigger is a client island. When scripting is off, the trigger is hidden and a four-link nav row (Work, About, Contact, Resume) is shown. At 768px and above the normal desktop nav is used.
+
+`npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` kept 7,425 characters of content and 30 links, four stacked Index items, and four header links at 390px, with no overflow. With JS on, the fallbacks were hidden and the interactive Index and menu were visible. `/work`, all four case files, `/about`, and the 404 also render without JS.
 
 ### HTML validity
 
@@ -245,9 +255,10 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 
 ### Engineering
 
-- [x] Add CI workflow: install, format check, typecheck, lint, build, start, axe, link, and Lighthouse checks. Committed; not yet run.
+- [x] Add CI workflow: install, format check, typecheck, lint, build, start, axe, link, no-JS, and Lighthouse checks. Committed; not yet run.
 - [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
 - [x] Add a repeatable link and asset check (`npm run audit:links`); 14 internal and 4 external URLs pass.
+- [x] Add a repeatable no-JS audit (`npm run audit:nojs`); 8 routes, JS on/off, 32 checks pass.
 - [x] Add a repeatable three-run Lighthouse audit (`npm run audit:lighthouse`); wired into CI, medians pass.
 - [x] Replace the no-op report-only CSP with an enforced policy; WebKit console warning cleared.
 - [ ] Harden CSP further with nonces or build-time hashes to remove `'unsafe-inline'`.

@@ -145,7 +145,7 @@ Phase 9  Post-launch                       ongoing
 
 - [ ] Header: name, Work, About, Contact, availability, Resume; sticky; mobile menu.
 - [ ] Hero: eyebrow, H1, lede, CTAs, meta strip, availability card.
-- [ ] Index: tablist desktop, accordion mobile, real screenshots, keyboard, no-JS fallback.
+- [x] Index: tablist desktop, accordion mobile, real screenshots, keyboard, no-JS fallback. Screenshots are code-generated system maps because the flagship has no public visual (ADR-021).
 - [ ] How I work: three principles, each linked to evidence.
 - [ ] Experience: four rows, correct titles/dates.
 - [ ] About preview + optional portrait.
@@ -242,7 +242,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Hiring-manager "would you interview?" test.
 - [ ] Browser matrix: Chrome, Safari, Firefox, Edge, iOS, Android.
 - [ ] Viewport sweep: 320/360/390/768/1024/1280/1440/1920/2560.
-- [ ] No-JS pass: content readable, links work, Index panels stacked.
+- [x] No-JS pass: content readable, links work, Index panels stacked. Verified 28 Oct 2026 at 390 and 1440; 4 stacked items and 4 header links, no overflow.
 - [ ] Reduced-motion pass on macOS/iOS/Windows.
 - [ ] Screen-reader pass documented.
 - [ ] Fix findings; re-run the failed gate.

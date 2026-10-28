@@ -12,6 +12,7 @@
     "format:check": "prettier --check .",
     "audit:a11y": "node scripts/audit-a11y.mjs",
     "audit:links": "node scripts/check-links.mjs",
+    "audit:nojs": "node scripts/audit-nojs.mjs",
     "audit:lighthouse": "node scripts/audit-lighthouse.mjs"
   },
   "dependencies": {

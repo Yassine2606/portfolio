@@ -313,6 +313,8 @@ npm run audit:links -- --external
 4. Case studies render; video shows poster; links work.
 5. No blank sections.
 
+**Recorded run — 28 Oct 2026:** `npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` rendered 7,425 characters of main text and 30 links; the stacked Index showed all four projects with a case link each, and the interactive Index was hidden. At 390px the menu trigger was hidden and the four-link no-JS nav was visible; at 1440px the desktop nav remained visible and the no-JS row stayed hidden. With JS on, the fallbacks were hidden and the interactive Index and mobile menu were visible. No route overflowed.
+
 ### Slow network
 
 1. Throttle to Slow 4G, 4× CPU.
@@ -347,7 +349,7 @@ npm run audit:links -- --external
 | ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ | ---------- | ------- |
 | 0 Content          | ⬜     |                                                                                                                    |            | Yassine |
 | 1 Recruiter tests  | ⬜     |                                                                                                                    |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard pass; screen reader open                                           | 2026-10-28 | Yassine |
+| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard/no-JS (32 checks) pass; screen reader open                         | 2026-10-28 | Yassine |
 | 3 Performance      | ◐      | Lighthouse 96–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
 | 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open            | 2026-10-28 | Yassine |
 | 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                   | 2026-10-28 | Yassine |

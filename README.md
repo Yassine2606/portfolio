@@ -29,6 +29,7 @@ npm run start                # serve the production build
 # with the production server running in another terminal:
 npm run audit:a11y           # axe-core, 8 routes x 3 widths
 npm run audit:links -- --external
+npm run audit:nojs           # 8 routes with JS on and off, 390/1440
 npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
 ```
 
@@ -112,6 +113,7 @@ Last full run: 28 Oct 2026, from this directory.
 | Viewport sweep     | Playwright, 10 widths      | 320–2560px: 5 routes, no horizontal overflow                           |
 | Reflow and spacing | Playwright, 640/390        | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass       |
 | Reduced motion     | Playwright                 | 0 running animations; `scroll-behavior` returns to `auto`              |
+| No JavaScript      | `npm run audit:nojs`       | 8 routes, JS on/off, 390/1440: 4 stacked items, 4 header links         |
 | Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, plus the open menu         |
 | Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
 | HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |

@@ -37,6 +37,41 @@ export function SiteHeader() {
 
         <MobileMenu />
       </div>
+
+      <nav aria-label="Primary, no JavaScript" className="nojs-nav border-line border-t">
+        <ul className="mx-auto flex max-w-[1440px] flex-wrap gap-x-5 gap-y-1 px-5 py-2 text-sm md:px-10">
+          <li>
+            <Link href="/work" className="hover:text-signal-text inline-flex min-h-11 items-center">
+              Work
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/about"
+              className="hover:text-signal-text inline-flex min-h-11 items-center"
+            >
+              About
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/#contact"
+              className="hover:text-signal-text inline-flex min-h-11 items-center"
+            >
+              Contact
+            </Link>
+          </li>
+          <li>
+            <a
+              href={site.resume}
+              download
+              className="hover:text-signal-text inline-flex min-h-11 items-center"
+            >
+              Resume
+            </a>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }

@@ -362,7 +362,7 @@ Everything else is a server component. No global provider, no theme context, no 
 
 ### Index without JS
 
-Render all four panels stacked, each with its link, inside `<noscript>`-friendly markup. The client island hides inactive panels after hydration only if it successfully initialises. If JS fails, the content remains readable.
+The server renders both the interactive Index and a stacked fallback of the same four projects. CSS `@media (scripting: none)` hides the interactive island and shows the stacked list, so the fallback does not depend on hydration or on a `<noscript>` element. Each stacked item carries its title, descriptor, outcome, stack tags, and case link. The header does the same for navigation: below 768px the menu trigger is hidden and a four-link nav row is shown when scripting is off. With scripting on, the fallback is `display: none` and the interactive versions render normally.
 
 ### Focus management
 
@@ -450,6 +450,7 @@ async headers() {
     "format:check": "prettier --check .",
     "audit:a11y": "node scripts/audit-a11y.mjs",
     "audit:links": "node scripts/check-links.mjs",
+    "audit:nojs": "node scripts/audit-nojs.mjs",
     "audit:lighthouse": "node scripts/audit-lighthouse.mjs"
   }
 }
@@ -474,7 +475,7 @@ The axe, link, and Lighthouse audits and the zod build checks are committed. Vit
 
 ### CI (`.github/workflows/ci.yml`)
 
-CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, format check, typecheck, lint, build, installs Chromium, starts `next start`, then runs `audit:a11y`, `audit:links`, and `audit:lighthouse`. The server log is uploaded on failure.
+CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, format check, typecheck, lint, build, installs Chromium, starts `next start`, then runs `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. The server log is uploaded on failure.
 
 - The workflow has not run on a remote; there is no git remote or authenticated account.
 - Lighthouse history/upload is not configured; the audit prints and asserts three-run medians.

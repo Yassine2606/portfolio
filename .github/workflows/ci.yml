@@ -63,6 +63,7 @@ jobs:
           done
           npm run audit:a11y
           npm run audit:links
+          npm run audit:nojs
           npm run audit:lighthouse
 
       - name: Upload server log on failure

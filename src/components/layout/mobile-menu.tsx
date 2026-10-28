@@ -60,7 +60,7 @@ export function MobileMenu() {
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="mobile-menu"
-        className="text-ink flex min-h-11 items-center gap-2 text-sm font-medium md:hidden"
+        className="js-menu text-ink flex min-h-11 items-center gap-2 text-sm font-medium md:hidden"
       >
         Menu
         <Menu size={18} />

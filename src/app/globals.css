@@ -549,6 +549,35 @@ sup.evidence-ref a:hover {
 /* Print — a case file should survive on paper                         */
 /* ------------------------------------------------------------------ */
 
+/* Progressive enhancement: the stacked index is the no-script fallback. */
+.index-nojs {
+  display: none;
+}
+
+.nojs-nav {
+  display: none;
+}
+
+@media (scripting: none) {
+  .index-js {
+    display: none;
+  }
+
+  .index-nojs {
+    display: block;
+  }
+
+  .js-menu {
+    display: none !important;
+  }
+}
+
+@media (scripting: none) and (max-width: 767px) {
+  .nojs-nav {
+    display: block;
+  }
+}
+
 @media print {
   header,
   footer,
