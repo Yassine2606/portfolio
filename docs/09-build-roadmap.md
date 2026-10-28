@@ -122,16 +122,16 @@ Phase 9  Post-launch                       ongoing
 - [x] Token layer in `src/app/globals.css` (paper/ink/signal/line/status/danger).
 - [x] Fonts: Bricolage Grotesque, Instrument Sans, JetBrains Mono, Instrument Serif.
 - [x] Placeholder home, 404, favicon, resume placeholder.
-- [ ] `src/content/site.ts` typed site data.
-- [ ] `src/lib/content/schema.ts` + `load.ts` + `mdx-components.tsx`.
-- [ ] `src/components/layout/` header, footer, skip link, mobile menu skeleton.
-- [ ] `src/app/work/page.tsx` + `[slug]/page.tsx` + `generateStaticParams` + `generateMetadata`.
-- [ ] `src/app/about/page.tsx` skeleton.
-- [ ] `src/app/sitemap.ts`, `robots.ts`, `opengraph-image.tsx`.
-- [ ] `src/app/error.tsx`.
-- [ ] JSON-LD helpers.
-- [ ] Prettier + ESLint + Vitest + Playwright + Lighthouse CI config.
-- [ ] `.github/workflows/ci.yml`.
+- [x] `src/content/site.ts` typed site data.
+- [x] `src/lib/content/schema.ts` + `load.ts` + `mdx-components.tsx`.
+- [x] `src/components/layout/` header, footer, skip link, mobile menu.
+- [x] `src/app/work/page.tsx` + `[slug]/page.tsx` + `generateStaticParams` + `generateMetadata`.
+- [x] `src/app/about/page.tsx`.
+- [x] `src/app/sitemap.ts`, `robots.ts`; static `public/og.png` instead of `opengraph-image.tsx`.
+- [x] `src/app/error.tsx`.
+- [x] JSON-LD helpers.
+- [x] Prettier + ESLint + Playwright + axe + GitHub Actions workflow. Vitest and Lighthouse CI remain.
+- [x] `.github/workflows/ci.yml` committed and actionlint-clean; not yet run.
 - [ ] `README` commands verified from a clean clone.
 - [ ] Deploy a preview to Vercel; confirm static routes and 404.
 
@@ -208,22 +208,22 @@ Phase 9  Post-launch                       ongoing
 **Goal:** accessibility, performance, SEO, security — measured, not assumed.
 
 - [x] axe on every route; 0 violations at 320/390/1440, plus the open mobile menu.
-- [ ] Keyboard-only pass; focus visible; skip link; menu trap.
+- [x] Keyboard-only pass; 19–31 focus stops per route, indicators visible, skip link, menu trap.
 - [ ] VoiceOver or NVDA pass on home + flagship.
-- [ ] Contrast audit of every token pair; light-only.
+- [x] Contrast audit: token ratios recorded; axe reports no contrast violations.
 - [x] 320px reflow.
 - [x] 200% zoom equivalent and WCAG text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 96–99 performance, 100 accessibility/BP/SEO.
+- [x] Lighthouse mobile on `/` and flagship; 96–99 performance (median 97 on the final build), 100 accessibility/BP/SEO.
 - [x] HTML validator: 0 errors/warnings on 8 routes.
-- [x] Cross-browser scripted pass: Chromium and Firefox.
-- [ ] Bundle analyzer; first-load JS ≤120KB; Index island ≤3KB.
-- [ ] Image audit: sizes, formats, lazy loading, no CLS.
-- [ ] Font audit: two preloads, swap, no layout shift.
-- [ ] Metadata audit: titles, descriptions, canonical, OG, Twitter.
-- [ ] JSON-LD validation.
-- [ ] Sitemap + robots + 404 status.
-- [x] Security headers + CSP report-only.
-- [ ] Link check; no dead buttons.
+- [x] Cross-browser scripted pass: Chromium, Firefox, and Playwright WebKit.
+- [ ] Bundle analyzer; first-load JS ≤120KB (measured 140–144KB gzip, miss); Index island ≤3KB.
+- [x] Image audit: no content images; OG card is metadata only.
+- [x] Font audit: 5 self-hosted subsets, 139KB total, swap, CLS 0.
+- [x] Metadata audit: titles, descriptions, canonical, OG, Twitter on 7 routes.
+- [ ] JSON-LD validation: local parse passes; external Schema Markup Validator pending.
+- [x] Sitemap + robots + 404 status.
+- [x] Security headers + enforced CSP.
+- [x] Link check: 14 internal + 4 external, no dead controls.
 - [ ] Content audit against the ledger; banned words; spelling.
 - [ ] Real-device test: mid-range Android + iPhone on 4G.
 - [x] Print test.
@@ -327,7 +327,7 @@ All true:
 - [ ] Lighthouse mobile ≥95 all categories; CWV budgets met.
 - [ ] No broken links; no dead buttons; no "coming soon".
 - [ ] Metadata, OG, sitemap, JSON-LD, analytics verified.
-- [ ] Security headers live; CSP report-only.
+- [ ] Security headers live; CSP enforced locally, deploy check pending.
 - [ ] Real-device test passed.
 - [ ] Old site backed up/tagged; domain redirect works.
 

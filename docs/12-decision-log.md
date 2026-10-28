@@ -237,6 +237,17 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 
 ---
 
+## ADR-022 — Enforce the CSP instead of shipping a report-only no-op
+
+**Status:** Accepted · 28 Oct 2026
+**Context:** The first CSP was delivered as `Content-Security-Policy-Report-Only` with no `report-to` endpoint. WebKit logged that the policy would have no effect. The policy already allowed the only thing Next needs at runtime — inline bootstrap scripts and inline styles — so it could be enforced without a nonce or hash.
+**Decision:** Send `Content-Security-Policy` as an enforced header with `default-src 'self'`, `script-src 'self' 'unsafe-inline'`, `style-src 'self' 'unsafe-inline'`, self-hosted fonts and images, and `frame-ancestors`/`object-src`/`base-uri`/`form-action` restrictions. Keep `X-Frame-Options: DENY` as defence in depth. Record `'unsafe-inline'` as the known weakness rather than pretending the policy is strict.
+**Consequences:** The policy now blocks off-origin scripts, styles, frames, objects, fonts, images, and form submissions instead of doing nothing. It does not stop inline-script injection. Removing `'unsafe-inline'` requires a nonce-based dynamic render or build-time hashes, which would change the static architecture.
+**Alternatives:** Keep report-only with a reporting endpoint (adds a backend for no enforcement), remove CSP entirely (loses off-origin restrictions), or adopt nonces now (dynamic rendering, slower static pages).
+**Revisit if:** Next supports build-time CSP hashes for prerendered routes, or the site moves to dynamic rendering.
+
+---
+
 ## Open decisions
 
 | #   | Question                                                                                  | Owner   | Needed by   |

@@ -88,17 +88,17 @@ The first run needs `npx playwright install chromium`.
 
 - [x] Skip link is the first Tab stop; jumps to `<main>`.
 - [x] Mobile menu: Escape closes; focus returns; Tab stays inside while open; body scroll locked.
-- [ ] Keyboard-only: full header → menu → Index → cards → case study → contact journey; Index arrow keys; focus ring on every surface; sticky-header anchor offsets.
+- [x] Keyboard-only: 31/24/20/19 focus stops on `/`, `/work`, the flagship, and `/about`; all indicators visible; Index arrow keys work; TOC anchors land 23px below the sticky header.
 - [x] 320px: no horizontal scroll; all content readable; all four case tables fit.
 - [ ] VoiceOver (Safari) or NVDA (Firefox): headings, landmarks, evidence notes, figures, links.
 - [x] 200% zoom at 1280px equivalent (640 CSS px): 8 routes, no clipping or horizontal scroll.
 - [x] Text spacing overrides: 8 routes at 1440px and 390px; email breaks, tables scroll inside their wrapper.
 - [x] Reduced motion: 0 running animations and `scroll-behavior: auto` on `/` and the flagship.
-- [ ] Contrast: every token pair in `05` verified; axe reports no contrast violations on the shipped pairs.
+- [x] Contrast: token ratios are recorded in `05-design-system.md` (ink 16.06:1, soft 9.76:1, faint 5.39:1, signal-text 5.84:1, status 4.68:1); axe reports no contrast violations on shipped pairs.
 - [x] No video shipped; the architecture section uses code-generated maps.
-- [ ] No colour-only meaning.
+- [x] No colour-only meaning: status, confidentiality, and evidence kinds carry text labels; links are underlined.
 
-**Evidence:** `npm run audit:a11y` output (0 violations, 28 Oct 2026); Nu HTML Checker (0 errors/warnings); Lighthouse results in Gate 3; reflow and reduced-motion runs (28 Oct 2026). Screen-reader notes and the full manual keyboard journey are still pending.
+**Evidence:** `npm run audit:a11y` output (0 violations, 28 Oct 2026); Nu HTML Checker (0 errors/warnings); Lighthouse results in Gate 3; reflow, reduced-motion, keyboard, and anchor-offset runs (28 Oct 2026). Screen-reader notes are still pending.
 
 ---
 
@@ -117,17 +117,17 @@ Lighthouse ships its own Chrome launcher; set `CHROME_PATH` if it cannot find on
 
 **Recorded run — 28 Oct 2026**
 
-Lighthouse 13.6.0, mobile emulation, against `next start`. Home was run three times; the other routes once:
+Lighthouse 13.6.0, mobile emulation, against `next start`. On the final build, home was run three times and the other routes once:
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/` (median of 3)           | 96          | 1.0s | 0   | 220ms |
-| `/work`                     | 99          | 1.1s | 0   | 140ms |
-| `/work/documents-assistant` | 99          | 1.1s | 0   | 130ms |
+| `/` (median of 3)           | 97          | 1.0s | 0   | 200ms |
+| `/work`                     | 99          | 1.1s | 0   | 130ms |
+| `/work/documents-assistant` | 99          | 1.1s | 0   | 120ms |
 | `/about`                    | 99          | 0.8s | 0   | 130ms |
 | `/` desktop preset          | 100         | 0.3s | 0   | 10ms  |
 
-Home performance was 96, 99, 96 across the three runs (TBT 230, 110, 220ms). Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a CI median; field INP and real-device timings are still pending.
+Home performance was 97, 96, 97 on the final build (TBT 200, 210, 200ms), all with a 1.0s LCP. An earlier set on the prior build was 99, 94, 96; the 94 run had a 2.6s LCP outlier, so one run across both sets missed the 95 target. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -146,91 +146,92 @@ Home performance was 96, 99, 96 across the three runs (TBT 230, 110, 220ms). Acc
 | Long tasks        | none > 200ms on load |
 | Animation         | 60fps at 4× CPU      |
 
+**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. The 94 Lighthouse run also missed the ≥95 performance target once; median is 96. Both misses are recorded, not redefined.
+
 **Checks**
 
 - [ ] Bundle analyzer: Index island ≤3KB gz; no animation library; no component library.
-- [ ] Images: correct `sizes`, AVIF/WebP, lazy below fold; no image >400KB.
-- [ ] Fonts: 2 preloads; swap; no layout shift.
-- [ ] Video: poster, click-to-load, ≤3MB, no autoplay.
+- [x] Images: no content images; the OG card is social metadata only. Architecture figures are DOM/SVG.
+- [x] Fonts: 5 self-hosted subsets, 139 KB total, `display: swap`, CLS 0.
+- [x] Video: none shipped.
 - [x] No third-party scripts; no analytics at launch.
+- [x] CSS: 9.6 KB gzip, under the 30 KB budget.
 - [ ] Real mid-range Android on 4G: home <2s; case study usable.
-- [ ] Performance trace: no long task >200ms; no layout thrash.
+- [ ] Performance trace: at 4× CPU throttle, two long tasks on `/` (222ms, 213ms) and one on the flagship (258ms); TBT 200–210ms. Recorded as a miss.
 
-**Evidence:** Lighthouse JSON (28 Oct 2026, table above) + bundle report + real-device timing pending.
+**Evidence:** Lighthouse JSON (28 Oct 2026, table above); manual script-sum and CSS/font measurements; 4× CPU long-task probe. Bundle analyzer report and real-device timing pending.
 
 ---
 
 ## Gate 4 — SEO and metadata
 
-- [ ] Unique title + description on every route; lengths within limits.
-- [ ] Canonical absolute URL on every route.
-- [ ] One `<h1>` per page; heading order valid.
+- [x] Unique title + description on every route; lengths within limits.
+- [x] Canonical absolute URL on every route.
+- [x] One `<h1>` per page; no heading-level jumps on 8 routes.
 - [ ] OG + Twitter meta; 1200×630 image; preview tested in LinkedIn Post Inspector, X Card Validator, Slack.
-- [ ] JSON-LD Person, CreativeWork, BreadcrumbList validate (Schema Markup Validator).
-- [ ] `sitemap.xml` includes all public routes; no 404; `lastmod` sane.
-- [ ] `robots.txt` allows assets and references the sitemap.
-- [ ] 404 returns HTTP 404.
+- [x] JSON-LD Person, CreativeWork, BreadcrumbList parse and carry schema.org context; external Schema Markup Validator still pending.
+- [x] `sitemap.xml` includes all public routes; no 404; `lastmod` sane.
+- [x] `robots.txt` allows assets and references the sitemap.
+- [x] 404 returns HTTP 404.
 - [ ] Old domain 301s if changed.
 - [ ] Search Console verified; sitemap submitted.
-- [ ] No `noindex` on the production site.
-- [ ] Internal links descriptive; no orphan pages.
-- [ ] Image alt text present.
+- [x] No `noindex` on the production site.
+- [x] Internal links descriptive; 14 internal URLs resolve; no orphan pages.
+- [x] Image alt text present; decorative marks hidden.
 
-**Evidence:** screenshots of previews, sitemap URL, GSC verification, schema validation output.
+**Evidence:** `npm run audit:links` (14 internal, 4 external, all 200; 28 Oct 2026); metadata and JSON-LD parse checks in `seo-links` output; sitemap and robots fetched from the running server. Social preview screenshots, external schema validation, GSC, and the domain redirect depend on deployment.
 
 ---
 
 ## Gate 5 — Functional and links
 
-- [ ] Every internal link returns 200 (or the intended 404 for the 404 test).
-- [ ] Every external link returns 200 or is intentionally labeled private.
-- [ ] Every `mailto:` opens the correct address.
-- [ ] Copy-email writes the address and announces "Copied".
-- [ ] Resume downloads from header, contact, footer; correct filename and content type.
-- [ ] GitHub link opens the right profile; LinkedIn only if supplied.
-- [ ] Prev/next case files work; no self-link.
-- [ ] Mobile menu links work and close the menu.
-- [ ] Index links navigate to the correct case file.
-- [ ] Back/forward browser navigation works; scroll restoration reasonable.
-- [ ] No console errors on any route.
-- [ ] No 404s for images, fonts, or scripts.
-- [ ] 404 page links work.
+- [x] Every internal link returns 200 (or the intended 404 for the 404 test).
+- [x] Every external link returns 200 or is intentionally labeled private.
+- [x] Every `mailto:` opens the correct address.
+- [x] Copy-email writes the address and announces "Copied".
+- [x] Resume downloads from header, contact, footer; correct filename and content type.
+- [x] GitHub link opens the right profile; LinkedIn only if supplied.
+- [x] Prev/next case files work; no self-link.
+- [x] Mobile menu links work and close the menu.
+- [x] Index links navigate to the correct case file.
+- [x] Back/forward browser navigation works; scroll restoration reasonable.
+- [x] No console errors on any route.
+- [x] No 404s for images, fonts, or scripts.
+- [x] 404 page links work.
 
 **Commands**
 
 ```bash
-npx lychee --no-progress --max-retries 2 "http://localhost:3000/**"
-# or
-npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
+npm run audit:links -- --external
 ```
 
-**Evidence:** link-check report + manual click-through.
+**Evidence:** `npm run audit:links` report (14 internal + 4 external, all 200); Playwright functional script on 28 Oct 2026 (prev/next, menu close, Index, back/forward, asset responses, 404 links).
 
 ---
 
 ## Gate 6 — Cross-browser and responsive
 
-| Browser        | Check                                           |
-| -------------- | ----------------------------------------------- |
-| Chrome desktop | Scripted pass (Chromium 1248)                   |
-| Safari macOS   | Not run (WebKit blocked by missing `libavif16`) |
-| Firefox        | Scripted pass (Firefox 157)                     |
-| Edge           | Not run (Chromium engine covered above)         |
-| iOS Safari     | Not run                                         |
-| Android Chrome | Not run on device                               |
+| Browser        | Check                                               |
+| -------------- | --------------------------------------------------- |
+| Chrome desktop | Scripted pass (Chromium 1248)                       |
+| Safari macOS   | Not run as Safari UI; Playwright WebKit 27.2 passed |
+| Firefox        | Scripted pass (Firefox 157)                         |
+| Edge           | Not run (Chromium engine covered above)             |
+| iOS Safari     | Not run                                             |
+| Android Chrome | Not run on device                                   |
 
-**Viewports tested:** 320, 360, 390, 640 (200% zoom equivalent), 1440. Not yet run: 768, 1024, 1280, 1920, 2560.
+**Viewports tested:** 320, 360, 390, 640 (200% zoom equivalent), 768, 1024, 1280, 1440, 1920, 2560.
 
-- [x] No horizontal page overflow at 320, 360, 390, 640, and 1440; data tables scroll inside their wrapper.
-- [ ] No overlap of sticky header, TOC, or evidence notes at every listed viewport.
+- [x] No horizontal page overflow at all 10 widths; data tables scroll inside their wrapper.
+- [x] No overlap of sticky header, TOC, or evidence notes; TOC anchors land 23px below the header at 1440, and 768/1024/1920 were visually checked.
 - [x] Text does not clip at 200% zoom equivalent (640 CSS px).
-- [ ] Tap targets ≥44px on touch.
-- [ ] Hover states not required on touch.
-- [ ] No layout shift when fonts load.
-- [ ] No broken images at any DPR.
-- [ ] Print: case study legible; notes as footnotes; URLs visible.
+- [x] Primary controls ≥44px; breadcrumb links are 24×24, the WCAG 2.5.8 minimum; inline text links are exempt.
+- [x] Hover states are enhancement only; links are underlined.
+- [x] No layout shift when fonts load (CLS 0).
+- [x] No broken images; no content images are shipped.
+- [x] Print: case study legible; notes stay with claims; no hash-link artefacts printed.
 
-**Evidence:** screenshots per viewport + device notes.
+**Evidence:** 50 viewport checks (5 routes × 10 widths) on 28 Oct 2026; keyboard and anchor-offset scripts; screenshots at 768, 1024, and 1920; print check.
 
 ---
 
@@ -238,16 +239,18 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 - [x] No secrets in the repo or client bundle (`grep`, `gitleaks` optional).
 - [x] Security headers live: nosniff, referrer, frame, permissions, HSTS.
-- [x] CSP report-only deployed; no `unsafe-eval`; enforcement still planned.
+- [x] CSP enforced; no `unsafe-eval`; `script-src`/`style-src` allow `'unsafe-inline'` for Next's bootstrap and inline styles. Nonce/hash hardening is queued.
 - [x] No third-party scripts; no analytics at launch.
 - [x] Dependencies: `npm audit` reports 0 vulnerabilities (28 Oct 2026).
-- [ ] Screenshots redacted; EXIF stripped; no client data.
+- [x] Screenshots redacted; none shipped. EXIF not applicable.
 - [x] Resume PII decision documented: phone is included in the CV PDFs; site copy uses email only.
 - [x] No cookies; no consent banner.
 - [x] Error page exposes no stack traces.
 - [x] Contact is mailto; no form backend.
 - [ ] Domain: HTTPS, valid certificate, HSTS.
 - [ ] Vercel project access limited to the owner.
+
+**Evidence:** `curl -I` output (28 Oct 2026); `npm audit`; header config in `next.config.ts`; ADR-022 in `12-decision-log.md`.
 
 **Evidence:** header output (`curl -I`), audit output, redaction checklist.
 
@@ -340,17 +343,17 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 ## Sign-off
 
-| Gate               | Result | Evidence                                                                                             | Date       | Owner   |
-| ------------------ | ------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- |
-| 0 Content          | ⬜     |                                                                                                      |            | Yassine |
-| 1 Recruiter tests  | ⬜     |                                                                                                      |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0 violations; HTML valid; 200%/spacing/reduced motion pass; screen-reader and full keyboard open | 2026-10-28 | Yassine |
-| 3 Performance      | ◐      | Local Lighthouse mobile 96–99; desktop 100; field/real-device pending                                | 2026-10-28 | Yassine |
-| 4 SEO              | ◐      | SEO 100; 8 routes HTML-valid; JSON-LD/social previews still unverified                               | 2026-10-28 | Yassine |
-| 5 Functional       | ◐      | Scripted routes, menu, Index, copy, CV files pass; manual journey and form-free contact pending      | 2026-10-28 | Yassine |
-| 6 Cross-browser    | ◐      | Chromium + Firefox scripted pass; Safari/WebKit, Edge, iOS, Android not run                          | 2026-10-28 | Yassine |
-| 7 Security         | ◐      | Headers, CSP report-only, 0 audit vulnerabilities; domain/deploy controls open                       | 2026-10-28 | Yassine |
-| 8 Analytics/launch | ⬜     |                                                                                                      |            | Yassine |
+| Gate               | Result | Evidence                                                                                                                           | Date       | Owner   |
+| ------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
+| 0 Content          | ⬜     |                                                                                                                                    |            | Yassine |
+| 1 Recruiter tests  | ⬜     |                                                                                                                                    |            | Yassine |
+| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard pass; screen reader open                                                           | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Lighthouse 96–99 final (median 97; earlier 94 outlier), desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
+| 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open                            | 2026-10-28 | Yassine |
+| 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                                   | 2026-10-28 | Yassine |
+| 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                                               | 2026-10-28 | Yassine |
+| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                                       | 2026-10-28 | Yassine |
+| 8 Analytics/launch | ⬜     |                                                                                                                                    |            | Yassine |
 
 ◐ = the automated portion passed; the manual or field portion is still open.
 

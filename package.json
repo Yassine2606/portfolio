@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "audit:a11y": "node scripts/audit-a11y.mjs"
+    "audit:a11y": "node scripts/audit-a11y.mjs",
+    "audit:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

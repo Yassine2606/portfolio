@@ -420,7 +420,7 @@ async headers() {
 }
 ```
 
-- CSP: ship in report-only first, then enforce. Start with `default-src 'self'`, `img-src 'self' data:`, `font-src 'self'`, `style-src 'self' 'unsafe-inline'` (Tailwind/Next inline styles), `script-src 'self'` plus the nonce/hash approach Next documents. Do not ship `unsafe-eval`.
+- CSP: enforced. `default-src 'self'`, `img-src 'self' data:`, `font-src 'self'`, `style-src 'self' 'unsafe-inline'` (Tailwind/Next inline styles), `script-src 'self' 'unsafe-inline'` (Next's inline bootstrap). No `unsafe-eval`. A nonce or build-time-hash policy would allow removing `'unsafe-inline'`, but Next's static prerender does not mint a nonce; treat that as future hardening, not a launch blocker. A report-only policy without a reporting endpoint is not shipped because WebKit correctly treats it as a no-op.
 - No third-party embeds. If a YouTube/Vimeo embed is added, it opens a privacy and CSP decision.
 - Dependencies: Dependabot/Renovate weekly; `npm audit` in CI (non-blocking for dev, blocking for high severity).
 - Secrets: only `NEXT_PUBLIC_SITE_URL` is public. No API keys in the client. No client data in the repo.
@@ -551,13 +551,13 @@ Add `src/app/error.tsx` (client) with a plain apology, a retry button, and the e
 
 ## Definition of done for the architecture
 
-- [ ] `npm run build` fails on invalid frontmatter, missing evidence, or slug mismatch.
-- [ ] Every route is static; no server runtime at launch.
-- [ ] Initial JS ≤ 120KB gz; Index island ≤ 3KB gz.
-- [ ] No third-party scripts except Vercel Analytics.
-- [ ] All metadata, OG images, sitemap, robots, JSON-LD present.
-- [ ] CSP report-only deployed before enforcement.
-- [ ] CI runs typecheck, lint, format, unit, build, E2E, axe, Lighthouse on every PR.
+- [x] `npm run build` fails on invalid frontmatter, missing evidence, or slug mismatch.
+- [x] Every route is prerendered; no dynamic server data at launch.
+- [ ] Initial JS ≤ 120KB gz; measured 140–144KB gzip. Index island size not isolated.
+- [x] No third-party scripts; no analytics at launch.
+- [x] All metadata, OG image, sitemap, robots, and JSON-LD present locally.
+- [x] CSP enforced; nonce/hash hardening queued.
+- [ ] CI workflow runs typecheck, lint, format, build, axe, and link checks on every PR; committed, not yet run.
 - [ ] A mid-range Android loads the home page in under 2 seconds on 4G.
-- [ ] No secrets or client data in the repo or screenshots.
+- [x] No secrets or client data in the repo or screenshots.
 - [ ] `README.md` commands work from a clean clone.

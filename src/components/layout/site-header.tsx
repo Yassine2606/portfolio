@@ -11,7 +11,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-8 px-5 md:h-[72px] md:px-10">
         <Link
           href="/"
-          className="font-display shrink-0 text-[15px] font-medium tracking-[-0.015em]"
+          className="font-display inline-flex min-h-11 shrink-0 items-center text-[15px] font-medium tracking-[-0.015em]"
         >
           {site.name}
         </Link>

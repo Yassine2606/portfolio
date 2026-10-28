@@ -74,8 +74,8 @@ export function Hero() {
             <span className="text-ink-faint font-mono text-[9px] tracking-[0.14em] uppercase">
               Availability / note
             </span>
-            <span aria-hidden="true" className="text-ink-faint font-mono text-[10px]">
-              +
+            <span className="text-status font-mono text-[9px] tracking-[0.1em] uppercase">
+              Open
             </span>
           </div>
 

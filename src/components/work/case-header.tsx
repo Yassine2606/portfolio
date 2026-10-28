@@ -24,13 +24,19 @@ export function CaseHeader({
       >
         <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link href="/" className="hover:text-signal-text transition-colors">
+            <Link
+              href="/"
+              className="hover:text-signal-text inline-flex min-h-6 items-center transition-colors"
+            >
               Home
             </Link>
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link href="/work" className="hover:text-signal-text transition-colors">
+            <Link
+              href="/work"
+              className="hover:text-signal-text inline-flex min-h-6 items-center transition-colors"
+            >
               Work
             </Link>
           </li>
@@ -41,8 +47,8 @@ export function CaseHeader({
         </ol>
       </nav>
 
-      <div className="mt-10 grid gap-8 md:grid-cols-12">
-        <div className="md:col-span-8">
+      <div className="mt-10 grid gap-8 lg:grid-cols-12">
+        <div className="lg:col-span-8">
           <p className="text-ink-faint font-mono text-[10px] tracking-[0.14em] uppercase">
             Case file {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")} ·{" "}
             {confidentiality}
@@ -55,8 +61,8 @@ export function CaseHeader({
           </p>
         </div>
 
-        <div className="md:col-span-4 md:self-end">
-          <p className="text-ink-soft text-[15px] leading-[1.6]">{fm.summary}</p>
+        <div className="lg:col-span-4 lg:self-end">
+          <p className="text-ink-soft max-w-[62ch] text-[15px] leading-[1.6]">{fm.summary}</p>
           {fm.links.length > 0 ? (
             <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
               {fm.links.map((link) => (

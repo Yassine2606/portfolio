@@ -97,12 +97,13 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is re
 
 ### Measurement
 
-- **Lighthouse:** local production runs on 28 Oct 2026 passed the mobile budget on four routes (96–99/100/100/100). Home was run three times (96, 99, 96); the other routes once. CI with a three-run median is still required.
+- **Lighthouse:** local production runs on 28 Oct 2026 scored 96–99/100/100/100 on mobile. Home was run three times on the final build (97, 96, 97; median 97); the other routes once. An earlier set on the prior build was 99, 94, 96 with a 2.6s LCP outlier, so one run across both sets missed the 95 performance target. CI with a three-run median is still required.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
-- **Bundle:** `@next/bundle-analyzer` before launch; record first-load JS per route.
-- **Images:** check actual transferred sizes, not source dimensions.
+- **JavaScript:** served script tags summed per route: 144.0 KB gzip / 123.4 KB Brotli on `/`, 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill. The 120 KB gzip budget is missed; React and the router are ~115 KB of it.
+- **Long tasks:** at 4× CPU throttle, two tasks over 200ms on `/` (222ms, 213ms) and one on the flagship (258ms); TBT 200–210ms on `/`. Recorded as a miss.
+- **Images:** no content images are shipped; the OG card is metadata only.
 
 ### Techniques
 
@@ -196,7 +197,7 @@ No keyword stuffing. One phrase per page is enough; the case-study titles do the
 
 - [x] No secrets in the repo or client bundle; only `NEXT_PUBLIC_SITE_URL` is public.
 - [x] Security headers: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS.
-- [x] CSP in report-only; no `unsafe-eval`. Enforcement with nonces or hashes is still planned.
+- [x] CSP enforced; no `unsafe-eval`; `'unsafe-inline'` remains for Next's bootstrap and inline styles. Nonce/hash hardening is queued.
 - [x] Dependencies audited; `npm audit` reports 0 vulnerabilities (28 Oct 2026).
 - [x] No third-party scripts; no analytics at launch.
 - [ ] Screenshots redacted; EXIF stripped; no client names, emails, tokens, or customer records.
@@ -276,18 +277,18 @@ If it is not in the ledger, it does not go on the site.
 All of the following true:
 
 - [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
-- [ ] Keyboard-only pass on every route.
+- [x] Keyboard-only pass on 4 routes; 19–31 stops each, all indicators visible, TOC anchors clear the sticky header.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 96–99/100/100/100 on 28 Oct 2026.
-- [x] LCP ≤ 1.8s lab and CLS ≤ 0.05 on 28 Oct 2026 (single run).
+- [x] Lighthouse mobile 96–99/100/100/100 on the final build; median 97; one earlier run scored 94, below the 95 performance target.
+- [x] LCP ≤ 1.8s lab on every route except one 2.6s home outlier; CLS 0.
 - [ ] INP ≤ 200ms in the field.
-- [ ] First-load JS ≤ 120KB gz.
+- [ ] First-load JS ≤ 120KB gz; measured 140–144 KB gzip (119–123 KB Brotli), recorded as a miss.
 - [x] No horizontal scroll at 320px; all case tables fit.
 - [x] HTML validator: 0 errors and 0 warnings on 8 routes.
 - [x] 200% zoom equivalent, text-spacing overrides, and reduced motion pass.
-- [ ] Cross-browser: Chromium and Firefox pass; Safari/WebKit, Edge, iOS, Android pending.
-- [ ] No broken links; no dead buttons.
-- [ ] Metadata + OG + JSON-LD validated.
-- [x] Security headers + CSP report-only.
+- [ ] Cross-browser: Chromium, Firefox, and Playwright WebKit pass; real Safari, Edge, iOS, and Android pending.
+- [x] No broken links; 14 internal and 4 external URLs resolve; no dead controls.
+- [ ] Metadata + OG + JSON-LD validated externally; local structure and links pass.
+- [x] Security headers + enforced CSP.
 - [ ] Content ledger complete; banned words absent.
 - [ ] Real-device test on Android + iPhone.
