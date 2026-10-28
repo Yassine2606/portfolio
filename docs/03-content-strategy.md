@@ -125,7 +125,7 @@ evidence:
 | ------------------------------------- | --------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
 | Site copy (hero, philosophy, contact) | old `src/content/site.json`       | Strong raw material, dark-tech tone                | Rewrite for the dossier voice                    |
 | 7 project case studies                | old `src/content/projects/*.json` | Detailed, factual, architecture graphs             | Convert to MDX, tighten to new template          |
-| Resume PDF                            | old `public/resume.pdf`           | One page, but missing Capgemini detail and metrics | Rewrite from scratch                             |
+| Resume PDFs                           | `Documents/cv/output/`            | New EN/FR designed and ATS versions, one page each | Synced to `public/resume*.pdf` on 27 Oct 2026    |
 | OG image                              | old `public/og.png`               | Old design                                         | Replace with generated OG                        |
 | Architecture diagrams                 | React components + JSON graphs    | Good node/edge data, dated visual                  | Rebuild as accessible stage cards                |
 | Project screenshots                   | **none**                          | **Launch blocker**                                 | Capture in Phase 1                               |
@@ -138,7 +138,7 @@ evidence:
 1. **No screenshots.** The single biggest credibility gap. A recruiter cannot see the product.
 2. **Most GitHub links are private.** The site currently shows `Private repo` badges; that is honest, but it means the screenshots must carry the proof.
 3. **No measured AI quality.** The flagship has pipeline stages, not retrieval quality. Add a real eval.
-4. **Old resume is weaker than the site.** It misses the Capgemini RAG engagement's depth, quantifies little, and may still point at the old portfolio URL.
+4. **CV source lives outside the repo.** The EN/FR designed and ATS PDFs are synced; rebuild and re-copy all four after any fact or metric change.
 5. **No short demo.** A 60-second walkthrough is the closest thing to a live product for private work.
 6. **Case studies are long and feature-led.** They need a 60-second summary and decision-first structure.
 7. **No proof of recency for 2026.** Lead with the Capgemini PFE, Sadine, and RFID; archive 2025 work.
@@ -155,7 +155,7 @@ evidence:
 | P0-2 | Screenshots         | 3–5 per featured project, 16:10, 2560px wide, redacted, captioned                                               | Yassine | `public/work/<slug>/*.webp`                       |
 | P0-3 | Flagship demo       | Hosted synthetic-corpus demo **or** a 60–90s captioned walkthrough                                              | Yassine | URL or `public/work/documents-assistant/demo.mp4` |
 | P0-4 | RAG evaluation      | 40–60 Q/A pairs over synthetic docs; recall@5, MRR, citation groundedness, abstention on unanswerable questions | Yassine | `docs/evidence/rag-eval.md` + script + results    |
-| P0-5 | Resume rewrite      | One page, ATS-safe, same project names and metrics, Capgemini + Sadine + RFID + Wave                            | Yassine | `public/resume.pdf`                               |
+| P0-5 | CV sync             | Done 27 Oct 2026: EN/FR designed and ATS PDFs; re-sync from `Documents/cv/output/` after any change             | Yassine | `public/resume*.pdf`                              |
 | P0-6 | Link truth          | Every external link returns 200 or is labeled private; no dead demo buttons                                     | Yassine | Link-check report                                 |
 | P0-7 | Public repo hygiene | README, license, `.env.example`, no secrets, run instructions for public repos                                  | Yassine | Updated repos                                     |
 
@@ -304,14 +304,14 @@ Full skeleton: `11-content-templates.md`.
 
 The CV is part of the content system, not a separate document.
 
-- One page, text-based PDF, no photo for international tech roles, no multi-column layout.
-- Same project names, dates, and metrics as the site.
-- Lead with the Capgemini RAG engagement and Sadine; then Anomaly, RFID, Wave.
+- One page, text-based PDF, no photo for international tech roles. The ATS version is single-column; the designed version may use two columns.
+- Same project names, dates, and metrics as the site, or a clearly smaller subset. No contradictions.
+- Lead with the Capgemini RAG engagement; then YBInnovations (Wave) and MyMatch, as the current one-page CV does.
 - Every bullet: **action + system + constraint + result (or honest scope)**.
 - Mirror job-description keywords only where true.
-- Link: portfolio URL, GitHub, email. Add LinkedIn only when Yassine supplies the URL. No phone unless Yassine wants it public.
-- File name: `Yassine-Ben-Romdhane-AI-Engineer.pdf`.
-- Re-generate after any metric changes; update the "last updated" note on `/about`.
+- Link: portfolio URL, GitHub, email. The current PDFs include the phone number; the site UI keeps email only.
+- File names: `resume.pdf`, `resume-fr.pdf`, `resume-ats.pdf`, `resume-fr-ats.pdf`.
+- Re-generate after any metric change and sync all four files; update the "last updated" note on `/about`.
 
 Bullet templates and examples: `11-content-templates.md`.
 
@@ -336,6 +336,6 @@ Stale evidence is worse than missing evidence. A metric without a current `verif
 - [ ] Every metric has a source, a method, and a date.
 - [ ] Every featured project has ≥3 real screenshots and a captioned demo or live URL.
 - [ ] Private work is labeled; no dead links.
-- [ ] Resume matches the site and passes ATS text extraction.
+- [x] Resume is a one-page subset of the site with no contradictory claims; EN/FR ATS files pass extraction and audit.
 - [ ] No banned words in the final copy.
 - [ ] The flagship has at least one measured outcome, with limitations.

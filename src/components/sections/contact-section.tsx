@@ -4,7 +4,8 @@ import { ArrowUpRight, Download } from "@/components/ui/icons";
 
 const links = [
   { label: "GitHub", href: site.github, external: true },
-  { label: "Resume (PDF)", href: site.resume, external: false },
+  { label: "Resume — English (PDF)", href: site.resume, external: false },
+  { label: "CV — Français (PDF)", href: site.resumeFr, external: false },
 ];
 
 export function ContactSection() {
@@ -57,6 +58,24 @@ export function ContactSection() {
             ))}
           </ul>
           <p className="text-ink-faint mt-4 font-mono text-[10px] leading-relaxed tracking-[0.06em] uppercase">
+            ATS-friendly:{" "}
+            <a
+              href={site.resumeAts}
+              aria-label="Download ATS-friendly English resume (PDF)"
+              className="hover:text-ink decoration-line-strong underline decoration-1 underline-offset-4"
+            >
+              English
+            </a>{" "}
+            ·{" "}
+            <a
+              href={site.resumeFrAts}
+              aria-label="Download ATS-friendly French CV (PDF)"
+              className="hover:text-ink decoration-line-strong underline decoration-1 underline-offset-4"
+            >
+              Français
+            </a>
+          </p>
+          <p className="text-ink-faint mt-1 font-mono text-[10px] leading-relaxed tracking-[0.06em] uppercase">
             No contact form. No tracking pixels. Just a mailbox.
           </p>
         </div>

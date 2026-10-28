@@ -94,12 +94,12 @@ Phase 9  Post-launch                       ongoing
 
 ### 1E — Resume
 
-- [ ] Rewrite one page, ATS-safe, text-based PDF.
-- [ ] Lead with Capgemini RAG + Sadine; then Anomaly, RFID, Wave.
-- [ ] Same names/metrics/dates as the site.
-- [ ] Links: site, GitHub, email. Add LinkedIn only when supplied.
-- [ ] File: `public/resume.pdf` → `Yassine-Ben-Romdhane-AI-Engineer.pdf` at export.
-- [ ] Test text extraction in an ATS parser or `pdftotext`.
+- [x] One page, ATS-safe, text-based PDFs in English and French.
+- [x] Lead with Capgemini RAG; then YBInnovations (Wave) and MyMatch.
+- [x] No contradictions with the site; the CV is a one-page subset.
+- [x] Links: site, GitHub, email; phone included in the PDFs.
+- [x] Files: `public/resume.pdf`, `public/resume-fr.pdf`, `public/resume-ats.pdf`, `public/resume-fr-ats.pdf`.
+- [x] Text extraction tested; EN and FR ATS files score 10/10 in the CV audit.
 
 ### 1F — Content drafts
 
@@ -254,7 +254,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Freeze content; run the full gate one last time.
 - [ ] Set `NEXT_PUBLIC_SITE_URL`, analytics, domain, DNS, SSL.
 - [ ] 301 the old origin to the new one (if the domain changes).
-- [ ] Verify `/resume.pdf` content type and filename.
+- [ ] Verify all four CVs return 200, `application/pdf`, and the correct filename.
 - [ ] Submit the sitemap in Google Search Console; request indexing.
 - [ ] Check OG previews in LinkedIn, X, Slack.
 - [ ] Add the site to GitHub profile, LinkedIn, CV, email signature.

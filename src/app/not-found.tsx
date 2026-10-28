@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { site } from "@/content/site";
 
 export default function NotFound() {
   return (
@@ -28,7 +29,7 @@ export default function NotFound() {
           Back home
         </Link>
         <a
-          href="/resume.pdf"
+          href={site.resume}
           className="decoration-line-strong hover:decoration-signal-text inline-flex min-h-11 items-center text-sm font-medium underline decoration-1 underline-offset-4"
         >
           Resume

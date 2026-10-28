@@ -246,7 +246,7 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 | 3   | Capgemini disclosure scope                                                                | Yassine | Phase 0     |
 | 4   | Flagship demo format (synthetic corpus vs recording)                                      | Yassine | Phase 1     |
 | 5   | Domain choice                                                                             | Yassine | Phase 0     |
-| 6   | Phone number on the public resume                                                         | Yassine | Phase 1     |
+| 6   | Phone on the public CV — resolved: included in the CV PDFs; site UI uses email only       | Yassine | Done        |
 | 7   | Portrait yes/no                                                                           | Yassine | Phase 4     |
 | 8   | Fifth case study (Wave vs Wardrobe)                                                       | Yassine | Post-launch |
 | 9   | Contact form after 30 days                                                                | Yassine | Post-launch |

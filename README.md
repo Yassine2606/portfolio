@@ -5,6 +5,7 @@ A recruiter-facing portfolio for an AI engineer. Four systems are documented as 
 **Status:** built and verified locally (v1.0). Not deployed.
 **Availability:** immediate, no notice period.
 **Work:** remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
+**CV:** English and French, designed and ATS-friendly versions.
 **Design direction:** engineering dossier — warm paper, blue-black ink, one vermillion signal, editorial type, evidence in the margin.
 **Tagline:** _AI systems, with the receipts._
 
@@ -41,7 +42,10 @@ npm run start                # serve the production build
 | `/work/anomaly-detection-agent`            | SSG    | Public repository                                                |
 | `/work/rfid-access-control`                | SSG    | Private build                                                    |
 | `/about`                                   | Static | Profile, experience, education, stack, availability              |
-| `/resume.pdf`                              | Asset  | **Temporary:** the old CV; replace before launch                 |
+| `/resume.pdf`                              | Asset  | English designed CV, one page                                    |
+| `/resume-fr.pdf`                           | Asset  | French designed CV, one page                                     |
+| `/resume-ats.pdf`                          | Asset  | English ATS-friendly CV                                          |
+| `/resume-fr-ats.pdf`                       | Asset  | French ATS-friendly CV                                           |
 | `/404`                                     | Static | Recovery page                                                    |
 | `/sitemap.xml`, `/robots.txt`, `/icon.svg` | Static | App Router metadata routes                                       |
 
@@ -53,9 +57,8 @@ Also shipped: header and footer, focus-trapped mobile menu, home Index with tabs
 - No deployment, custom domain, or git remote. The canonical fallback is the old Vercel origin until `NEXT_PUBLIC_SITE_URL` is set.
 - No screenshots or recorded demos. The figures are architecture maps, not interface captures.
 - No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
-- No rewritten CV. `public/resume.pdf` is the old one.
 - No CI, axe, Lighthouse, screen-reader, or cross-browser pass yet. Internal checks were run in Chromium at desktop and mobile widths.
-- No LinkedIn link, phone number, portrait, or language proficiency levels. Those await owner confirmation.
+- No LinkedIn link, portrait, or language proficiency levels. The CV PDFs include the phone number; site copy uses email only.
 
 ---
 
@@ -117,10 +120,9 @@ No deployment has been performed. The procedure is in [`docs/13-implementation-r
 Before deploying:
 
 1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview.
-2. Replace `public/resume.pdf` with the rewritten CV.
-3. Re-run the four build gates.
-4. Check canonical URLs, OG image resolution, the 404 status, and a printed case file.
-5. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin.
+2. Confirm the four CV PDFs are current, then re-run the four build gates.
+3. Check canonical URLs, OG image resolution, the 404 status, and a printed case file.
+4. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin.
 
 ---
 
@@ -169,8 +171,8 @@ These block launch or would materially strengthen it:
 
 1. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
 2. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
-3. **Identity and contact:** custom domain, LinkedIn URL, phone policy for the CV, portrait yes/no, language proficiency labels, target-role priority.
-4. **Resume and audit:** rewritten one-page CV; CI plus axe, Lighthouse, screen-reader, and cross-browser passes.
+3. **Identity and contact:** custom domain, LinkedIn URL, portrait yes/no, language proficiency labels, target-role priority.
+4. **Audit:** CI plus axe, Lighthouse, screen-reader, and cross-browser passes.
 
 The site avoids unconfirmed claims: no LinkedIn placeholder, portrait, phone number, or language levels.
 

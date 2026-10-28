@@ -16,7 +16,7 @@ A gate is pass/fail. "Looks good" is not a result. Record the evidence (report, 
 - [ ] Every featured project has ≥3 real screenshots and a captioned demo or a live URL.
 - [ ] No client names, logos, emails, tokens, or customer data in any image.
 - [ ] The flagship has a measured result or an explicit `not measured` note.
-- [ ] Resume matches the site (names, dates, metrics), one page, text-extractable.
+- [x] Resume PDFs current: EN/FR designed and ATS versions, one page each.
 - [ ] Banned words removed; spelling and proper nouns checked.
 - [ ] Meta titles and descriptions written for every route.
 
@@ -224,7 +224,7 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 - [ ] No third-party scripts except analytics.
 - [ ] Dependencies: no high-severity vulnerabilities.
 - [ ] Screenshots redacted; EXIF stripped; no client data.
-- [ ] Resume PII decision documented (phone yes/no).
+- [x] Resume PII decision documented: phone is included in the CV PDFs; site copy uses email only.
 - [ ] No cookies; no consent banner.
 - [ ] Error page exposes no stack traces.
 - [ ] Contact is mailto; no form backend.

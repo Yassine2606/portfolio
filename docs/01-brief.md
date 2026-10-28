@@ -162,7 +162,7 @@ The hero's **Index** is the visual delivery: four systems, keyboard-switchable, 
 | `/work`        | All work: four featured case files + three archive cards                                |
 | `/work/[slug]` | Four deep case studies                                                                  |
 | `/about`       | Full profile, experience, stack, education, availability                                |
-| `/resume.pdf`  | ATS-safe one-page CV                                                                    |
+| `/resume.pdf`  | English designed one-page CV; FR and ATS variants also shipped                          |
 | `/404`         | Useful recovery page                                                                    |
 
 **Content:** four featured projects (Documents Assistant, Sadine Tours, Anomaly Detection Agent, RFID Access Control) and three archive cards (Wave, TranscriptoSense, Data Drift).

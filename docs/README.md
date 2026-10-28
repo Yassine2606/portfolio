@@ -79,10 +79,11 @@ These still block launch or would strengthen it. Defaults that were shipped with
 - [ ] Languages to list (Arabic / French / English) and proficiency labels. **Default applied:** languages listed without levels.
 - [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer. Copy targets AI engineering roles.
 - [ ] Whether a portrait is used (recommended: one candid photo on /about only). **Default applied:** no portrait; the work is the introduction.
-- [ ] Phone number on the public resume: keep, remove, or replace with email only. The site omits it; the temporary old PDF still contains it.
 
 Resolved 27 Oct 2026: availability — available immediately, with no notice period. The site says “Available immediately” in the header, hero, footer, mobile menu, about, and contact copy.
 
 Resolved 27 Oct 2026: work authorization — remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
+
+Resolved 27 Oct 2026: CV — English and French designed PDFs, plus English and French ATS-friendly PDFs. The CVs include the phone number; site copy still uses email only.
 
 The full shipped state and verification log are in `13-implementation-report.md`.

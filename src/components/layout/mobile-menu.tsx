@@ -141,6 +141,12 @@ export function MobileMenu() {
                   Download resume
                 </ButtonLink>
               </div>
+              <a
+                href={site.resumeFr}
+                className="text-ink-soft decoration-line-strong hover:decoration-signal-text w-fit text-sm underline decoration-1 underline-offset-4"
+              >
+                CV français (PDF)
+              </a>
               <p className="text-status font-mono text-[10px] tracking-[0.1em] uppercase">
                 ● {site.availability.label}
               </p>

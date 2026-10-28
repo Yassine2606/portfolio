@@ -16,7 +16,7 @@ Principle: **three clicks to any proof, one click to the CV.**
 /work/anomaly-detection-agent
 /work/rfid-access-control
 /about                    Profile, experience, stack, availability
-/resume.pdf               ATS-safe one-page CV
+/resume.pdf               English designed CV; FR and ATS variants
 /404                      Recovery page
 /sitemap.xml              Generated
 /robots.txt               Generated

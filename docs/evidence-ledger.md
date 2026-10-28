@@ -115,18 +115,25 @@ The archive rows are real builds that do not get a case file. They carry a title
 
 ### Site and launch
 
-| Gap                                        | Status                                                                                                                       |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| Resume                                     | `public/resume.pdf` is the old CV, pending the rewritten one-page version.                                                   |
-| Experience, education, Wardrobe            | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.   |
-| Availability and notice                    | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.       |
-| Remote / hybrid / on-site                  | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.            |
-| Relocation                                 | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                           |
-| Work authorization                         | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact. |
-| Client permissions                         | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                            |
-| Domain                                     | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                 |
-| LinkedIn, phone, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                 |
-| Per-case OG cards                          | Deferred. The default `public/og.png` card is used on every page.                                                            |
+| Gap                                 | Status                                                                                                                       |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Resume                              | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10.        |
+| Experience, education, Wardrobe     | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.   |
+| Availability and notice             | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.       |
+| Remote / hybrid / on-site           | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.            |
+| Relocation                          | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                           |
+| Work authorization                  | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact. |
+| Client permissions                  | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                            |
+| Domain                              | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                 |
+| LinkedIn, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                 |
+| Phone                               | Appears in the CV PDFs; site copy uses email only.                                                                           |
+| Per-case OG cards                   | Deferred. The default `public/og.png` card is used on every page.                                                            |
+
+---
+
+### CV source
+
+The EN/FR CVs are generated from `Documents/cv/source/cv-data.json`; `Documents/cv/master-facts.md` traces each metric to the PFE report or the owner's record. The 11 functional scenarios and 1.9 s median local latency come from the PFE report (Tables 5.5 and 5.7). The CV is a one-page subset: it leads with Capgemini, then YBInnovations and MyMatch, and omits Sadine, RFID, and Anomaly Detection. Do not treat the CV as a second source of site claims; re-check both when a fact changes.
 
 ---
 
@@ -149,3 +156,4 @@ The archive rows are real builds that do not get a case file. They carry a title
 | 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.    |
 | 2026-10-27 | Added confirmed remote/hybrid/on-site work and relocation willingness; left authorization unclaimed.  |
 | 2026-10-27 | Recorded the confirmed visa-sponsorship requirement for roles outside Tunisia.                        |
+| 2026-10-27 | Synced the new EN/FR designed and ATS CVs from `Documents/cv/output/`; all four are one page.         |

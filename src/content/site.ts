@@ -31,6 +31,9 @@ export const site = {
    */
   linkedin: null as string | null,
   resume: "/resume.pdf",
+  resumeFr: "/resume-fr.pdf",
+  resumeAts: "/resume-ats.pdf",
+  resumeFrAts: "/resume-fr-ats.pdf",
 
   education: {
     school: "ESPRIM — École Supérieure Privée d'Ingénieurs de Monastir",

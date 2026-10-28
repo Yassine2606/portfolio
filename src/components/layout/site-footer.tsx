@@ -44,6 +44,14 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
+              <a
+                href={site.resumeFr}
+                className="text-ink-soft hover:text-signal-text decoration-line-strong underline decoration-1 underline-offset-4 transition-colors"
+              >
+                CV (FR)
+              </a>
+            </li>
+            <li>
               <Link
                 href="/work"
                 className="text-ink-soft hover:text-signal-text decoration-line-strong underline decoration-1 underline-offset-4 transition-colors"

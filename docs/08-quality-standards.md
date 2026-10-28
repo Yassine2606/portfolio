@@ -200,7 +200,7 @@ No keyword stuffing. One phrase per page is enough; the case-study titles do the
 - [ ] Dependencies audited; high-severity issues fixed before launch.
 - [ ] No third-party scripts besides analytics.
 - [ ] Screenshots redacted; EXIF stripped; no client names, emails, tokens, or customer records.
-- [ ] Resume PII decision made (phone?); email is public by design.
+- [x] Resume PII decision made: phone is included in the CV PDFs; site copy uses email only.
 - [ ] No cookies; no consent banner.
 - [ ] Contact is `mailto`; no form backend at launch.
 - [ ] If a form is added: zod validation, honeypot, rate limit, Turnstile if needed, no PII in logs.
