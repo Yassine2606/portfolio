@@ -475,7 +475,7 @@ The axe, link, and Lighthouse audits and the zod build checks are committed. Vit
 
 ### CI (`.github/workflows/ci.yml`)
 
-CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, format check, typecheck, lint, build, installs Chromium, starts `next start`, then runs `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. The server log is uploaded on failure.
+CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, `npm audit --audit-level=high`, format check, typecheck, lint, build, installs Chromium, starts `next start`, then runs `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. The server log is uploaded on failure.
 
 - The workflow has not run on a remote; there is no git remote or authenticated account.
 - Lighthouse history/upload is not configured; the audit prints and asserts three-run medians.

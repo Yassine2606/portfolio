@@ -140,7 +140,7 @@ The site is server-rendered, so content and links exist before hydration. Two co
 - **Home Index:** the interactive tablist/accordion is paired with a stacked list of the same four projects. `@media (scripting: none)` hides the island and shows the stack; each item keeps its title, descriptor, outcome, stack tags, and case link.
 - **Header at narrow widths:** the menu trigger is a client island. When scripting is off, the trigger is hidden and a four-link nav row (Work, About, Contact, Resume) is shown. At 768px and above the normal desktop nav is used.
 
-`npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` kept 7,425 characters of content and 30 links, four stacked Index items, and four header links at 390px, with no overflow. With JS on, the fallbacks were hidden and the interactive Index and menu were visible. `/work`, all four case files, `/about`, and the 404 also render without JS.
+`npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` kept 7,425 characters of content and 30 links, four stacked Index items, and four header links at 390px, with no overflow. With JS on, the fallbacks were hidden and the interactive Index and menu were visible. `/work`, all four case files, `/about`, and the 404 also render without JS. Forcing the fallback visible and the interactive Index hidden produced 0 axe-core 4.14.0 violations at 390 and 1440.
 
 ### HTML validity
 
@@ -255,7 +255,7 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 
 ### Engineering
 
-- [x] Add CI workflow: install, format check, typecheck, lint, build, start, axe, link, no-JS, and Lighthouse checks. Committed; not yet run.
+- [x] Add CI workflow: install, dependency audit, format check, typecheck, lint, build, start, axe, link, no-JS, and Lighthouse checks. Committed; not yet run.
 - [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
 - [x] Add a repeatable link and asset check (`npm run audit:links`); 14 internal and 4 external URLs pass.
 - [x] Add a repeatable no-JS audit (`npm run audit:nojs`); 8 routes, JS on/off, 32 checks pass.

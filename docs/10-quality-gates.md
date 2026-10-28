@@ -313,7 +313,7 @@ npm run audit:links -- --external
 4. Case studies render; video shows poster; links work.
 5. No blank sections.
 
-**Recorded run — 28 Oct 2026:** `npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` rendered 7,425 characters of main text and 30 links; the stacked Index showed all four projects with a case link each, and the interactive Index was hidden. At 390px the menu trigger was hidden and the four-link no-JS nav was visible; at 1440px the desktop nav remained visible and the no-JS row stayed hidden. With JS on, the fallbacks were hidden and the interactive Index and mobile menu were visible. No route overflowed.
+**Recorded run — 28 Oct 2026:** `npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` rendered 7,425 characters of main text and 30 links; the stacked Index showed all four projects with a case link each, and the interactive Index was hidden. At 390px the menu trigger was hidden and the four-link no-JS nav was visible; at 1440px the desktop nav remained visible and the no-JS row stayed hidden. With JS on, the fallbacks were hidden and the interactive Index and mobile menu were visible. No route overflowed. Forcing the fallback visible also produced 0 axe-core violations at both widths.
 
 ### Slow network
 
