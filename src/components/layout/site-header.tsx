@@ -12,10 +12,8 @@ export function SiteHeader() {
         <Link
           href="/"
           className="font-display shrink-0 text-[15px] font-medium tracking-[-0.015em]"
-          aria-label={`${site.name} — home`}
         >
-          <span className="hidden sm:inline">{site.name}</span>
-          <span className="sm:hidden">{site.shortName}</span>
+          {site.name}
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

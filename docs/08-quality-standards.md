@@ -66,14 +66,14 @@ A portfolio that fails accessibility fails the craft test. The audience includes
 
 ### Testing protocol
 
-1. **Automated:** axe-core via Playwright on `/`, `/work`, each case study, `/about`, `/404`. 0 critical/serious.
+1. **Automated:** `npm run audit:a11y` runs axe-core via Playwright on `/`, `/work`, each case study, `/about`, and a 404 at 320, 390, and 1440px. 0 violations on 28 Oct 2026.
 2. **Keyboard:** Tab/Shift+Tab through every page; Enter/Space on controls; Escape closes the menu; no focus loss.
 3. **Screen reader:** VoiceOver on the home page and one case study; verify headings, tablist, evidence notes, figures, and link names.
 4. **Zoom/reflow:** 200% at 1280px; 320px viewport.
 5. **Reduced motion:** OS setting on; no transforms, autoplay, or view transitions.
 6. **Contrast:** automated token check + manual spot check of every text/background pair.
 
-Document the pass in `10-quality-gates.md`.
+Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is recorded there; the keyboard, screen-reader, zoom, reduced-motion, and contrast checks are not complete.
 
 ---
 
@@ -97,7 +97,7 @@ Document the pass in `10-quality-gates.md`.
 
 ### Measurement
 
-- **Lighthouse CI** on a production build, mobile emulation, 3 runs, median.
+- **Lighthouse:** one local production run on 28 Oct 2026 passed the mobile budget on four routes (98–100/100/100/100). CI with a three-run median is still required.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
@@ -275,13 +275,14 @@ If it is not in the ledger, it does not go on the site.
 
 All of the following true:
 
-- [ ] axe: 0 critical/serious on every route.
+- [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
 - [ ] Keyboard-only pass on every route.
 - [ ] Screen-reader pass on home + one case study.
-- [ ] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO).
-- [ ] LCP ≤ 1.8s lab, CLS ≤ 0.05, INP ≤ 200ms.
+- [x] Lighthouse mobile ≥ 95/100/95/100 (perf/a11y/best-practices/SEO); 98–100/100/100/100 on 28 Oct 2026.
+- [x] LCP ≤ 1.8s lab and CLS ≤ 0.05 on 28 Oct 2026 (single run).
+- [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz.
-- [ ] No horizontal scroll at 320px.
+- [x] No horizontal scroll at 320px.
 - [ ] No broken links; no dead buttons.
 - [ ] Metadata + OG + JSON-LD validated.
 - [ ] Security headers + CSP report-only.

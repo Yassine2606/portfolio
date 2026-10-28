@@ -66,7 +66,7 @@ Build fails if a slug mismatches its filename, a frontmatter field is missing, a
 
 ## 2. Verification log
 
-Run from `v2/` on 27 Oct 2026.
+Run from `v2/` on 27–28 Oct 2026.
 
 | Check              | Command                                 | Result                                                                                               |
 | ------------------ | --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -76,15 +76,47 @@ Run from `v2/` on 27 Oct 2026.
 | Production build   | `npm run build`                         | Pass; 12 static outputs, all four case studies prerendered                                           |
 | Desktop sweep      | Playwright, 1440×1000                   | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                       |
 | Mobile sweep       | Playwright, 390×844                     | Same 8 routes: no horizontal overflow                                                                |
+| Narrow sweep       | Playwright, 320×800                     | Same 8 routes: no horizontal overflow                                                                |
 | Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs             |
 | Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow |
 | CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                               |
+| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                    |
+| Lighthouse mobile  | Lighthouse 13.6.0, production build     | `/` 99, `/work` 99, flagship 98, `/about` 99 performance; 100 accessibility/BP/SEO on all four       |
+| Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                       |
 | Keyboard           | Playwright                              | First Tab reaches “Skip to content”; mobile menu traps focus and restores it                         |
 | Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed        |
 
+### Accessibility audit
+
+On 28 Oct 2026, axe-core 4.14.0 was injected into Playwright Chromium 1248 and run against `/`, `/work`, all four case files, `/about`, and a 404 at 320×800, 390×844, and 1440×1000. The mobile menu was audited open at both narrow widths. Result: **0 violations** for WCAG 2.0/2.1/2.2 A and AA tags.
+
+The first run found five violations, all fixed before the clean run:
+
+1. The home link's accessible name did not include the visible mobile wordmark.
+2. Project cards had a short `aria-label` that excluded most of the visible card text.
+3. Archive rows had the same compressed-label problem.
+4. The French ATS link said “French CV” but its visible text was “Français”.
+5. The skip link sat outside every landmark; it now has a labelled navigation wrapper.
+
+A separate 320px sweep found the contact email forcing a 25px horizontal overflow. The email now scales down at narrow widths, and both contact columns allow shrinking. The audit is repeatable with `npm run audit:a11y` after `npm run build && npm start`. Install the browser once with `npx playwright install chromium`.
+
+### Lighthouse
+
+One local run per route against `next start`, using Lighthouse 13.6.0's mobile emulation:
+
+| Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
+| --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
+| `/`                         | 99          | 100           | 100            | 100 | 1.0s | 0   | 120ms |
+| `/work`                     | 99          | 100           | 100            | 100 | 1.1s | 0   | 110ms |
+| `/work/documents-assistant` | 98          | 100           | 100            | 100 | 1.2s | 0   | 170ms |
+| `/about`                    | 99          | 100           | 100            | 100 | 0.9s | 0   | 140ms |
+| `/` desktop preset          | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
+
+These are single lab runs on a local server, not field data, a median, or a CI assertion. Scores will vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+
 ### What was checked visually
 
-Home, work index, all four case files, about, 404; desktop and mobile. Case files were checked at the top, evidence section, evidence register, and print layout. The Index was checked in tabbed desktop form and mobile accordion form.
+Home, work index, all four case files, about, 404; desktop, mobile, and 320px. Case files were checked at the top, evidence section, evidence register, and print layout. The Index was checked in tabbed desktop form and mobile accordion form. The 28 Oct accessibility pass added the 320px header and contact section to the visual check.
 
 ### Public-repository re-check
 
@@ -99,13 +131,15 @@ No public claim about TranscriptoSense or Data Drift was found false. Public rep
 
 ### What was not run
 
-- No axe-core, Lighthouse, or screen-reader pass (NVDA/VoiceOver).
+- No screen-reader pass (NVDA/VoiceOver).
 - No cross-browser pass beyond Chromium.
 - No real-device test.
 - No load test; the site is static.
 - No link checker; external links were checked manually (GitHub repositories).
+- No Lighthouse CI: one local run per route, not a three-run median.
+- No CI: the four build gates and the axe audit run locally only.
 
-Run those before calling the site externally audited. The quality gates in `10-quality-gates.md` still apply.
+Automated axe and Lighthouse passes are evidence, not certification. The quality gates in `10-quality-gates.md` still apply.
 
 ---
 
@@ -119,7 +153,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **No external audit.** Internal checks are not a certification.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and one local Lighthouse run scores 98–100 performance and 100 accessibility, best practices, and SEO. Screen-reader, cross-browser, real-device, and CI runs remain.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
@@ -155,8 +189,9 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 
 ### Engineering
 
-- [ ] Add CI: install, typecheck, lint, format check, build.
-- [ ] Add axe + Lighthouse CI against the production build.
+- [ ] Add CI: install, typecheck, lint, format check, build, and `npm run audit:a11y`.
+- [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
+- [ ] Add Lighthouse CI with a three-run median; the local single-run scores are recorded above.
 - [ ] Cross-browser and screen-reader pass.
 - [ ] Per-case OG images (optional; default card works).
 - [ ] Decide on cookieless analytics; if added, update the footer copy.
@@ -226,5 +261,6 @@ public/resume.pdf        English designed CV
 public/resume-fr.pdf     French designed CV
 public/resume-ats.pdf    English ATS-friendly CV
 public/resume-fr-ats.pdf French ATS-friendly CV
+scripts/audit-a11y.mjs   axe + Playwright audit across routes and viewports
 docs/                    this plan + evidence ledger
 ```

@@ -93,7 +93,7 @@ The full claim-to-source mapping is [`docs/evidence-ledger.md`](docs/evidence-le
 
 ## Verification
 
-Last full run: 27 Oct 2026, from this directory.
+Last full run: 28 Oct 2026, from this directory.
 
 | Check              | Command                | Result                                                         |
 | ------------------ | ---------------------- | -------------------------------------------------------------- |
@@ -103,11 +103,17 @@ Last full run: 27 Oct 2026, from this directory.
 | Production build   | `npm run build`        | Pass; all four case studies prerendered                        |
 | Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN` |
 | Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                          |
+| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow                          |
+| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu |
+| Lighthouse mobile  | Lighthouse 13.6.0      | 98–100 performance; 100 accessibility, best practices, and SEO |
+| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                              |
 | Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs          |
 | Keyboard           | Playwright             | First Tab reaches the skip link; mobile menu restores focus    |
 | Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept         |
 
-Not run: axe-core, Lighthouse, NVDA/VoiceOver, cross-browser, real-device, or load tests. Do not call the site externally audited until those pass.
+The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 320, 390, and 1440px. It found five accessibility issues on 28 Oct 2026, all fixed: the home link name, overlong card and archive link names, the French ATS link name, and the skip link landmark. A separate 320px sweep found contact-section overflow, also fixed. The script is `scripts/audit-a11y.mjs`.
+
+Not run: NVDA/VoiceOver, cross-browser, real-device, load, or CI. The Lighthouse result is one local run, not a median or an external certification.
 
 Public-repository claims were re-checked against shallow clones on 27 Oct 2026. The anomaly route count was corrected from 5 to 9, and two overbroad read-only/normalization sentences were narrowed. Details and commands are in the evidence ledger.
 

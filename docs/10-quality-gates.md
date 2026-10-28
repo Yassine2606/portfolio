@@ -71,33 +71,34 @@ Show `/` for 5 seconds, then ask:
 **Commands**
 
 ```bash
-npm run test:e2e          # includes axe on every route
+npm run build && npm start
+# in another terminal:
+npm run audit:a11y
 ```
+
+The first run needs `npx playwright install chromium`.
 
 **Automated**
 
-- [ ] axe: 0 critical/serious on `/`, `/work`, every case study, `/about`, `/404`.
-- [ ] Lighthouse accessibility = 100 (or ≥95 with every deduction understood).
+- [x] axe: 0 violations on `/`, `/work`, every case study, `/about`, and a 404 at 320, 390, and 1440px. The open mobile menu is included.
+- [x] Lighthouse accessibility = 100 on `/`, `/work`, the flagship, and `/about`.
 - [ ] HTML validator: no duplicate IDs, no invalid nesting.
 
 **Manual**
 
-- [ ] Skip link is the first Tab stop; jumps to `<main>`.
-- [ ] Keyboard-only: header → menu → Index → cards → case study → video → contact. No trap, no lost focus.
-- [ ] Mobile menu: Escape closes; focus returns; Tab stays inside while open; body scroll locked.
-- [ ] Index: Up/Down/Home/End works; `aria-selected` correct; panel labelled.
-- [ ] Focus ring visible on paper and on ink buttons.
-- [ ] Sticky header does not obscure focused anchors.
+- [x] Skip link is the first Tab stop; jumps to `<main>`.
+- [x] Mobile menu: Escape closes; focus returns; Tab stays inside while open; body scroll locked.
+- [ ] Keyboard-only: full header → menu → Index → cards → case study → contact journey; Index arrow keys; focus ring on every surface; sticky-header anchor offsets.
+- [x] 320px: no horizontal scroll; all content readable.
 - [ ] VoiceOver (Safari) or NVDA (Firefox): headings, landmarks, evidence notes, figures, links.
 - [ ] 200% zoom at 1280px: no clipping, no horizontal scroll.
-- [ ] 320px: no horizontal scroll; all content readable.
 - [ ] Text spacing overrides: no clipping.
 - [ ] Reduced motion: no transforms, autoplay, view transitions, or smooth scroll.
 - [ ] Contrast: every token pair in `05` verified; no signal text on paper below 4.5:1.
 - [ ] Video captions render; controls keyboard accessible.
 - [ ] No colour-only meaning.
 
-**Evidence:** axe report + screen-reader notes + screenshots at 320/200%.
+**Evidence:** `npm run audit:a11y` output (0 violations, 28 Oct 2026); Lighthouse results recorded in Gate 3; screen-reader notes and 200% screenshots still pending.
 
 ---
 
@@ -108,8 +109,25 @@ npm run test:e2e          # includes axe on every route
 ```bash
 npm run build
 npm run start
-npm run lighthouse
+# in another terminal:
+npx lighthouse http://localhost:3000/ --output=html --view
 ```
+
+Lighthouse ships its own Chrome launcher; set `CHROME_PATH` if it cannot find one.
+
+**Recorded run — 28 Oct 2026**
+
+Lighthouse 13.6.0, mobile emulation, one run per route against `next start`:
+
+| Route                       | Performance | LCP  | CLS | TBT   |
+| --------------------------- | ----------- | ---- | --- | ----- |
+| `/`                         | 99          | 1.0s | 0   | 120ms |
+| `/work`                     | 99          | 1.1s | 0   | 110ms |
+| `/work/documents-assistant` | 98          | 1.2s | 0   | 170ms |
+| `/about`                    | 99          | 0.9s | 0   | 140ms |
+| `/` desktop preset          | 100         | 0.3s | 0   | 10ms  |
+
+Accessibility, best practices, and SEO scored 100 on every route. These are single lab runs, not a median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -134,11 +152,11 @@ npm run lighthouse
 - [ ] Images: correct `sizes`, AVIF/WebP, lazy below fold; no image >400KB.
 - [ ] Fonts: 2 preloads; swap; no layout shift.
 - [ ] Video: poster, click-to-load, ≤3MB, no autoplay.
-- [ ] No third-party scripts except Vercel Analytics.
+- [x] No third-party scripts; no analytics at launch.
 - [ ] Real mid-range Android on 4G: home <2s; case study usable.
 - [ ] Performance trace: no long task >200ms; no layout thrash.
 
-**Evidence:** Lighthouse JSON + bundle report + real-device timing.
+**Evidence:** Lighthouse JSON (28 Oct 2026, table above) + bundle report + real-device timing pending.
 
 ---
 
@@ -307,10 +325,10 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 ### Resume
 
-1. Click Resume from header, contact, footer.
+1. Click Resume and CV links from header, contact, footer, and mobile menu.
 2. PDF opens/downloads; filename correct; one page; text selectable.
-3. `pdftotext` output includes name, email, Capgemini, Sadine, Anomaly, RFID.
-4. Links in the PDF work (portfolio, GitHub, email; LinkedIn only if supplied).
+3. `pdftotext` output includes name, email, Capgemini, YBInnovations (Wave), and MyMatch.
+4. Links in the PDF work (portfolio, GitHub, email); the phone number is in the PDF only.
 
 ### Social preview
 
@@ -322,17 +340,19 @@ npx linkinator http://localhost:3000 --recurse --skip "linkedin.com|github.com"
 
 ## Sign-off
 
-| Gate               | Result | Evidence | Date | Owner   |
-| ------------------ | ------ | -------- | ---- | ------- |
-| 0 Content          | ⬜     |          |      | Yassine |
-| 1 Recruiter tests  | ⬜     |          |      | Yassine |
-| 2 Accessibility    | ⬜     |          |      | Yassine |
-| 3 Performance      | ⬜     |          |      | Yassine |
-| 4 SEO              | ⬜     |          |      | Yassine |
-| 5 Functional       | ⬜     |          |      | Yassine |
-| 6 Cross-browser    | ⬜     |          |      | Yassine |
-| 7 Security         | ⬜     |          |      | Yassine |
-| 8 Analytics/launch | ⬜     |          |      | Yassine |
+| Gate               | Result | Evidence                                                                 | Date       | Owner   |
+| ------------------ | ------ | ------------------------------------------------------------------------ | ---------- | ------- |
+| 0 Content          | ⬜     |                                                                          |            | Yassine |
+| 1 Recruiter tests  | ⬜     |                                                                          |            | Yassine |
+| 2 Accessibility    | ◐      | axe 0 violations at 320/390/1440; Lighthouse a11y 100; manual items open | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Local Lighthouse mobile 98–100; desktop 100; field/real-device pending   | 2026-10-28 | Yassine |
+| 4 SEO              | ⬜     | Lighthouse SEO 100; validator/preview checks pending                     |            | Yassine |
+| 5 Functional       | ⬜     |                                                                          |            | Yassine |
+| 6 Cross-browser    | ⬜     | Chromium only                                                            |            | Yassine |
+| 7 Security         | ⬜     |                                                                          |            | Yassine |
+| 8 Analytics/launch | ⬜     |                                                                          |            | Yassine |
+
+◐ = the automated portion passed; the manual or field portion is still open.
 
 **Launch rule:** no gate may be skipped. A failed gate is either fixed or documented as a deliberate exception with an ADR and a date to fix. "Temporary" without a date is a no.
 
@@ -345,14 +365,14 @@ Within 15 minutes of going live:
 - [ ] `/` 200, correct title, no console errors.
 - [ ] `/work` 200; four case links work.
 - [ ] Flagship 200; hero image loads; metrics have sources.
-- [ ] `/about` 200; resume link works.
-- [ ] `/resume.pdf` 200, `application/pdf`, correct file.
+- [ ] `/about` 200; both CV links work.
+- [ ] `/resume.pdf`, `/resume-fr.pdf`, `/resume-ats.pdf`, `/resume-fr-ats.pdf` 200, `application/pdf`, correct files.
 - [ ] 404 returns 404.
 - [ ] `sitemap.xml` + `robots.txt` 200.
 - [ ] Canonical/OG use the production domain.
-- [ ] Analytics receives a page view and a `case_study_open` event.
+- [ ] If analytics is enabled, it receives a page view; otherwise confirm there are no third-party requests.
 - [ ] Mobile: menu, Index, CV, contact.
-- [ ] LinkedIn preview correct.
+- [ ] Social preview correct.
 - [ ] No mixed content.
 
 ---
@@ -361,8 +381,8 @@ Within 15 minutes of going live:
 
 | When      | Check                                                               |
 | --------- | ------------------------------------------------------------------- |
-| 1 hour    | Vercel errors, 404 logs, analytics                                  |
+| 1 hour    | Vercel errors and 404 logs; analytics only if enabled               |
 | 24 hours  | All routes 200; contact links; resume download                      |
-| 7 days    | Analytics: case studies opened, resume downloads, scroll depth      |
+| 7 days    | If enabled: case studies opened, resume downloads, scroll depth     |
 | 30 days   | Qualitative feedback; decide on fifth case study / form / dark mode |
 | Quarterly | Re-verify evidence, links, availability, CV                         |

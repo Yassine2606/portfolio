@@ -8,18 +8,18 @@ Principle: **static-first, content-safe, cheap to run, hard to break.**
 
 ## Stack
 
-| Layer     | Choice                                                  | Version                                  | Why                                                                                |
-| --------- | ------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
-| Framework | Next.js App Router                                      | 16.3                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small |
-| UI        | React                                                   | 19.2                                     | Server components by default; small islands for interaction                        |
-| Language  | TypeScript                                              | 5.x, strict + `noUncheckedIndexedAccess` | Content and UI contracts fail at build                                             |
-| Styling   | Tailwind CSS v4 + semantic CSS tokens                   | 4.x                                      | Token discipline without a runtime CSS-in-JS cost                                  |
-| Content   | MDX + `gray-matter` + zod                               | latest                                   | Long-form case studies with typed frontmatter and reusable components              |
-| Fonts     | `next/font/google`                                      | —                                        | Self-hosted, subset, zero layout shift                                             |
-| Analytics | Vercel Analytics + Speed Insights                       | —                                        | Cookieless, first-party, no banner                                                 |
-| Hosting   | Vercel                                                  | —                                        | Preview deploys, static CDN, edge headers, rollback                                |
-| Tests     | Vitest, Testing Library, Playwright, axe, Lighthouse CI | —                                        | Unit, component, E2E, accessibility, budgets                                       |
-| CI        | GitHub Actions                                          | —                                        | Every PR runs the same gates as local                                              |
+| Layer     | Choice                                | Version                                  | Why                                                                                |
+| --------- | ------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| Framework | Next.js App Router                    | 16.3                                     | Static HTML per case study, metadata API, OG generation, RSC keeps client JS small |
+| UI        | React                                 | 19.2                                     | Server components by default; small islands for interaction                        |
+| Language  | TypeScript                            | 5.x, strict + `noUncheckedIndexedAccess` | Content and UI contracts fail at build                                             |
+| Styling   | Tailwind CSS v4 + semantic CSS tokens | 4.x                                      | Token discipline without a runtime CSS-in-JS cost                                  |
+| Content   | MDX + `gray-matter` + zod             | latest                                   | Long-form case studies with typed frontmatter and reusable components              |
+| Fonts     | `next/font/google`                    | —                                        | Self-hosted, subset, zero layout shift                                             |
+| Analytics | None at launch                        | —                                        | Planned: Vercel Analytics + Speed Insights; footer claims no tracking              |
+| Hosting   | Vercel                                | —                                        | Not deployed; static build verified locally                                        |
+| Tests     | Playwright + axe-core                 | 1.64, 4.14                               | `npm run audit:a11y`: 8 routes × 3 widths; Vitest/Lighthouse CI are planned        |
+| CI        | GitHub Actions                        | —                                        | Not configured; local gates only                                                   |
 
 **Not in the stack at launch:** Motion/Framer Motion, anime.js, Three.js, GSAP, a CMS, a database, auth, i18n, a contact form backend, a state manager, a component library. Add only with an ADR and a measured reason.
 
@@ -448,24 +448,26 @@ async headers() {
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest",
-    "test:e2e": "playwright test",
-    "lighthouse": "lhci autorun"
+    "audit:a11y": "node scripts/audit-a11y.mjs"
   }
 }
 ```
 
+Planned but not configured: `test` (Vitest), `test:e2e` (Playwright suite), and `lighthouse` (Lighthouse CI).
+
 ### Test layers
+
+Only the axe audit and the zod build checks are committed. The rest are targets.
 
 | Layer         | Tool                     | What                                                                          |
 | ------------- | ------------------------ | ----------------------------------------------------------------------------- |
-| Unit          | Vitest                   | Schema parsing, slug matching, date formatting, metadata builder, JSON-LD     |
+| Unit          | Vitest (planned)         | Schema parsing, slug matching, date formatting, metadata builder, JSON-LD     |
 | Component     | Vitest + Testing Library | Evidence links, Index keyboard, mobile menu focus, copy button                |
-| E2E           | Playwright               | Home, `/work`, every case study, `/about`, 404, resume 200, no console errors |
-| Accessibility | axe-core in Playwright   | 0 critical/serious on each route                                              |
+| E2E           | Playwright (planned)     | Home, `/work`, every case study, `/about`, 404, resume 200, no console errors |
+| Accessibility | axe-core in Playwright   | 0 violations at 320/390/1440; committed as `npm run audit:a11y`               |
 | Visual        | Playwright screenshots   | 3 viewports per route; diff on PR (optional at launch)                        |
-| Performance   | Lighthouse CI            | Budgets in `08-quality-standards.md`                                          |
-| Links         | `lychee` or `linkinator` | Internal + external 200s (external allowlist)                                 |
+| Performance   | Lighthouse CLI (local)   | Budgets in `08-quality-standards.md`; CI median still planned                 |
+| Links         | `lychee` or `linkinator` | Internal + external 200s (external allowlist); not configured                 |
 | Content       | Build + zod              | Frontmatter, metric sources, evidence presence                                |
 
 ### CI (`.github/workflows/ci.yml`)
@@ -490,14 +492,14 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run format:check
-      - run: npm run test -- --run
       - run: npm run build
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - run: npm run lighthouse
+      - run: npm run start & npx --yes wait-on http://localhost:3000
+      - run: npm run audit:a11y
 ```
 
-- Lighthouse runs against `next start` on a built app. Assert LCP, CLS, TBT, accessibility, SEO.
+- This workflow is not configured yet; it is the target CI shape.
+- Lighthouse CI is not configured. Add it against `next start` with a three-run median before asserting budgets.
 - Keep CI under 10 minutes. Cache Playwright browsers if needed.
 - Add a `link-check` job nightly, not on every PR (external network flakiness).
 - Dependabot for npm and GitHub Actions.

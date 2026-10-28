@@ -1,5 +1,4 @@
 import { getFeaturedWork } from "@/lib/content/load";
-import { site } from "@/content/site";
 import { personJsonLd } from "@/lib/seo/jsonld";
 import { Hero } from "@/components/home/hero";
 import { IndexTabs, type IndexItem } from "@/components/home/index-tabs";
@@ -49,10 +48,6 @@ export default function HomePage() {
         <AboutPreview />
         <ContactSection />
       </main>
-
-      <p className="sr-only">
-        {site.name} — AI engineer, {site.location}.
-      </p>
     </>
   );
 }

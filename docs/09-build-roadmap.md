@@ -207,12 +207,13 @@ Phase 9  Post-launch                       ongoing
 
 **Goal:** accessibility, performance, SEO, security — measured, not assumed.
 
-- [ ] axe on every route; 0 critical/serious.
+- [x] axe on every route; 0 violations at 320/390/1440, plus the open mobile menu.
 - [ ] Keyboard-only pass; focus visible; skip link; menu trap.
 - [ ] VoiceOver or NVDA pass on home + flagship.
 - [ ] Contrast audit of every token pair; light-only.
-- [ ] 200% zoom, 320px reflow, text spacing.
-- [ ] Lighthouse mobile on `/` and flagship; ≥95 all categories.
+- [x] 320px reflow.
+- [ ] 200% zoom and text-spacing overrides.
+- [x] Lighthouse mobile on `/` and flagship; 99 and 98 performance, 100 accessibility/BP/SEO.
 - [ ] Bundle analyzer; first-load JS ≤120KB; Index island ≤3KB.
 - [ ] Image audit: sizes, formats, lazy loading, no CLS.
 - [ ] Font audit: two preloads, swap, no layout shift.
@@ -223,7 +224,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Link check; no dead buttons.
 - [ ] Content audit against the ledger; banned words; spelling.
 - [ ] Real-device test: mid-range Android + iPhone on 4G.
-- [ ] Print test.
+- [x] Print test.
 
 **Done when:** every standard in `08` has a recorded pass or a documented exception with an ADR; the exception is not "we ran out of time".
 

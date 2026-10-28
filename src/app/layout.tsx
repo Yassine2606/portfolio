@@ -95,9 +95,11 @@ export default function RootLayout({
       className={`${bricolage.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="grain flex min-h-dvh flex-col">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
+        <nav aria-label="Skip navigation">
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
+        </nav>
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />

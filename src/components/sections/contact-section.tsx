@@ -12,7 +12,7 @@ export function ContactSection() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="scroll-mt-24">
       <div className="border-line grid gap-10 border-t py-16 md:grid-cols-12 md:py-24">
-        <div className="md:col-span-7">
+        <div className="min-w-0 md:col-span-7">
           <p className="text-ink-faint font-mono text-[10px] tracking-[0.14em] uppercase">
             Contact / one conversation
           </p>
@@ -37,7 +37,7 @@ export function ContactSection() {
           </div>
         </div>
 
-        <div className="md:col-span-4 md:col-start-9 md:self-end">
+        <div className="min-w-0 md:col-span-4 md:col-start-9 md:self-end">
           <ul className="border-line border-t">
             {links.map((link) => (
               <li key={link.label} className="border-line border-b">
@@ -69,7 +69,7 @@ export function ContactSection() {
             ·{" "}
             <a
               href={site.resumeFrAts}
-              aria-label="Download ATS-friendly French CV (PDF)"
+              aria-label="Download ATS-friendly French CV (PDF) — Français"
               className="hover:text-ink decoration-line-strong underline decoration-1 underline-offset-4"
             >
               Français

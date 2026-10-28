@@ -25,7 +25,6 @@ export function ArchiveRow({ item }: { item: ArchiveEntry }) {
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          aria-label={item.hrefLabel ?? `${item.title} on GitHub`}
           className="hover:bg-paper-raised grid gap-x-6 gap-y-2 py-5 transition-colors md:grid-cols-12 md:items-baseline"
         >
           {content}

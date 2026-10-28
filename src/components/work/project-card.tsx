@@ -24,7 +24,6 @@ export function ProjectCard({
         "group border-line hover:border-line-strong block border transition-colors",
         featured ? "bg-paper-raised" : "",
       )}
-      aria-label={`${fm.title} case file`}
     >
       <div className={cn(featured ? "grid gap-0 md:grid-cols-12" : "flex h-full flex-col")}>
         <div

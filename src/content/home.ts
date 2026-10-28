@@ -4,7 +4,6 @@ export type ArchiveEntry = {
   year: string;
   note: string;
   href: string | null;
-  hrefLabel?: string;
 };
 
 /**
@@ -26,7 +25,6 @@ export const archive: ArchiveEntry[] = [
     year: "2025",
     note: "Public repository",
     href: "https://github.com/Yassine2606/TranscriptoSense",
-    hrefLabel: "View TranscriptoSense on GitHub",
   },
   {
     title: "Data Drift",
@@ -34,7 +32,6 @@ export const archive: ArchiveEntry[] = [
     year: "2025",
     note: "Public repository",
     href: "https://github.com/Yassine2606/Data-Drift-Decision-Intelligence-System",
-    hrefLabel: "View Data Drift on GitHub",
   },
 ];
 
