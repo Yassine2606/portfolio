@@ -64,16 +64,31 @@ export const experience = [
   {
     year: "2026",
     company: "Sadine Tours",
-    role: "Travel platform",
+    role: "Travel agency platform",
     detail: "Public catalog, admin ERP, and customer account in three locales.",
     href: "/work/sadine",
   },
   {
     year: "2026",
-    company: "Independent",
-    role: "RFID access control",
-    detail: "MQTT ingestion and a rule-based access engine with a live dashboard.",
+    company: "Sagemcom Tunisia",
+    role: "RFID access control · helper project",
+    detail: "MQTT badge scans, explainable access decisions, and a live operations dashboard.",
     href: "/work/rfid-access-control",
+  },
+  {
+    year: "2026",
+    company: "Wardrobe",
+    role: "AI fashion platform · private startup",
+    detail:
+      "Outfit generation, clothing analysis, and a ranked community feed. Ended September 2026.",
+    href: null,
+  },
+  {
+    year: "2025–26",
+    company: "YBInnovations",
+    role: "Call Plan Manager (CPM)",
+    detail: "Pharma field-sales planning and four-level approval, from rep to HQ.",
+    href: null,
   },
   {
     year: "2025",

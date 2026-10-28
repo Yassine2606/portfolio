@@ -88,3 +88,11 @@ export function ArrowLeft({ size = 16, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function ChevronDown({ size = 16, ...props }: IconProps) {
+  return (
+    <svg {...base({ size, ...props })}>
+      <path d="M3.5 6l4.5 4.5L12.5 6" />
+    </svg>
+  );
+}

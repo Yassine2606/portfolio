@@ -1,14 +1,12 @@
 import { site } from "@/content/site";
 import { ButtonLink } from "@/components/ui/button-link";
+import { ResumeMenu } from "@/components/ui/resume-menu";
 
 export function Hero() {
   return (
     <section className="border-line grid gap-12 border-b py-14 md:grid-cols-12 md:gap-8 md:py-24">
       <div className="md:col-span-8">
-        <p
-          className="hero-rise text-ink-faint font-mono text-[10px] tracking-[0.14em] uppercase"
-          style={{ animationDelay: "0ms" }}
-        >
+        <p className="hero-rise text-ink-faint font-mono text-[10px] tracking-[0.14em] uppercase [--hero-delay:0ms]">
           AI engineer · {site.location} · {site.timezone}
         </p>
 
@@ -23,30 +21,19 @@ export function Hero() {
           </span>
         </h1>
 
-        <p
-          className="hero-rise text-ink-soft measure mt-7 text-[17px] leading-[1.55] md:text-[19px]"
-          style={{ animationDelay: "220ms" }}
-        >
+        <p className="hero-rise text-ink-soft measure mt-7 text-[17px] leading-[1.55] [--hero-delay:220ms] md:text-[19px]">
           I own the whole path: retrieval, backend, interface, and the reliability work that keeps
           the answer honest.
         </p>
 
-        <div
-          className="hero-rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
-          style={{ animationDelay: "300ms" }}
-        >
+        <div className="hero-rise relative z-20 mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 [--hero-delay:300ms]">
           <ButtonLink href="#index" icon="arrow">
             Read the case files
           </ButtonLink>
-          <ButtonLink href={site.resume} variant="text" icon="download" download>
-            Download CV
-          </ButtonLink>
+          <ResumeMenu label="Download CV" variant="text" align="start" anchor="row" />
         </div>
 
-        <dl
-          className="hero-rise border-line mt-12 grid max-w-xl grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 sm:grid-cols-3"
-          style={{ animationDelay: "360ms" }}
-        >
+        <dl className="hero-rise border-line mt-12 grid max-w-xl grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 [--hero-delay:360ms] sm:grid-cols-3">
           <div>
             <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
               Systems

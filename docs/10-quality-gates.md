@@ -80,7 +80,7 @@ The first run needs `npx playwright install chromium`.
 
 **Automated**
 
-- [x] axe: 0 violations on `/`, `/work`, every case study, `/about`, and a 404 at 320, 390, and 1440px. The open mobile menu is included.
+- [x] axe: 0 violations on `/`, `/work`, every case study, `/about`, and a 404 at 320, 390, and 1440px. The open mobile menu and both open resume disclosures are included.
 - [x] Forced colors (Windows High Contrast emulation): 8 routes at 390 and 1440px, 0 violations. Solid buttons use `ButtonFace`/`ButtonText`, with a `Highlight` hover.
 - [x] Lighthouse accessibility = 100 on `/`, `/work`, the flagship, and `/about`.
 - [x] HTML validator: Nu HTML Checker 26.10.12, 0 errors and 0 warnings on 8 routes. Only informational self-closing-void notes remain.
@@ -122,13 +122,13 @@ Lighthouse 13.6.0, mobile emulation, against `next start`. Three runs per route;
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/` (median of 3)           | 96          | 0.9s | 0   | 218ms |
-| `/work` (median of 3)       | 99          | 0.9s | 0   | 131ms |
-| `/work/documents-assistant` | 99          | 0.9s | 0   | 138ms |
-| `/about` (median of 3)      | 99          | 0.8s | 0   | 129ms |
+| `/` (median of 3)           | 97          | 0.9s | 0   | 196ms |
+| `/work` (median of 3)       | 99          | 0.9s | 0   | 134ms |
+| `/work/documents-assistant` | 98          | 0.9s | 0   | 139ms |
+| `/about` (median of 3)      | 99          | 0.9s | 0   | 107ms |
 | `/` desktop preset (manual) | 100         | 0.3s | 0   | 10ms  |
 
-Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218ms). `/work` ran 99, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 129–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
+Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196ms). `/work` ran 99, 99, 98; the flagship 98, 98, 99; `/about` 99, 99, 99. This is the latest set, run after the resume picker and portrait shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 107–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -147,7 +147,7 @@ Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218m
 | Long tasks        | none > 200ms on load |
 | Animation         | 60fps at 4× CPU      |
 
-**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. One earlier Lighthouse run scored 94 and missed the ≥95 target; the repeatable audit's three-run medians are 96–99. Both misses are recorded, not redefined.
+**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. One earlier Lighthouse run scored 94 and missed the ≥95 target; the repeatable audit's three-run medians are 97–99. Both misses are recorded, not redefined.
 
 **Checks**
 
@@ -190,7 +190,7 @@ Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218m
 - [x] Every external link returns 200 or is intentionally labeled private.
 - [x] Every `mailto:` opens the correct address.
 - [x] Copy-email writes the address and announces "Copied".
-- [x] Resume downloads from header, contact, footer; correct filename and content type.
+- [x] Resume downloads from the header/hero picker, contact, footer, and mobile menu; all four filenames and content types verified.
 - [x] GitHub link opens the right profile; LinkedIn only if supplied.
 - [x] Prev/next case files work; no self-link.
 - [x] Mobile menu links work and close the menu.
@@ -240,7 +240,7 @@ npm run audit:links -- --external
 
 - [x] No secrets in the repo or client bundle (`grep`, `gitleaks` optional).
 - [x] Security headers live: nosniff, referrer, frame, permissions, HSTS.
-- [x] CSP enforced; no `unsafe-eval`; `script-src`/`style-src` allow `'unsafe-inline'` for Next's bootstrap and inline styles. Nonce/hash hardening is queued.
+- [x] CSP enforced; no `unsafe-eval`, no inline styles; `script-src` still allows `'unsafe-inline'` for Next's bootstrap. Nonce/hash hardening is queued.
 - [x] No third-party scripts; no analytics at launch.
 - [x] Dependencies: `npm audit` reports 0 vulnerabilities (28 Oct 2026).
 - [x] Screenshots redacted; none shipped. EXIF not applicable.
@@ -281,7 +281,7 @@ npm run audit:links -- --external
 ### Keyboard-only
 
 1. Reload `/`; press Tab once → skip link visible. Enter → main.
-2. Tab through header: Work, About, Contact, Resume. Focus visible.
+2. Tab through header: Work, About, Contact, Resume. Open the Resume disclosure with Enter; Tab through the four download links; Escape closes and returns focus to the summary. Focus visible throughout.
 3. Tab to Index; Arrow Down changes the tab; Enter opens the case file.
 4. On a case study: Tab reaches TOC, evidence links, figures, video controls, prev/next.
 5. Shift+Tab reverses in the same order.
@@ -314,7 +314,7 @@ npm run audit:links -- --external
 4. Case studies render; video shows poster; links work.
 5. No blank sections.
 
-**Recorded run — 28 Oct 2026:** `npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` rendered 7,425 characters of main text and 30 links; the stacked Index showed all four projects with a case link each, and the interactive Index was hidden. At 390px the menu trigger was hidden and the four-link no-JS nav was visible; at 1440px the desktop nav remained visible and the no-JS row stayed hidden. With JS on, the fallbacks were hidden and the interactive Index and mobile menu were visible. No route overflowed. Forcing the fallback visible also produced 0 axe-core violations at both widths.
+**Recorded run — 28 Oct 2026:** `npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` rendered 8,018 characters of main text and 33 links; the stacked Index showed all four projects with a case link each, and the interactive Index was hidden. At 390px the menu trigger was hidden and the five-link no-JS nav was visible; at 1440px the desktop nav remained visible and the no-JS row stayed hidden. The header and hero resume disclosures open natively with JS off. With JS on, the fallbacks were hidden and the interactive Index and mobile menu were visible. No route overflowed. Forcing the fallback visible also produced 0 axe-core violations at both widths.
 
 ### Slow network
 
@@ -331,10 +331,12 @@ npm run audit:links -- --external
 
 ### Resume
 
-1. Click Resume and CV links from header, contact, footer, and mobile menu.
-2. PDF opens/downloads; filename correct; one page; text selectable.
-3. `pdftotext` output includes name, email, Capgemini, YBInnovations (Wave), and MyMatch.
-4. Links in the PDF work (portfolio, GitHub, email); the phone number is in the PDF only.
+1. Click the header and hero Resume disclosures; confirm four numbered rows (EN/FR × Designed/ATS).
+2. Download each file; filename matches the row; one page; text selectable. Confirm Escape and outside click close the panel.
+3. Repeat from the contact section, footer, and mobile menu.
+4. Disable JavaScript: the header and hero disclosures still open; the narrow header shows direct EN and FR links.
+5. `pdftotext` output includes name, email, Capgemini, YBInnovations (Wave), and MyMatch.
+6. Links in the PDF work (portfolio, GitHub, email); the phone number is in the PDF only.
 
 ### Social preview
 
@@ -351,7 +353,7 @@ npm run audit:links -- --external
 | 0 Content          | ⬜     |                                                                                                                    |            | Yassine |
 | 1 Recruiter tests  | ⬜     |                                                                                                                    |            | Yassine |
 | 2 Accessibility    | ◐      | axe 0 incl. forced colors; HTML valid; 200%/spacing/motion/keyboard/no-JS pass; screen reader open                 | 2026-10-28 | Yassine |
-| 3 Performance      | ◐      | Lighthouse 96–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Lighthouse 97–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
 | 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open            | 2026-10-28 | Yassine |
 | 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                   | 2026-10-28 | Yassine |
 | 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                               | 2026-10-28 | Yassine |

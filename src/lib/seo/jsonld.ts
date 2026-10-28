@@ -13,10 +13,11 @@ export function personJsonLd(): JsonLd {
     url: site.url,
     email: `mailto:${site.email}`,
     address: { "@type": "PostalAddress", addressLocality: "Monastir", addressCountry: "TN" },
-    alumniOf: {
+    alumniOf: site.education.map((item) => ({
       "@type": "CollegeOrUniversity",
-      name: "ESPRIM — École Supérieure Privée d'Ingénieurs de Monastir",
-    },
+      name: item.school,
+      description: item.programme,
+    })),
     knowsAbout: site.knowsAbout,
     sameAs: [site.github],
   };

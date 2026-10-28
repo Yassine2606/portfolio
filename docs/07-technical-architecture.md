@@ -35,16 +35,16 @@ If the client JS budget is missed, the escape hatch is to remove the Index JS (C
 
 ## Rendering strategy
 
-| Route                         | Rendering                               | Client JS                             |
-| ----------------------------- | --------------------------------------- | ------------------------------------- |
-| `/`                           | Static (SSG)                            | Index, mobile menu, copy email        |
-| `/work`                       | Static                                  | mobile menu                           |
-| `/work/[slug]`                | Static via `generateStaticParams`       | mobile menu, copy email, video native |
-| `/about`                      | Static                                  | mobile menu, copy email               |
-| `/404`                        | Static                                  | none                                  |
-| `/sitemap.xml`, `/robots.txt` | Static                                  | none                                  |
-| OG images                     | Generated at request/build by `next/og` | none                                  |
-| `/api/contact`                | Not shipped at launch                   | —                                     |
+| Route                         | Rendering                         | Client JS                                     |
+| ----------------------------- | --------------------------------- | --------------------------------------------- |
+| `/`                           | Static (SSG)                      | Index, mobile menu, resume picker, copy email |
+| `/work`                       | Static                            | mobile menu, resume picker                    |
+| `/work/[slug]`                | Static via `generateStaticParams` | mobile menu, resume picker, copy email        |
+| `/about`                      | Static                            | mobile menu, resume picker, copy email        |
+| `/404`                        | Static                            | mobile menu, resume picker                    |
+| `/sitemap.xml`, `/robots.txt` | Static                            | none                                          |
+| OG images                     | Static default `public/og.png`    | none; per-case cards not generated            |
+| `/api/contact`                | Not shipped at launch             | —                                             |
 
 No SSR, no ISR, no middleware at launch. The site is a set of static files behind a CDN. That is the performance strategy.
 
@@ -62,9 +62,7 @@ src/
     error.tsx
     work/
       page.tsx
-      [slug]/
-        page.tsx
-        opengraph-image.tsx
+      [slug]/page.tsx
     about/
       page.tsx
     sitemap.ts
@@ -73,44 +71,48 @@ src/
   components/
     layout/
       site-header.tsx
-      mobile-menu.tsx
+      nav-links.tsx
+      mobile-menu.tsx         # client island
       site-footer.tsx
-      skip-link.tsx
     home/
       hero.tsx
       index-tabs.tsx          # client island
       method.tsx
       experience.tsx
       about-preview.tsx
-      contact.tsx
+    sections/
+      contact-section.tsx
     work/
       project-card.tsx
       archive-row.tsx
       case-header.tsx
-      summary-box.tsx
-      architecture.tsx
-      decision.tsx
-      metric.tsx
-      figure.tsx
-      video.tsx
-      toc.tsx
+      architecture-view.tsx
+      case-toc.tsx
+      evidence-register.tsx
+      metric-strip.tsx
       prev-next.tsx
+    visual/
+      project-plate.tsx       # code-generated system map
     evidence/
       claim.tsx
-      evidence-note.tsx
     ui/
-      button.tsx
-      tag.tsx
+      button-link.tsx
+      button-styles.ts
+      icons.tsx
+      resume-menu.tsx         # client island; native details
       status.tsx
       section-heading.tsx
       copy-email.tsx          # client island
   content/
+    architecture.ts           # system maps + boundary notes
+    case-sections.ts
+    home.ts
+    site.ts                   # identity, links, availability, resume files
     work/
       documents-assistant.mdx
       sadine.mdx
       anomaly-detection-agent.mdx
       rfid-access-control.mdx
-    site.ts                   # name, role, links, availability, meta
   lib/
     content/
       schema.ts
@@ -120,11 +122,15 @@ src/
       metadata.ts
       jsonld.ts
     utils.ts
-  styles/                     # optional split if globals grows
 public/
-  work/<slug>/*.webp|avif|mp4|vtt
+  images/yassine.jpg          # 864×1080 4:5 crop
+  images/yassine-648.jpg
+  images/yassine-432.jpg
   resume.pdf
-  og/
+  resume-fr.pdf
+  resume-ats.pdf
+  resume-fr-ats.pdf
+  og.png
 docs/
 ```
 

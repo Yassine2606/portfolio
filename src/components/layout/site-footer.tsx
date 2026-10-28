@@ -40,7 +40,7 @@ export function SiteFooter() {
                 href={site.resume}
                 className="text-ink-soft hover:text-signal-text decoration-line-strong underline decoration-1 underline-offset-4 transition-colors"
               >
-                Resume
+                Resume (EN)
               </a>
             </li>
             <li>

@@ -2,7 +2,7 @@
 
 Status: Locked v1.0 · 27 Oct 2026
 Companion: `01-brief.md`, `03-content-strategy.md`, `05-design-system.md`
-Principle: **three clicks to any proof, one click to the CV.**
+Principle: **three clicks to any proof, two clicks to the right CV.**
 
 ---
 
@@ -16,7 +16,10 @@ Principle: **three clicks to any proof, one click to the CV.**
 /work/anomaly-detection-agent
 /work/rfid-access-control
 /about                    Profile, experience, stack, availability
-/resume.pdf               English designed CV; FR and ATS variants
+/resume.pdf               English designed CV
+/resume-fr.pdf            French designed CV
+/resume-ats.pdf           English ATS-friendly CV
+/resume-fr-ats.pdf        French ATS-friendly CV
 /404                      Recovery page
 /sitemap.xml              Generated
 /robots.txt               Generated
@@ -46,7 +49,7 @@ The home page earns the click. The case file closes the argument. They are diffe
 - Left: full name on desktop; `YBR` monogram on mobile. Links home.
 - Center/right: **Work**, **About**, **Contact** (anchor on home, mailto elsewhere).
 - Availability: a small green dot + text, hidden below 1024px to protect space. The status is repeated in the hero on mobile.
-- **Resume** is a button, not a nav link. Always visible at `md+`; inside the mobile menu at small sizes.
+- **Resume** is a disclosure button, not a nav link. It opens four numbered downloads (English/Français × Designed/ATS), each with a human filename. Always visible at `md+`; inside the mobile menu at small sizes. With JavaScript off, the header falls back to direct English and French links.
 - Active page: 1px underline + `aria-current="page"`. On the home page, the section in view is underlined (IntersectionObserver, no scroll listener).
 - Sticky. Never hides on scroll; the CV must stay reachable. If a sticky header covers an anchor target, use `scroll-margin-top: 96px`.
 
@@ -54,7 +57,7 @@ The home page earns the click. The case file closes the argument. They are diffe
 
 - Trigger: "Menu" text + 2-line icon, 44px target. Label changes to "Close" with `aria-expanded`.
 - Full-screen paper sheet, 200ms fade + 8px rise; instant under reduced motion.
-- Contents: Work, About, Contact, Email, GitHub, Resume (primary button), availability line.
+- Contents: Work, About, Contact, Email, GitHub, four resume rows (English/Français × Designed/ATS), availability line.
 - Focus trap while open; Escape closes; focus returns to the trigger; body scroll locked.
 - No hover-only content.
 
@@ -130,15 +133,16 @@ That is five content sections, not eight. The old Toolbox, Engineering clusters,
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  03 / EXPERIENCE                                                             │
 │  2026  Capgemini Engineering — AI/RAG platform (PFE)                         │
-│  2026  Sadine Tours — platform · RFID — access control                       │
-│  2025  YBInnovations — Wave                                                  │
+│  2026  Sadine Tours — travel agency · Sagemcom — RFID helper project          │
+│  2025  YBInnovations — Wave · Call Plan Manager (CPM)                        │
+│  2026  Wardrobe — private startup · ended September 2026                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  04 / ABOUT                                                                  │
-│  Short bio · portrait (optional) · stack strip · [ More about me → ]         │
+│  Short bio · stack strip · [ More about me → ]                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  05 / CONTACT                                                                │
 │  "Let's build something that survives production."                           │
-│  [ Email ]  [ Copy address ]  [ GitHub ]  [ Resume ]                         │
+│  [ Email ]  [ Copy address ]  [ GitHub ]  [ Resume / 04 files ]             │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -183,7 +187,7 @@ That is five content sections, not eight. The old Toolbox, Engineering clusters,
 - Eyebrow: `AI engineer · Monastir, Tunisia · CET+1`.
 - H1: **AI systems, with the receipts.** Two lines on desktop; the second line in Instrument Serif italic, signal colour. Five words.
 - Lede: one sentence, ≤ 32 words: owns the whole path; retrieval, backend, interface, reliability.
-- CTAs: primary **Read the case files** (anchor to the Index); secondary **Download CV**.
+- CTAs: primary **Read the case files** (anchor to the Index); secondary **Download CV** (opens the four-version resume picker).
 - Metadata strip: availability, focus, last shipped. No fake metrics.
 - Availability card on desktop: a real status, not a decorative badge. Include role types and remote preference; update when it changes.
 - No portrait in the hero. The work is the hero.
@@ -210,26 +214,27 @@ Each principle: 1 headline, 2 sentences max, one evidence link. No icons unless 
 
 ### Experience
 
-Four rows maximum on the home page. Role, company/context, one line of scope, year. Link to `/about` for the full version.
+Six rows on the home page: the current roles plus the earlier YBInnovations builds. Role, company/context, one line of scope, year. Link to `/about` for the full version.
 
 - Capgemini Engineering — AI/RAG platform (PFE), 2026.
-- Sadine Tours — travel platform, 2026.
-- RFID access control — independent, 2026.
+- Sadine Tours — travel agency platform, 2026.
+- Sagemcom Tunisia — RFID access control, helper project, 2026.
+- Wardrobe — AI fashion platform for a private startup, ended September 2026.
+- YBInnovations — Call Plan Manager (CPM), 2025–26.
 - YBInnovations — Wave, 2025.
-- Wardrobe — ongoing (confirm whether it belongs here or only on `/about`).
 
-**Owner input:** exact titles, dates, and whether Capgemini is a PFE/internship or employment. Do not guess.
+**Owner input:** exact titles, dates, and whether Capgemini is a PFE/internship or employment were confirmed by the owner on 28 Oct 2026; the site does not guess.
 
 ### About preview
 
-100–140 words + optional portrait + a stack strip (6–10 tools, not 30). Link to `/about`.
+100–140 words + a stack strip (6–10 tools, not 30). No portrait here; the one portrait lives on `/about`. Link to `/about`.
 
 ### Contact
 
 - Headline: "Let's build something that survives production."
 - One sentence: role types, location/remote.
 - Email as a visible address + Copy button (`aria-live` confirmation).
-- GitHub, Resume. Add LinkedIn only when the owner supplies the URL.
+- GitHub, Resume (four versions via the header picker). Add LinkedIn only when the owner supplies the URL.
 - No form at launch. No "contact me" that opens a mail client with no context.
 
 ---
@@ -354,11 +359,11 @@ Human context and the full record, for the visitor who already believes the work
 
 1. **Intro** (120–180 words): who, where, what kind of systems, what he cares about. No life story.
 2. **What I'm looking for**: role types, remote/relocation, availability. One short paragraph.
-3. **Experience**: Capgemini, Sadine, RFID, YBInnovations, Wardrobe (confirm titles/dates). Each: role, context, 1–2 lines, link to the case file.
-4. **Education**: ESPRIM, engineering cycle, 2021–2026. No course list.
+3. **Experience**: Capgemini, Sadine, Sagemcom, Wardrobe, YBInnovations (Wave and CPM). Each: role, context, 1–2 lines, link to the case file.
+4. **Education**: ESPRIMS preparatory cycle, 2021–2023; ESPRIM engineering cycle, 2023–2026. No course list.
 5. **Stack**: grouped by use, each group 4–8 items, with links to projects where used. No logos.
 6. **Languages**: Arabic, French, English (confirm levels).
-7. **Portrait** (optional): one candid image, 4:5, natural light, no suit, no stock. Alt text: "Yassine Ben Romdhane".
+7. **Portrait**: one owner-supplied image, 4:5 crop, warm monochrome, paper-matte frame, caption `Fig. 00 / The person`. Alt text: "Portrait of Yassine Ben Romdhane."
 8. **Contact**: same block as home.
 
 No "fun facts", no "my journey", no "I fell in love with code at 12".
@@ -378,9 +383,9 @@ No "fun facts", no "my journey", no "I fell in love with code at 12".
 
 ### Recruiter, 20 seconds, mobile
 
-Header → name + role in hero → availability → CV button in menu → done. If they stay: Index row 01 → case file summary box → back.
+Header → name + role in hero → availability → CV button in menu → four inline rows → done. If they stay: Index row 01 → case file summary box → back.
 
-**Requirement:** the CV is reachable without scrolling and without opening a desktop-only control.
+**Requirement:** the CV is reachable without scrolling, from the mobile menu, and all four versions are listed inline rather than behind a second control.
 
 ### Hiring manager, 5 minutes, desktop
 
@@ -443,7 +448,7 @@ Case file → architecture diagram → code/demo links → previous/next → Git
 ## Definition of done for IA
 
 - [ ] Every route has a single job and a primary action.
-- [ ] The CV is reachable in one click from every page (header or menu).
+- [ ] The CV picker is reachable from every page (header or menu); the chosen file downloads in one click.
 - [ ] The home page fits the five-section order and does not duplicate `/work`.
 - [ ] Every case study has a real URL, metadata, OG image, and JSON-LD.
 - [ ] Mobile has no hover-only content and no horizontal scroll at 320px.

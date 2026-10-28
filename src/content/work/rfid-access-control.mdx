@@ -3,9 +3,9 @@ title: "RFID Access Control"
 slug: "rfid-access-control"
 tagline: "Badge scans become explainable access decisions, audit records, and live dashboard events."
 descriptor: "MQTT · access decisions"
-summary: "An industrial access-control platform: ESP32 readers publish badge scans over MQTT, a Fastify service evaluates employee status, certification, machine authorization, and schedule, then writes an audit record and broadcasts the decision in real time."
+summary: "A helper project for Sagemcom Tunisia: ESP32 readers publish badge scans over MQTT, a Fastify service evaluates employee status, certification, machine authorization, and schedule, then writes an audit record and broadcasts the decision in real time."
 year: 2026
-role: "Solo"
+role: "Solo — helper project, Sagemcom Tunisia"
 duration: "2026"
 status: "in-development"
 featured: true
@@ -13,7 +13,7 @@ order: 4
 confidentiality: "private"
 contract:
   problem: "Factory access lived on paper charts with no audit trail and certifications checked from memory."
-  constraint: "Physical hardware, a security-first brief, and no client or employee data published."
+  constraint: "Sagemcom Tunisia's security brief, physical hardware, and no client or employee data published."
   proof: "Eight models, five migrations, a deterministic engine, and offline detection within three missed heartbeats."
 capabilities: ["MQTT", "IoT", "Realtime", "Access control", "Prisma"]
 stack:
@@ -71,7 +71,7 @@ evidence:
     verifiedAt: "2026-10-27"
 seo:
   title: "RFID Access Control — MQTT decisions"
-  description: "An industrial access-control platform: ESP32 badge scans over MQTT, a deterministic decision engine, audit logs, offline detection, and a live dashboard."
+  description: "A helper project for Sagemcom Tunisia: ESP32 badge scans over MQTT, a deterministic decision engine, audit logs, offline detection, and a live dashboard."
   ogAlt: "RFID access control system map: edge readers, MQTT ingestion, decision engine, live dashboard."
 ---
 
@@ -79,7 +79,7 @@ seo:
 
 In a factory, knowing who may stand next to which machine is often a paper chart and a supervisor's memory. Employees carry access cards with no audit trail. Skill certifications expire, but nobody checks at the moment of use. A night-shift operator is judged by the badge on their chest, not verified against the machine they are about to start.
 
-The platform replaces that with a decision: an RFID badge scanned by an ESP32-connected reader becomes an MQTT event, and a backend decides allow or deny from four inputs — the employee is active, the skill certification is valid, the employee is authorized on that specific machine, and the schedule permits it. Every scan becomes an access log. Every denial has a reason.
+Built as a helper project for Sagemcom Tunisia, the platform replaces that with a decision: an RFID badge scanned by an ESP32-connected reader becomes an MQTT event, and a backend decides allow or deny from four inputs — the employee is active, the skill certification is valid, the employee is authorized on that specific machine, and the schedule permits it. Every scan becomes an access log. Every denial has a reason.
 
 ## Problem
 

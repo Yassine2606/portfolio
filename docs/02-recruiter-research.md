@@ -30,7 +30,7 @@ Design consequence: the home page must survive a 20-second scan, and a case stud
 | Can they work with us?  | Location, timezone, remote/relocation, authorization |
 | Are they available?     | An explicit status, with a date if possible          |
 | Do they have the stack? | Real project stack, not a logo wall                  |
-| Is there a CV?          | One click, every page                                |
+| Is there a CV?          | One-click picker, every page                         |
 | How do I contact them?  | Email and LinkedIn, visible, not hidden in a footer  |
 
 **What wins:** a clear title; a specific headline; "Available immediately" plus a role target; a stack line with the tools that appear in the job description; a case study card with a real screenshot; a CV button that works.

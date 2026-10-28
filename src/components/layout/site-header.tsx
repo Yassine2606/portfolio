@@ -2,7 +2,7 @@ import Link from "next/link";
 import { site } from "@/content/site";
 import { NavLinks } from "@/components/layout/nav-links";
 import { MobileMenu } from "@/components/layout/mobile-menu";
-import { ButtonLink } from "@/components/ui/button-link";
+import { ResumeMenu } from "@/components/ui/resume-menu";
 import { Status } from "@/components/ui/status";
 
 export function SiteHeader() {
@@ -25,14 +25,7 @@ export function SiteHeader() {
             <Status />
           </div>
 
-          <ButtonLink
-            href={site.resume}
-            icon="download"
-            download
-            className="min-h-10 px-4 py-2 text-sm"
-          >
-            Resume
-          </ButtonLink>
+          <ResumeMenu label="Resume" triggerClassName="min-h-10 px-4 py-2 text-sm" />
         </div>
 
         <MobileMenu />
@@ -67,7 +60,16 @@ export function SiteHeader() {
               download
               className="hover:text-signal-text inline-flex min-h-11 items-center"
             >
-              Resume
+              Resume (EN)
+            </a>
+          </li>
+          <li>
+            <a
+              href={site.resumeFr}
+              download
+              className="hover:text-signal-text inline-flex min-h-11 items-center"
+            >
+              CV (FR)
             </a>
           </li>
         </ul>

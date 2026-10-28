@@ -186,9 +186,19 @@ Airy, not empty. The page should feel like a well-set document: generous margins
 ### 1. Header
 
 - 64px mobile, 72px desktop; paper background; 1px bottom border.
-- Name (Bricolage 500, 15px) left; nav (Instrument Sans 14px) right; availability + Resume.
+- Name (Bricolage 500, 15px) left; nav (Instrument Sans 14px) right; availability + Resume disclosure.
 - Sticky. No blur. Active link: 1px underline + `aria-current`.
 - Mobile: monogram + Menu button (44px); full-screen sheet.
+
+### 1b. Resume picker
+
+- A native `<details>` disclosure, not a modal and not `role="menu"`. Four ordinary download links: English/Français × Designed/ATS.
+- Trigger uses the button styles (primary in the header, text in the hero). Panel: 22rem wide, 1px border, 2px radius, no shadow (ADR-018), max width `calc(100vw - 2.5rem)`.
+- Panel header: `Resume / 04 files` in mono; rows numbered `01–04`, each with language · format, a one-line note, and a download icon. Footer: `One page each · Updated October 2026`.
+- Header panel aligns to the trigger's right edge. Hero panel anchors to the CTA row and aligns left with the page margin, so it never slices a stat column mid-word.
+- Mobile menu repeats the same four rows inline; there is no second disclosure inside the sheet.
+- Escape closes and returns focus to the summary; outside click closes. The disclosure still opens with JavaScript off.
+- Short labels: "Designed" / "ATS", not "ATS-friendly optimized for applicant tracking systems".
 
 ### 2. Button
 
@@ -355,14 +365,14 @@ CSS:
 
 ### 14. Mobile menu
 
-- Full-screen paper sheet; header row with name + Close; nav links 28px display; contact links; Resume primary button; availability.
+- Full-screen paper sheet; header row with name + Close; nav links 28px display; contact links; four resume rows (English/Français × Designed/ATS); availability.
 - Focus trap, Escape, return focus, scroll lock.
 - 200ms fade + 8px rise; instant reduced motion.
 
 ### 15. Contact block
 
 - Headline (display-l), one sentence, email address in 20–24px, Copy button.
-- Links: Email, GitHub, Resume; 44px targets; external links `rel="me noreferrer"`. Add LinkedIn only when the owner supplies the URL.
+- Links: Email, GitHub, Resume (English and French designed files, plus both ATS files in the portal note); 44px targets; external links `rel="me noreferrer"`. Add LinkedIn only when the owner supplies the URL.
 - Copy confirmation: `aria-live="polite"`, label changes to "Copied" for 2s.
 - No form at launch.
 
@@ -403,8 +413,10 @@ CSS:
 
 ### Portrait
 
-- Optional, `/about` only. One candid image, 4:5, natural light, plain background. No suit, no studio, no AI-generated portrait.
-- Alt text: the person's name. No "professional headshot of a confident…".
+- One owner-supplied image, `/about` only. 4:5 crop, warm monochrome filter, paper-matte frame with a 1px border and 8px padding. Caption `Fig. 00 / The person` in mono 9px uppercase.
+- Plain `<img>` with a three-width `srcset` (432/648/864), not `next/image`: the component injects an inline `color:transparent` style that the production CSP blocks.
+- Alt text: "Portrait of Yassine Ben Romdhane." No "professional headshot of a confident…".
+- No stock photo, no AI-generated portrait, no studio backdrop.
 
 ### Video
 

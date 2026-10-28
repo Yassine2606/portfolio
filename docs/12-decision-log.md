@@ -185,9 +185,9 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 
 ## ADR-017 — One-click PDF resume, no HTML resume at launch
 
-**Status:** Accepted · 27 Oct 2026
+**Status:** Superseded in part by ADR-024 · 27 Oct 2026
 **Context:** Recruiters need a file to attach to an ATS; a web resume can be useful but duplicates content.
-**Decision:** One ATS-safe PDF, linked from the header, contact, and footer. No `/resume` HTML page at launch. The PDF is generated from the same source content and re-exported when metrics change.
+**Decision:** One ATS-safe PDF, linked from the header, contact, and footer. No `/resume` HTML page at launch. The PDF is generated from the same source content and re-exported when metrics change. **The single-file and one-click parts are superseded by ADR-024; the no-HTML-resume and PDF-only parts still hold.**
 **Consequences:** One artifact to keep current; ATS-friendly. Cost: mobile readers get a PDF; acceptable.
 **Alternatives:** HTML resume (duplicate), both (scope), no PDF (friction).
 **Revisit if:** analytics shows mobile users bouncing on the PDF; add an HTML view later.
@@ -240,9 +240,9 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 ## ADR-022 — Enforce the CSP instead of shipping a report-only no-op
 
 **Status:** Accepted · 28 Oct 2026
-**Context:** The first CSP was delivered as `Content-Security-Policy-Report-Only` with no `report-to` endpoint. WebKit logged that the policy would have no effect. The policy already allowed the only thing Next needs at runtime — inline bootstrap scripts and inline styles — so it could be enforced without a nonce or hash.
-**Decision:** Send `Content-Security-Policy` as an enforced header with `default-src 'self'`, `script-src 'self' 'unsafe-inline'`, `style-src 'self' 'unsafe-inline'`, self-hosted fonts and images, and `frame-ancestors`/`object-src`/`base-uri`/`form-action` restrictions. Keep `X-Frame-Options: DENY` as defence in depth. Record `'unsafe-inline'` as the known weakness rather than pretending the policy is strict.
-**Consequences:** The policy now blocks off-origin scripts, styles, frames, objects, fonts, images, and form submissions instead of doing nothing. It does not stop inline-script injection. Removing `'unsafe-inline'` requires a nonce-based dynamic render or build-time hashes, which would change the static architecture.
+**Context:** The first CSP was delivered as `Content-Security-Policy-Report-Only` with no `report-to` endpoint. WebKit logged that the policy would have no effect. The policy needed to allow Next's inline bootstrap script, but the only inline styles were four hero animation delays; those can be expressed as CSS custom properties instead.
+**Decision:** Send `Content-Security-Policy` as an enforced header with `default-src 'self'`, `script-src 'self' 'unsafe-inline'`, `style-src 'self'`, self-hosted fonts and images, and `frame-ancestors`/`object-src`/`base-uri`/`form-action` restrictions. Move the hero stagger to `--hero-delay` custom properties in the stylesheet, so no element needs a `style` attribute. Keep `X-Frame-Options: DENY` as defence in depth. Record `script-src 'unsafe-inline'` as the remaining weakness rather than pretending the policy is strict.
+**Consequences:** The policy now blocks off-origin scripts, styles, frames, objects, fonts, images, and form submissions, and it blocks inline styles. It does not stop inline-script injection. Removing `'unsafe-inline'` from `script-src` requires a nonce-based dynamic render or build-time hashes, which would change the static architecture. `next dev` adds `'unsafe-eval'` and a style `'unsafe-inline'` because React's development build and the dev overlay require them; production never sends either exception. `next/image` injects `style="color:transparent"` and its `fill` prop also relies on inline styles, so the portrait is a plain `<img>` with a 4:5 crop, explicit width/height, and a three-width `srcset`.
 **Alternatives:** Keep report-only with a reporting endpoint (adds a backend for no enforcement), remove CSP entirely (loses off-origin restrictions), or adopt nonces now (dynamic rendering, slower static pages).
 **Revisit if:** Next supports build-time CSP hashes for prerendered routes, or the site moves to dynamic rendering.
 
@@ -259,6 +259,18 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 
 ---
 
+## ADR-024 — Resume is a four-version disclosure, not a single default file
+
+**Status:** Accepted · 28 Oct 2026
+**Supersedes:** ADR-017, in part (the one-click, one-file decision).
+**Context:** The header and hero sent everyone to the English designed PDF. A French-speaking recruiter needs the French file, and an ATS portal needs the plain ATS file; both existed but were buried in the contact section or not linked at all. A modal would interrupt the page and need a focus trap for four ordinary links.
+**Decision:** The Resume control is a native `<details>` disclosure with four numbered options (English/Français × Designed/ATS). It opens under the trigger in the header and under the CTA row in the hero; the mobile menu lists the same four rows inline. Each link carries a human download filename. The component is a small client island for Escape and click-outside only; the disclosure works with JavaScript off.
+**Consequences:** Recruiters choose the right file in one step; all four files have one source of truth in `site.ts`. Cost: one more click than a default download, and the hero panel covers the first two stat columns while open. The panel has no shadow, per ADR-018.
+**Alternatives:** A modal (interrupts, focus trap, overkill), a `role="menu"` (wrong semantics for structured content), four direct links in the header (crowded), keep the English default (fails French and ATS users).
+**Revisit if:** the picker is opened and abandoned often, or one file becomes the clear default for every audience.
+
+---
+
 ## Open decisions
 
 | #   | Question                                                                                  | Owner   | Needed by   |
@@ -269,7 +281,7 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 | 4   | Flagship demo format (synthetic corpus vs recording)                                      | Yassine | Phase 1     |
 | 5   | Domain choice                                                                             | Yassine | Phase 0     |
 | 6   | Phone on the public CV — resolved: included in the CV PDFs; site UI uses email only       | Yassine | Done        |
-| 7   | Portrait yes/no                                                                           | Yassine | Phase 4     |
+| 7   | Portrait yes/no — resolved 28 Oct 2026: one owner-supplied portrait on `/about` only      | Yassine | Done        |
 | 8   | Fifth case study (Wave vs Wardrobe)                                                       | Yassine | Post-launch |
 | 9   | Contact form after 30 days                                                                | Yassine | Post-launch |
 | 10  | Dark mode after launch                                                                    | Yassine | Post-launch |

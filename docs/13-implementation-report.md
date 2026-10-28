@@ -1,6 +1,6 @@
 # 13 — Implementation report
 
-Status: Shipped locally v1.0 · 27 Oct 2026
+Status: Shipped locally v1.0 · 28 Oct 2026
 Companion: `07-technical-architecture.md`, `10-quality-gates.md`, `evidence-ledger.md`
 Scope: what was built, how it was verified, what is still missing.
 
@@ -8,7 +8,7 @@ Scope: what was built, how it was verified, what is still missing.
 
 ## 1. What shipped
 
-A static-first Next.js site with four case files, a work index, a profile page, a downloadable CV, and the infrastructure a launch needs.
+A static-first Next.js site with four case files, a work index, a profile page, a four-version CV picker, and the infrastructure a launch needs.
 
 | Route                                      | State        | Notes                                                                      |
 | ------------------------------------------ | ------------ | -------------------------------------------------------------------------- |
@@ -18,7 +18,7 @@ A static-first Next.js site with four case files, a work index, a profile page, 
 | `/work/sadine`                             | SSG          | Private client system                                                      |
 | `/work/anomaly-detection-agent`            | SSG          | Public repository                                                          |
 | `/work/rfid-access-control`                | SSG          | Private build                                                              |
-| `/about`                                   | Static       | Profile, experience, education, stack, availability                        |
+| `/about`                                   | Static       | Profile, portrait, experience, education, stack, availability              |
 | `/resume.pdf`                              | Static asset | English designed CV, one page                                              |
 | `/resume-fr.pdf`                           | Static asset | French designed CV, one page                                               |
 | `/resume-ats.pdf`                          | Static asset | English ATS-friendly CV                                                    |
@@ -31,6 +31,16 @@ There is no contact form, dark mode, blog, analytics script, or client-side anim
 ### Visual proof
 
 The site uses code-generated **system maps** instead of screenshots. The maps are rendered from `src/content/architecture.ts`, the same registry the case-study architecture section reads. They are diagrams of documented architecture, not mock interfaces, and the case pages say so in the figure caption. No stock photo, fake dashboard, invented metric, or client screenshot appears anywhere.
+
+### Resume picker
+
+The header and hero no longer send every visitor to the English designed PDF. `src/components/ui/resume-menu.tsx` is a native `<details>` disclosure with four numbered rows: English/Français × Designed/ATS. Each row carries the human download filename. The header panel aligns to the trigger; the hero panel anchors to the CTA row so it starts at the page margin. The mobile menu lists the same four rows inline. Escape closes and returns focus to the summary; outside click closes. The island is only for those two behaviours — the disclosure opens without JavaScript.
+
+The files and labels come from `resumeFiles` and `resumeVersions` in `src/content/site.ts`, so the header, hero, footer, mobile menu, contact block, and 404 cannot drift. The panel has no shadow, per ADR-018. ADR-024 records the decision and supersedes the single-default-file part of ADR-017.
+
+### Portrait
+
+`/about` carries one owner-supplied portrait: a 4:5 crop, warm monochrome filter, paper-matte frame, and the caption `Fig. 00 / The person`. It is a plain `<img>` with a three-width `srcset` (432/648/864) rather than `next/image`, because `next/image` injects `style="color:transparent"` and the production CSP blocks inline styles. The portrait appears nowhere else.
 
 ### Content model
 
@@ -68,7 +78,7 @@ Build fails if a slug mismatches its filename, a frontmatter field is missing, a
 - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
 - `Content-Security-Policy` with `default-src 'self'`, self-hosted fonts and images, `frame-ancestors 'none'`, and `object-src 'none'`
 
-The CSP is enforced. `script-src` and `style-src` include `'unsafe-inline'` because Next injects the inline bootstrap script and the site uses inline styles; there is no `'unsafe-eval'` and no third-party origin. A nonce or hash-based policy would require dynamic rendering or build-time hashes and remains future work. The earlier report-only header was removed after WebKit correctly warned that a policy without a reporting endpoint has no effect. There is no form backend, no analytics, and no cookie at launch.
+The CSP is enforced. `script-src` still includes `'unsafe-inline'` because Next injects the inline bootstrap script; `style-src` is now `'self'` with no inline-style exception, and the hero stagger uses `--hero-delay` custom properties instead of `style` attributes. There is no `'unsafe-eval'` and no third-party origin. A nonce or hash-based policy would require dynamic rendering or build-time hashes and remains future work. `next dev` adds `'unsafe-eval'` and a style `'unsafe-inline'` for React's development build and the dev overlay; production sends neither. The portrait is a plain `<img>` because `next/image` injects an inline `color:transparent` style. The earlier report-only header was removed after WebKit correctly warned that a policy without a reporting endpoint has no effect. There is no form backend, no analytics, and no cookie at launch.
 
 ### SEO and sharing
 
@@ -83,38 +93,40 @@ The CSP is enforced. `script-src` and `style-src` include `'unsafe-inline'` beca
 
 Run from `v2/` on 27–28 Oct 2026.
 
-| Check              | Command                                 | Result                                                                                                 |
-| ------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Types              | `npm run typecheck`                     | Pass                                                                                                   |
-| Lint               | `npm run lint`                          | Pass, 0 errors / 0 warnings                                                                            |
-| Format             | `npm run format:check`                  | Pass                                                                                                   |
-| Production build   | `npm run build`                         | Pass; 12 static outputs, all four case studies prerendered                                             |
-| Desktop sweep      | Playwright, 1440×1000                   | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                         |
-| Mobile sweep       | Playwright, 390×844                     | Same 8 routes: no horizontal overflow                                                                  |
-| Narrow sweep       | Playwright, 320×800                     | 8 routes: no horizontal overflow; all four case tables fit at 320                                      |
-| Viewport sweep     | Playwright, 320–2560 in 10 steps        | 5 routes per width, no horizontal overflow; 50 checks pass                                             |
-| Reflow and spacing | Playwright, 640×512 / 390×900           | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides: 8 routes, no page overflow                |
-| Reduced motion     | Playwright, media emulation             | 0 running animations and `scroll-behavior: auto` on `/` and the flagship                               |
-| No JavaScript      | `npm run audit:nojs`                    | 8 routes × 390/1440 with JS on and off; 4 stacked Index items; 4 header links; no overflow             |
-| HTML validity      | Nu HTML Checker 26.10.12                | 8 routes: 0 errors, 0 warnings; only informational self-closing-void notes                             |
-| Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs               |
-| Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow   |
-| CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                                 |
-| Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                      |
-| Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                    |
-| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, open menu, forced colors at 390/1440           |
-| Lighthouse mobile  | `npm run audit:lighthouse`              | 96–99; home medians 96–97, other routes 98–99; 3 runs each; 100 a11y/BP/SEO                            |
-| Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                         |
-| First-load JS      | 8 modern script tags, gzip + Brotli     | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0; 120 KB gzip target missed                 |
-| Links and assets   | `npm run audit:links`                   | 14 internal URLs and 4 external GitHub links, all 200                                                  |
-| Cross-browser      | Playwright, Chromium/Firefox/WebKit     | Chromium 1248, Firefox 157, WebKit 27.2: 8 routes, menu, Index, copy, no overflow                      |
-| Keyboard           | Playwright                              | 31/24/20/19 focus stops on `/`, `/work`, flagship, `/about`; all indicators visible; first Tab is skip |
-| Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed          |
-| CI                 | `.github/workflows/ci.yml`              | Committed and actionlint-clean; not run because there is no remote or account access                   |
+| Check              | Command                                 | Result                                                                                                      |
+| ------------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Types              | `npm run typecheck`                     | Pass                                                                                                        |
+| Lint               | `npm run lint`                          | Pass, 0 errors / 0 warnings                                                                                 |
+| Format             | `npm run format:check`                  | Pass                                                                                                        |
+| Production build   | `npm run build`                         | Pass; 12 static outputs, all four case studies prerendered                                                  |
+| Desktop sweep      | Playwright, 1440×1000                   | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`                                              |
+| Mobile sweep       | Playwright, 390×844                     | Same 8 routes: no horizontal overflow                                                                       |
+| Narrow sweep       | Playwright, 320×800                     | 8 routes: no horizontal overflow; all four case tables fit at 320                                           |
+| Viewport sweep     | Playwright, 320–2560 in 10 steps        | 5 routes per width, no horizontal overflow; 50 checks pass                                                  |
+| Reflow and spacing | Playwright, 640×512 / 390×900           | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides: 8 routes, no page overflow                     |
+| Reduced motion     | Playwright, media emulation             | 0 running animations and `scroll-behavior: auto` on `/` and the flagship                                    |
+| No JavaScript      | `npm run audit:nojs`                    | 8 routes × 390/1440 with JS on and off; 4 stacked Index items; 5 header links; no overflow                  |
+| HTML validity      | Nu HTML Checker 26.10.12                | 8 routes: 0 errors, 0 warnings; only informational self-closing-void notes                                  |
+| Evidence rendering | Playwright + HTML inspection            | 4 labels and 4 markers per case; `Evidence 01 / repo`, `[1]`…`[4]`; no nested paragraphs                    |
+| Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow        |
+| CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                                      |
+| Resume picker      | Playwright, Chromium/Firefox/WebKit     | Header/hero panels open; Escape returns focus; outside click closes; 4 correct filenames; works with JS off |
+| Portrait           | Playwright + Lighthouse                 | 4:5 crop, warm filter, correct `srcset` at 320/390/1440; 0 CSP console errors; BP 100                       |
+| Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                           |
+| Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                         |
+| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, open menu, forced colors at 390/1440                |
+| Lighthouse mobile  | `npm run audit:lighthouse`              | 97–99; home 97, `/work` 99, flagship 98, `/about` 99; 3 runs each; 100 a11y/BP/SEO                          |
+| Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                              |
+| First-load JS      | 8 modern script tags, gzip + Brotli     | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0; 120 KB gzip target missed                      |
+| Links and assets   | `npm run audit:links`                   | 14 internal URLs and 4 external GitHub links, all 200                                                       |
+| Cross-browser      | Playwright, Chromium/Firefox/WebKit     | Chromium 1248, Firefox 157, WebKit 27.2: 8 routes, menu, Index, copy, no overflow                           |
+| Keyboard           | Playwright                              | 31/24/20/19 focus stops on `/`, `/work`, flagship, `/about`; all indicators visible; first Tab is skip      |
+| Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed               |
+| CI                 | `.github/workflows/ci.yml`              | Committed and actionlint-clean; not run because there is no remote or account access                        |
 
 ### Accessibility audit
 
-On 28 Oct 2026, axe-core 4.14.0 was injected into Playwright Chromium 1248 and run against `/`, `/work`, all four case files, `/about`, and a 404 at 320×800, 390×844, and 1440×1000. The mobile menu was audited open at both narrow widths. Result: **0 violations** for WCAG 2.0/2.1/2.2 A and AA tags.
+On 28 Oct 2026, axe-core 4.14.0 was injected into Playwright Chromium 1248 and run against `/`, `/work`, all four case files, `/about`, and a 404 at 320×800, 390×844, and 1440×1000. The mobile menu was audited open at both narrow widths. The header and hero resume disclosures were audited open at 390 and 1440. Result: **0 violations** for WCAG 2.0/2.1/2.2 A and AA tags.
 
 The first run found five violations, all fixed before the clean run:
 
@@ -123,6 +135,8 @@ The first run found five violations, all fixed before the clean run:
 3. Archive rows had the same compressed-label problem.
 4. The French ATS link said “French CV” but its visible text was “Français”.
 5. The skip link sat outside every landmark; it now has a labelled navigation wrapper.
+
+A later run, after the resume picker shipped, found one more: the four resume download links had an `aria-label` that did not contain their visible text, which failed `label-content-name-mismatch`. The label was removed and a visually hidden “— download PDF” added instead.
 
 A forced-colors pass at 390 and 1440 found two solid primary buttons — the header Resume button and the hero “Read the case files” button — whose paper-coloured label sat on a forced white background. The primary variant now carries a `.button-primary` class; under `@media (forced-colors: active)` it uses `ButtonFace`/`ButtonText`, a 1px `ButtonText` border, and a `Highlight` hover. The same override covers the 404 and error buttons. The re-run reports 0 violations on 8 routes at both widths.
 
@@ -140,13 +154,13 @@ A separate 320px sweep found the contact email forcing a 25px horizontal overflo
 The site is server-rendered, so content and links exist before hydration. Two controls needed a fallback:
 
 - **Home Index:** the interactive tablist/accordion is paired with a stacked list of the same four projects. `@media (scripting: none)` hides the island and shows the stack; each item keeps its title, descriptor, outcome, stack tags, and case link.
-- **Header at narrow widths:** the menu trigger is a client island. When scripting is off, the trigger is hidden and a four-link nav row (Work, About, Contact, Resume) is shown. At 768px and above the normal desktop nav is used.
+- **Header at narrow widths:** the menu trigger is a client island. When scripting is off, the trigger is hidden and a five-link nav row (Work, About, Contact, Resume EN, CV FR) is shown. At 768px and above the normal desktop nav is used.
 
-`npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` kept 7,425 characters of content and 30 links, four stacked Index items, and four header links at 390px, with no overflow. With JS on, the fallbacks were hidden and the interactive Index and menu were visible. `/work`, all four case files, `/about`, and the 404 also render without JS. Forcing the fallback visible and the interactive Index hidden produced 0 axe-core 4.14.0 violations at 390 and 1440.
+`npm run audit:nojs` drives Playwright with JS on and off at 390×844 and 1440×1000 across 8 routes, 32 checks total. With JS off, `/` kept 8,018 characters of content and 33 links, four stacked Index items, and five header links at 390px, with no overflow. With JS on, the fallbacks were hidden and the interactive Index and menu were visible. `/work`, all four case files, `/about`, and the 404 also render without JS. The header and hero resume disclosures open natively with JS off; all four download filenames are present. Forcing the fallback visible and the interactive Index hidden produced 0 axe-core 4.14.0 violations at 390 and 1440.
 
 ### HTML validity
 
-Nu HTML Checker 26.10.12 validates the served HTML for all 8 routes. Result: 0 errors and 0 warnings. The 281 remaining messages are `info` notes about React's self-closing void elements (`<meta />`, `<br />`), which HTML5 ignores.
+Nu HTML Checker 26.10.12 validates the served HTML for all 8 routes. Result: 0 errors and 0 warnings. The 245 remaining messages are `info` notes about React's self-closing void elements (`<meta />`, `<br />`), which HTML5 ignores.
 
 ### Cross-browser
 
@@ -160,13 +174,13 @@ The repeatable audit runs Lighthouse 13 three times per route, against `next sta
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/` (median of 3)           | 96          | 100           | 100            | 100 | 0.9s | 0   | 218ms |
-| `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 131ms |
-| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 0.9s | 0   | 138ms |
-| `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.8s | 0   | 129ms |
+| `/` (median of 3)           | 97          | 100           | 100            | 100 | 0.9s | 0   | 196ms |
+| `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 134ms |
+| `/work/documents-assistant` | 98          | 100           | 100            | 100 | 0.9s | 0   | 139ms |
+| `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.9s | 0   | 107ms |
 | `/` desktop preset (manual) | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
-Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218ms). `/work` ran 99, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 129–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196ms). `/work` ran 99, 99, 98; the flagship 98, 98, 99; `/about` 99, 99, 99. This is the latest set, run after the resume picker and portrait shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 107–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
 
 The audit is repeatable with `npm run audit:lighthouse` and runs in CI after the server starts. It uses the `lighthouse` library with Playwright's Chromium, so it adds no second browser download. The `@lhci/cli` wrapper was rejected: version 0.15.1 pulled 16 dev advisories, including 13 high, which would have broken the zero-vulnerability gate (ADR-023).
 
@@ -181,7 +195,7 @@ Measured against the served HTML of the production build, summing the gzip size 
 | `/work/documents-assistant` | 8       | 140.0 KB | 120.0 KB |
 | `/about`                    | 8       | 139.3 KB | 119.4 KB |
 
-The 120 KB gzip budget is **not met**. About 115 KB gzip is React DOM (45.2 KB) plus the App Router/Turbopack runtime (70.1 KB) before any site component; the remaining chunks are shared app code and the small client islands. The four routes differ by less than 5 KB, which confirms that page code is not the driver. Options if the 120 KB target becomes mandatory: a non-hydrated static HTML build, a framework with a smaller client runtime, or dropping client navigation and interactive islands. None of those is worth doing for a portfolio that already scores 96–99 on mobile performance; the miss is recorded rather than hidden.
+The 120 KB gzip budget is **not met**. About 115 KB gzip is React DOM (45.2 KB) plus the App Router/Turbopack runtime (70.1 KB) before any site component; the remaining chunks are shared app code and the small client islands. The four routes differ by less than 5 KB, which confirms that page code is not the driver. Options if the 120 KB target becomes mandatory: a non-hydrated static HTML build, a framework with a smaller client runtime, or dropping client navigation and interactive islands. None of those is worth doing for a portfolio that already scores 97–99 on mobile performance; the miss is recorded rather than hidden.
 
 ### What was checked visually
 
@@ -221,7 +235,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px and in forced colors at 390/1440, and the repeatable Lighthouse audit scores 96–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px and in forced colors at 390/1440, and the repeatable Lighthouse audit scores 97–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
@@ -241,11 +255,11 @@ Resolved 27 Oct 2026: CV — English and French designed PDFs, plus English and 
 - [ ] Flagship demo format: synthetic corpus, recorded walkthrough, or both.
 - [ ] Domain choice and budget; then set `NEXT_PUBLIC_SITE_URL`.
 - [ ] LinkedIn URL and preferred contact channel.
-- [ ] Portrait yes/no.
+- [x] Portrait — resolved 28 Oct 2026: one owner-supplied image on `/about`.
 - [ ] Language proficiency labels.
 - [ ] Target role priority.
 
-The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait, no phone number in site copy, no language levels.
+The site currently avoids the unconfirmed claims: no LinkedIn link, no phone number in site copy, no language levels.
 
 ### Evidence sprint
 
@@ -263,7 +277,10 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 - [x] Add a repeatable no-JS audit (`npm run audit:nojs`); 8 routes, JS on/off, 32 checks pass.
 - [x] Add a repeatable three-run Lighthouse audit (`npm run audit:lighthouse`); wired into CI, medians pass.
 - [x] Replace the no-op report-only CSP with an enforced policy; WebKit console warning cleared.
-- [ ] Harden CSP further with nonces or build-time hashes to remove `'unsafe-inline'`.
+- [x] Remove inline styles and tighten `style-src` to `'self'`; hero stagger uses CSS custom properties.
+- [x] Replace the single default CV with a four-version picker; verified open, keyboard, outside click, and no-JS.
+- [x] Add the owner-supplied portrait as a 4:5 warm monochrome image; plain `<img>` keeps the CSP free of inline styles.
+- [ ] Harden `script-src` further with nonces or build-time hashes to remove `'unsafe-inline'`.
 - [ ] Run the CI workflow on a remote; Lighthouse history/upload is not configured.
 - [ ] Screen-reader pass; real Safari/iOS and real-device runs.
 - [ ] Per-case OG images (optional; default card works).
@@ -284,7 +301,8 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
    - `/`, `/work`, all four case files, `/about`, `/resume.pdf`, `/resume-fr.pdf`, `/resume-ats.pdf`, `/resume-fr-ats.pdf`, `/sitemap.xml`, `/robots.txt`.
    - Canonical URLs and OG image resolve against the final domain.
    - 404 returns a 404 status.
-   - `npm run audit:links`, `npm run audit:a11y`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`).
+   - `npm run audit:links`, `npm run audit:a11y`, `npm run audit:nojs`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`).
+   - Every resume row downloads the filename it claims, in both languages and both formats.
    - Print a case file; header/footer are gone and the evidence notes stay with their claims.
 8. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin. Keep `/resume.pdf` working across the redirect.
 9. Submit the sitemap in Search Console after the domain is final.

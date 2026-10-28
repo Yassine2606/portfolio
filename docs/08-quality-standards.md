@@ -13,7 +13,7 @@ A portfolio that fails accessibility fails the craft test. The audience includes
 
 - [ ] Text contrast ≥ 4.5:1; large text (≥24px or ≥18.66px bold) ≥ 3:1; UI boundaries that carry meaning ≥ 3:1.
 - [ ] Colour is never the only signal: active tabs also change weight/underline; errors have text; availability has a label, not just a green dot.
-- [ ] Images have meaningful `alt`; decorative images `alt=""`; screenshots describe the UI and note redactions.
+- [x] Images have meaningful `alt`; decorative images `alt=""`; screenshots describe the UI and note redactions.
 - [ ] Diagrams have a text summary and a "read as text" alternative.
 - [ ] Video has captions (`.vtt`), a poster, and no audio at launch.
 - [ ] Page reflows at 320px width with no horizontal scroll; content at 200% zoom remains usable.
@@ -97,20 +97,20 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated, keyboard,
 
 ### Measurement
 
-- **Lighthouse:** the repeatable audit ran three times per route on 28 Oct 2026 and scored 96–99/100/100/100 on mobile. Home medians were 96–97 (individual runs 96–99); `/work`, the flagship, and `/about` medians were 98–99. An earlier set recorded 99, 94, 96 with a 2.6s LCP outlier, so one run across all sets missed the 95 performance target, but no three-run median did. CI runs the same script; it has not run remotely yet.
+- **Lighthouse:** the repeatable audit ran three times per route on 28 Oct 2026 and scored 97–99/100/100/100 on mobile. Home median was 97 (individual runs 97, 98, 96); `/work` was 99, the flagship 98, and `/about` 99. An earlier set recorded 99, 94, 96 with a 2.6s LCP outlier, so one run across all sets missed the 95 performance target, but no three-run median did. CI runs the same script; it has not run remotely yet.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
 - **JavaScript:** served script tags summed per route: 144.0 KB gzip / 123.4 KB Brotli on `/`, 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill. The 120 KB gzip budget is missed; React and the router are ~115 KB of it.
 - **Long tasks:** at 4× CPU throttle, two tasks over 200ms on `/` (222ms, 213ms) and one on the flagship (258ms); TBT 200–210ms on `/`. Recorded as a miss.
-- **Images:** no content images are shipped; the OG card is metadata only.
+- **Images:** one content image, the owner-supplied portrait on `/about`: 4:5, 16–59KB across three widths, lazy, explicit dimensions. The OG card is metadata only; system maps are DOM/SVG.
 
 ### Techniques
 
 - All pages static; no server runtime at launch.
 - Server components by default; client islands only.
 - `next/font` with subset + swap; preload display/body only.
-- `next/image` with width/height, `sizes`, AVIF/WebP; lazy below the fold.
+- Content images use explicit width/height and a `srcset`; the portrait is a plain `<img>` because `next/image` injects an inline style blocked by the CSP. Lazy below the fold.
 - No third-party scripts except Vercel Analytics (first-party, deferred).
 - Video: poster + click-to-load; no autoplay; max 3MB.
 - CSS animations on transform/opacity only.
@@ -268,7 +268,7 @@ All of the following true:
 - [x] axe: 0 violations on every route at 320/390/1440 and in forced colors at 390/1440; repeatable with `npm run audit:a11y`.
 - [x] Keyboard-only pass on 4 routes; 19–31 stops each, all indicators visible, TOC anchors clear the sticky header.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile 96–99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.
+- [x] Lighthouse mobile 97–99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.
 - [x] LCP ≤ 1.8s lab on every route except one 2.6s home outlier; CLS 0.
 - [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz; measured 140–144 KB gzip (119–123 KB Brotli), recorded as a miss.

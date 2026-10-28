@@ -18,7 +18,7 @@ That means the site is not a gallery of screenshots and it is not a personal blo
 1. **Proof** — four systems, documented with architecture, decisions, tradeoffs, and evidence.
 2. **Method** — how he works when the demo stops being enough.
 3. **Range** — AI, backend, frontend, infrastructure, product context.
-4. **Invitation** — one obvious way to start a conversation, plus a CV that is one click away.
+4. **Invitation** — one obvious way to start a conversation, plus a CV picker that is one click away.
 
 If a page does not help one of those four jobs, it does not ship.
 
@@ -28,12 +28,12 @@ If a page does not help one of those four jobs, it does not ship.
 
 Weighted deliberately: design for the person who can assess depth, while keeping the gatekeeper's five-second scan effortless.
 
-| Priority  | Audience                   | Time on site | What they need to decide                                 | What wins                                               |
-| --------- | -------------------------- | ------------ | -------------------------------------------------------- | ------------------------------------------------------- |
-| 1 (60%)   | Hiring manager / tech lead | 3–10 min     | "Can this person own a system like ours?"                | Judgment, tradeoffs, evidence, honest limits            |
-| 2 (25%)   | Recruiter / talent partner | 20–90 sec    | "Does the role, location and stack fit? Is the CV here?" | Clear title, availability, stack keywords, one-click CV |
-| 3 (15%)   | Founder / CTO              | 2–5 min      | "Can they ship end to end without hand-holding?"         | Scope of ownership, shipped outcomes, speed             |
-| Secondary | Engineer peer              | 2–10 min     | "Would I learn from this person?"                        | Architecture depth, code links, clear writing           |
+| Priority  | Audience                   | Time on site | What they need to decide                                 | What wins                                                      |
+| --------- | -------------------------- | ------------ | -------------------------------------------------------- | -------------------------------------------------------------- |
+| 1 (60%)   | Hiring manager / tech lead | 3–10 min     | "Can this person own a system like ours?"                | Judgment, tradeoffs, evidence, honest limits                   |
+| 2 (25%)   | Recruiter / talent partner | 20–90 sec    | "Does the role, location and stack fit? Is the CV here?" | Clear title, availability, stack keywords, one-click CV picker |
+| 3 (15%)   | Founder / CTO              | 2–5 min      | "Can they ship end to end without hand-holding?"         | Scope of ownership, shipped outcomes, speed                    |
+| Secondary | Engineer peer              | 2–10 min     | "Would I learn from this person?"                        | Architecture depth, code links, clear writing                  |
 
 ### What each audience must never have to guess
 
@@ -114,7 +114,7 @@ If the site does not provoke a single technical interview question, the content 
 - Lighthouse ≥ 95 on all four categories, mobile.
 - Every featured project has at least one real screenshot and one source for every metric.
 - Zero broken links or dead buttons.
-- CV opens in one click from every page.
+- The CV picker is reachable in one click from every page; the chosen file downloads in one more.
 
 Full gates: `10-quality-gates.md`.
 
@@ -206,7 +206,7 @@ The hero's **Index** is the visual delivery: four systems, keyboard-switchable, 
 ## Non-negotiables
 
 1. The five-second answer: AI engineer, location, availability, proof, CV.
-2. A recruiter can download the CV from any page in one click.
+2. A recruiter can reach the CV picker from any page in one click and download the chosen file in a second.
 3. Every featured project has a real visual and a truthful evidence line.
 4. Every metric has a source, a date, and a method — or it is removed.
 5. Reading works without JavaScript; interaction is enhancement.
@@ -232,7 +232,7 @@ Answer these before Phase 1. They are repeated in `docs/README.md` and the roadm
 - [ ] Domain choice.
 - [ ] Languages and proficiency labels.
 - [ ] Role priority and target companies (for copy emphasis, not name-dropping).
-- [ ] Portrait: yes/no; if yes, one candid image on `/about` only.
+- [x] Portrait — resolved 28 Oct 2026: one owner-supplied image on `/about` only.
 
 ---
 

@@ -67,6 +67,7 @@ No scroll-jacking, no parallax, no pinning, no custom cursor, no 3D, no autoplay
 | Case-study figure reveal                     | 8px rise + opacity, once, when 20% visible                                              | 320ms                                    | No transform; instant             |
 | Sticky TOC active                            | underline/weight                                                                        | 120ms                                    | Instant                           |
 | Mobile menu                                  | opacity + 8px rise; backdrop none                                                       | 200ms                                    | Instant                           |
+| Resume disclosure                            | 4px rise + opacity 0→1; no height animation                                             | 160ms in                                 | Instant                           |
 | Copy email                                   | label swap + check                                                                      | 120ms                                    | Same                              |
 | Page transition                              | 180ms cross-fade (CSS view transitions)                                                 | 180ms                                    | Disabled                          |
 | 404                                          | None                                                                                    | —                                        | —                                 |
@@ -251,6 +252,7 @@ Use CSS scroll-driven animations only where supported, and only for case-study f
 - Hero content appears immediately; no clip reveal.
 - Index switches instantly; no panel rise.
 - Mobile menu opens instantly.
+- Resume disclosure opens instantly, with no rise.
 - No scroll-driven reveals; all content visible.
 - No view transitions.
 - No video autoplay; native controls only.

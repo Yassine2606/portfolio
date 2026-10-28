@@ -53,14 +53,14 @@ Selection criteria, in order:
 | Role         | Project                                                      | Why it earns the slot                                                                                                     | Evidence today                                                              | Gap                                                                 |
 | ------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | **Flagship** | **Documents Assistant** — enterprise RAG, Capgemini PFE 2026 | Deepest AI work: ingestion, hybrid retrieval, verification, citations, provider failover, 9-stage pipeline                | Architecture, code, detailed case study in old repo; private client context | Permission, screenshots, demo, measured retrieval quality           |
-| Featured     | **Sadine Tours** — travel platform, 2026                     | Proves product and backend depth: 41 models, 26 modules, 224 route handlers, 3 locales, quote→booking state machine, RBAC | Architecture, metrics, code references                                      | Screenshots (public catalog, admin, customer), permission           |
+| Featured     | **Sadine Tours** — travel agency platform, 2026              | Proves product and backend depth: 41 models, 26 modules, 224 route handlers, 3 locales, quote→booking state machine, RBAC | Architecture, metrics, code references                                      | Screenshots (public catalog, admin, customer), permission           |
 | Featured     | **Anomaly Detection Agent** — MCP + monitoring, 2025         | Timely agent/MCP work; public repo; clear architecture; tool calling                                                      | Public GitHub, architecture, metrics                                        | Demo recording, screenshots, a measured detection result            |
 | Featured     | **RFID Access Control** — IoT + realtime, 2026               | Proves systems thinking: MQTT ingestion, rule engine, audit, realtime dashboard, firmware                                 | Architecture, metrics, dashboard                                            | Screenshots, hardware photo, permission                             |
 | Archive      | **Wave** — campus app, 2025                                  | Mobile + payments + push pipeline + realtime                                                                              | Detailed case study in old repo                                             | Permission, screenshots; candidate to promote if visuals are strong |
 | Archive      | **TranscriptoSense** — multilingual speech, 2025             | Speech/LLM range; public repo                                                                                             | Public GitHub, architecture                                                 | Demo, screenshots                                                   |
 | Archive      | **Data Drift** — ML monitoring, 2025                         | ML evaluation/monitoring depth; public repo                                                                               | Public GitHub, notebooks                                                    | A short visual or notebook result                                   |
 
-**Wardrobe** (AI fashion platform, ongoing) appears on the CV but is not in the old site content. Treat it as a candidate: if it has a real UI and a demo, it may replace an archive card or become a fifth featured project. Do not add it on claims alone.
+**Wardrobe** is an AI fashion project for a small startup whose name is private. It ended in September 2026 and is not an ongoing role. It has no public UI, demo, or screenshot, so it stays on `/about` and does not become a case file or archive card.
 
 ### Flagship fallback
 
@@ -173,7 +173,7 @@ evidence:
 
 ### P2 — after launch
 
-- Fifth case study (Wave or Wardrobe) if evidence is strong.
+- Fifth case study (Wave or a Wardrobe case built on new evidence) if evidence is strong.
 - Interactive RAG demo on a synthetic corpus.
 - Short talks / writing, only with real material.
 
@@ -311,6 +311,7 @@ The CV is part of the content system, not a separate document.
 - Mirror job-description keywords only where true.
 - Link: portfolio URL, GitHub, email. The current PDFs include the phone number; the site UI keeps email only.
 - File names: `resume.pdf`, `resume-fr.pdf`, `resume-ats.pdf`, `resume-fr-ats.pdf`.
+- Expose all four through one picker; do not silently default to the English designed file.
 - Re-generate after any metric change and sync all four files; update the "last updated" note on `/about`.
 
 Bullet templates and examples: `11-content-templates.md`.

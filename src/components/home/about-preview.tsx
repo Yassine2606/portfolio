@@ -21,9 +21,10 @@ export function AboutPreview() {
         <div className="md:col-span-7">
           <p className="text-ink-soft measure text-[17px] leading-[1.65]">
             I&rsquo;m an AI engineer based in {site.location}. I studied computer engineering at
-            ESPRIM, and I build systems where the model is only one part of the product: retrieval
-            that finds the right passage, queues that survive a Redis outage, access rules that can
-            explain a denial, and interfaces that show their sources.
+            ESPRIM, after a preparatory cycle at ESPRIMS in Monastir, and I build systems where the
+            model is only one part of the product: retrieval that finds the right passage, queues
+            that survive a Redis outage, access rules that can explain a denial, and interfaces that
+            show their sources.
           </p>
           <p className="text-ink-soft measure mt-5 text-[17px] leading-[1.65]">
             Most of my work is solo and end to end — schema, API, worker, interface, container. I
@@ -51,7 +52,7 @@ export function AboutPreview() {
               <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
                 Education
               </dt>
-              <dd className="text-ink-soft text-right text-sm">ESPRIM · 2021–26</dd>
+              <dd className="text-ink-soft text-right text-sm">ESPRIMS → ESPRIM · 2021–26</dd>
             </div>
             <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
               <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">

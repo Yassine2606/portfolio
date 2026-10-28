@@ -5,7 +5,7 @@ A recruiter-facing portfolio for an AI engineer. Four systems are documented as 
 **Status:** built and verified locally (v1.0). Not deployed.
 **Availability:** immediate, no notice period.
 **Work:** remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
-**CV:** English and French, designed and ATS-friendly versions.
+**CV:** English and French, designed and ATS-friendly versions, offered through a four-version picker.
 **Design direction:** engineering dossier — warm paper, blue-black ink, one vermillion signal, editorial type, evidence in the margin.
 **Tagline:** _AI systems, with the receipts._
 
@@ -47,7 +47,7 @@ npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
 | `/work/sadine`                             | SSG    | Private client system                                            |
 | `/work/anomaly-detection-agent`            | SSG    | Public repository                                                |
 | `/work/rfid-access-control`                | SSG    | Private build                                                    |
-| `/about`                                   | Static | Profile, experience, education, stack, availability              |
+| `/about`                                   | Static | Profile, portrait, experience, education, stack, availability    |
 | `/resume.pdf`                              | Asset  | English designed CV, one page                                    |
 | `/resume-fr.pdf`                           | Asset  | French designed CV, one page                                     |
 | `/resume-ats.pdf`                          | Asset  | English ATS-friendly CV                                          |
@@ -55,7 +55,7 @@ npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
 | `/404`                                     | Static | Recovery page                                                    |
 | `/sitemap.xml`, `/robots.txt`, `/icon.svg` | Static | App Router metadata routes                                       |
 
-Also shipped: header and footer, focus-trapped mobile menu, home Index with tabs and a mobile accordion, per-case table of contents, evidence margin, scope metrics, code-generated system maps, previous/next case navigation, print stylesheet, Person/CreativeWork/BreadcrumbList/ItemList JSON-LD, canonical metadata, and a default 1200×630 Open Graph card at `public/og.png`.
+Also shipped: header and footer, a four-version resume picker (native disclosure, works without JS), an owner-supplied portrait on `/about`, focus-trapped mobile menu, home Index with tabs and a mobile accordion, per-case table of contents, evidence margin, scope metrics, code-generated system maps, previous/next case navigation, print stylesheet, Person/CreativeWork/BreadcrumbList/ItemList JSON-LD, canonical metadata, and a default 1200×630 Open Graph card at `public/og.png`.
 
 ### What is deliberately not shipped
 
@@ -64,7 +64,8 @@ Also shipped: header and footer, focus-trapped mobile menu, home Index with tabs
 - No screenshots or recorded demos. The figures are architecture maps, not interface captures.
 - No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
 - No CI run, screen-reader pass, or real Safari device pass yet. Chromium, Firefox, and Playwright WebKit scripted checks pass at desktop and mobile widths; the CI workflow is committed but has not run.
-- No LinkedIn link, portrait, or language proficiency levels. The CV PDFs include the phone number; site copy uses email only.
+- No LinkedIn link or language proficiency levels. The CV PDFs include the phone number; site copy uses email only.
+- No stock photography or AI-generated portrait. The one portrait is owner-supplied and appears only on `/about`.
 
 ---
 
@@ -117,7 +118,7 @@ Last full run: 28 Oct 2026, from this directory.
 | Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, open menu, forced colors   |
 | Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
 | HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |
-| Lighthouse mobile  | `npm run audit:lighthouse` | 96–99 median, 3 runs per route; 100 accessibility, best practices, SEO |
+| Lighthouse mobile  | `npm run audit:lighthouse` | 97–99 median, 3 runs per route; 100 accessibility, best practices, SEO |
 | Lighthouse desktop | Lighthouse 13.6.0          | 100 in all four categories on `/`                                      |
 | Cross-browser      | Playwright                 | Chromium 1248, Firefox 157, WebKit 27.2: routes, menu, Index, copy     |
 | First-load JS      | 8 modern script tags       | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0            |
@@ -132,7 +133,7 @@ The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 3
 
 Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
 
-The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced home medians of 96–97 (individual runs 96–99) and medians of 98–99 on `/work`, the flagship, and `/about`; LCP was 0.8–1.2s, CLS 0, and TBT 129–224ms. An earlier run set recorded a 94 with a 2.6s LCP outlier. Across all sets one run fell below the 95 target, but no three-run median did. Results are local lab runs, not field data or a CI median.
+The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced a home median of 97 (individual runs 97, 98, 96), 99 on `/work`, 98 on the flagship, and 99 on `/about`; LCP was 0.9–1.1s, CLS 0, and TBT 107–196ms. Earlier sets put home at 96–97 and the other routes at 98–99, and one run recorded a 94 with a 2.6s LCP outlier. No three-run median fell below the 95 target. Results are local lab runs, not field data or a CI median.
 
 First-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/` and 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill chunk. The 120 KB gzip budget is missed; React and the App Router runtime account for about 115 KB gzip before any site code. The budget is recorded as missed rather than redefined.
 
@@ -149,7 +150,7 @@ No deployment has been performed. The procedure is in [`docs/13-implementation-r
 Before deploying:
 
 1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview.
-2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, and `audit:lighthouse`.
+2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. Check each picker row downloads the filename it claims.
 3. Check canonical URLs, OG image resolution, the 404 status, and a printed case file.
 4. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin.
 
@@ -200,10 +201,10 @@ These block launch or would materially strengthen it:
 
 1. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
 2. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
-3. **Identity and contact:** custom domain, LinkedIn URL, portrait yes/no, language proficiency labels, target-role priority.
+3. **Identity and contact:** custom domain, LinkedIn URL, language proficiency labels, target-role priority. Portrait resolved 28 Oct 2026.
 4. **Audit:** CI run, screen-reader, real Safari, and real-device passes.
 
-The site avoids unconfirmed claims: no LinkedIn placeholder, portrait, phone number, or language levels.
+The site avoids unconfirmed claims: no LinkedIn placeholder, phone number in site copy, or language levels.
 
 ---
 

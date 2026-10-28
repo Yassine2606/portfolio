@@ -96,7 +96,7 @@ try {
               ? result.jsMenu === 1 && result.nojsNav === 0
               : result.desktopNav === 1 && result.nojsNav === 0
             : width < 768
-              ? result.nojsNav === 1 && result.nojsLinks === 4 && result.jsMenu === 0
+              ? result.nojsNav === 1 && result.nojsLinks === 5 && result.jsMenu === 0
               : result.desktopNav === 1 && result.nojsNav === 0 && result.jsMenu === 0;
           homeOk = indexOk && headerOk;
         }
@@ -104,7 +104,7 @@ try {
         check(
           `${mode} ${String(width).padEnd(4)} ${route.padEnd(28)}`,
           contentOk && homeOk,
-          `text=${result.mainText} links=${result.links} index=${result.interactive}/${result.fallback} items=${result.fallbackItems} nojsNav=${result.nojsNav} width=${result.scrollWidth}/${result.innerWidth}`,
+          `text=${result.mainText} links=${result.links} index=${result.interactive}/${result.fallback} items=${result.fallbackItems} nojsNav=${result.nojsNav} nojsLinks=${result.nojsLinks} width=${result.scrollWidth}/${result.innerWidth}`,
         );
       }
 

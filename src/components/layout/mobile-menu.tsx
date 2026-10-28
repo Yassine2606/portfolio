@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { site } from "@/content/site";
-import { Close, Menu } from "@/components/ui/icons";
-import { ButtonLink } from "@/components/ui/button-link";
+import { resumeVersions, site } from "@/content/site";
+import { Close, Download, Menu } from "@/components/ui/icons";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -124,7 +123,7 @@ export function MobileMenu() {
               </li>
             </ul>
 
-            <div className="border-line mt-10 flex flex-col gap-4 border-t pt-8">
+            <div className="border-line mt-10 flex flex-col gap-5 border-t pt-8">
               <a href={`mailto:${site.email}`} className="text-ink-soft text-sm">
                 {site.email}
               </a>
@@ -136,17 +135,42 @@ export function MobileMenu() {
               >
                 GitHub ↗
               </a>
-              <div className="mt-2">
-                <ButtonLink href={site.resume} icon="download" download>
-                  Download resume
-                </ButtonLink>
+
+              <div>
+                <p className="text-ink-faint font-mono text-[9px] tracking-[0.14em] uppercase">
+                  Resume / 04 files
+                </p>
+                <ul className="border-line mt-3 border-t">
+                  {resumeVersions.map((version, index) => (
+                    <li key={version.href} className="border-line border-b">
+                      <a
+                        href={version.href}
+                        download={version.filename}
+                        onClick={() => setOpen(false)}
+                        className="resume-option flex min-h-14 items-center gap-3 py-3"
+                      >
+                        <span className="resume-option-muted text-ink-faint w-5 shrink-0 font-mono text-[10px] tabular-nums">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-medium">
+                            {version.language} · {version.format}
+                          </span>
+                          <span className="resume-option-muted text-ink-faint mt-0.5 block text-[11px]">
+                            {version.note}
+                          </span>
+                        </span>
+                        <Download
+                          size={14}
+                          className="resume-option-icon text-ink-faint shrink-0"
+                        />
+                        <span className="sr-only">— download PDF</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <a
-                href={site.resumeFr}
-                className="text-ink-soft decoration-line-strong hover:decoration-signal-text w-fit text-sm underline decoration-1 underline-offset-4"
-              >
-                CV français (PDF)
-              </a>
+
               <p className="text-status font-mono text-[10px] tracking-[0.1em] uppercase">
                 ● {site.availability.label}
               </p>

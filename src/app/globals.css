@@ -195,6 +195,7 @@
 
   .hero-rise {
     animation: rise-in 520ms var(--ease-expo-token) both;
+    animation-delay: var(--hero-delay, 0ms);
   }
 }
 
@@ -215,6 +216,91 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Portrait — a warm monochrome print, not a stock photo               */
+/* ------------------------------------------------------------------ */
+
+.portrait-warm {
+  filter: grayscale(1) sepia(0.16) contrast(1.03) brightness(1.02);
+}
+
+/* ------------------------------------------------------------------ */
+/* Resume picker — a native disclosure, styled as a file slip          */
+/* ------------------------------------------------------------------ */
+
+.resume-summary {
+  list-style: none;
+}
+
+.resume-summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-summary::marker {
+  content: "";
+}
+
+.resume-chevron {
+  transition: transform var(--dur-ui) var(--ease-in-out-token);
+}
+
+.resume-menu[open] .resume-chevron {
+  transform: rotate(180deg);
+}
+
+.resume-panel {
+  animation: resume-in 160ms var(--ease-expo-token) both;
+}
+
+@keyframes resume-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resume-option {
+  transition:
+    background-color var(--dur-micro) var(--ease-in-out-token),
+    color var(--dur-micro) var(--ease-in-out-token);
+}
+
+.resume-option:hover,
+.resume-option:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.resume-option:focus-visible {
+  outline-offset: -3px;
+}
+
+.resume-option:hover .resume-option-muted,
+.resume-option:focus-visible .resume-option-muted {
+  color: color-mix(in oklab, var(--paper) 65%, transparent);
+}
+
+.resume-option-icon {
+  transition: transform var(--dur-ui) var(--ease-expo-token);
+}
+
+.resume-option:hover .resume-option-icon,
+.resume-option:focus-visible .resume-option-icon {
+  transform: translateY(2px);
+}
+
+@media (forced-colors: active) {
+  .resume-option:hover,
+  .resume-option:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
   }
 }
 

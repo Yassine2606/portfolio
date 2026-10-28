@@ -100,6 +100,7 @@ Phase 9  Post-launch                       ongoing
 - [x] Links: site, GitHub, email; phone included in the PDFs.
 - [x] Files: `public/resume.pdf`, `public/resume-fr.pdf`, `public/resume-ats.pdf`, `public/resume-fr-ats.pdf`.
 - [x] Text extraction tested; EN and FR ATS files score 10/10 in the CV audit.
+- [x] Four-version picker: native `<details>` disclosure in the header and hero, four inline rows in the mobile menu; opens without JavaScript; filenames verified in downloads.
 
 ### 1F — Content drafts
 
@@ -147,8 +148,8 @@ Phase 9  Post-launch                       ongoing
 - [ ] Hero: eyebrow, H1, lede, CTAs, meta strip, availability card.
 - [x] Index: tablist desktop, accordion mobile, real screenshots, keyboard, no-JS fallback. Screenshots are code-generated system maps because the flagship has no public visual (ADR-021).
 - [ ] How I work: three principles, each linked to evidence.
-- [ ] Experience: four rows, correct titles/dates.
-- [ ] About preview + optional portrait.
+- [ ] Experience: six rows, correct titles/dates.
+- [ ] About preview (no portrait on home; the one portrait lives on `/about`).
 - [ ] Contact: email, copy, GitHub, Resume. Add LinkedIn only when supplied.
 - [ ] Footer: links, colophon, last updated.
 - [ ] `/work`: four featured cards + three archive rows.
@@ -173,7 +174,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] `Claim` + `EvidenceNote` components; margin layout at ≥1200.
 - [ ] TOC: sticky desktop, `<details>` mobile, active section.
 - [ ] Prev/next case file + back to work.
-- [ ] `/about`: intro, looking for, experience, education, stack, languages, portrait, contact.
+- [ ] `/about`: intro, looking for, experience, education, stack, languages, portrait (owner-supplied, 4:5, warm monochrome), contact.
 - [ ] Metadata + OG image per case study.
 - [ ] JSON-LD `CreativeWork` + `BreadcrumbList`.
 - [ ] Print styles for case studies.
@@ -213,7 +214,7 @@ Phase 9  Post-launch                       ongoing
 - [x] Contrast audit: token ratios recorded; axe reports no contrast violations.
 - [x] 320px reflow.
 - [x] 200% zoom equivalent and WCAG text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 96–99 performance medians over three runs per route, 100 accessibility/BP/SEO; repeatable with `npm run audit:lighthouse`.
+- [x] Lighthouse mobile on `/` and flagship; 97–99 performance medians over three runs per route, 100 accessibility/BP/SEO; repeatable with `npm run audit:lighthouse`.
 - [x] HTML validator: 0 errors/warnings on 8 routes.
 - [x] Cross-browser scripted pass: Chromium, Firefox, and Playwright WebKit.
 - [ ] Bundle analyzer; first-load JS ≤120KB (measured 140–144KB gzip, miss); Index island ≤3KB.
@@ -257,7 +258,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Freeze content; run the full gate one last time.
 - [ ] Set `NEXT_PUBLIC_SITE_URL`, analytics, domain, DNS, SSL.
 - [ ] 301 the old origin to the new one (if the domain changes).
-- [ ] Verify all four CVs return 200, `application/pdf`, and the correct filename.
+- [x] Verify all four CVs return 200, `application/pdf`, and the correct filename. Verified 28 Oct 2026.
 - [ ] Submit the sitemap in Google Search Console; request indexing.
 - [ ] Check OG previews in LinkedIn, X, Slack.
 - [ ] Add the site to GitHub profile, LinkedIn, CV, email signature.
@@ -303,7 +304,7 @@ Do not add features in the first two weeks unless they fix a measured problem. L
 
 If the deadline is real, cut in this order:
 
-1. Fifth case study / Wardrobe.
+1. Fifth case study / Wave.
 2. Archive cards (keep two public repos).
 3. Portrait.
 4. Page transitions.

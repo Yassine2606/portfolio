@@ -3,6 +3,48 @@
  * Used by the header, hero, contact block, footer, metadata, and JSON-LD.
  */
 
+const resumeFiles = {
+  en: "/resume.pdf",
+  fr: "/resume-fr.pdf",
+  enAts: "/resume-ats.pdf",
+  frAts: "/resume-fr-ats.pdf",
+} as const;
+
+/**
+ * Four real files, four explicit choices. The picker, the mobile menu, and
+ * every direct link read from this list so a version cannot silently drift.
+ */
+export const resumeVersions = [
+  {
+    language: "English",
+    format: "Designed",
+    href: resumeFiles.en,
+    filename: "Yassine-Ben-Romdhane-Resume-EN.pdf",
+    note: "The one to read",
+  },
+  {
+    language: "English",
+    format: "ATS",
+    href: resumeFiles.enAts,
+    filename: "Yassine-Ben-Romdhane-Resume-EN-ATS.pdf",
+    note: "The one for portals",
+  },
+  {
+    language: "Français",
+    format: "Designed",
+    href: resumeFiles.fr,
+    filename: "Yassine-Ben-Romdhane-CV-FR.pdf",
+    note: "The one to read",
+  },
+  {
+    language: "Français",
+    format: "ATS",
+    href: resumeFiles.frAts,
+    filename: "Yassine-Ben-Romdhane-CV-FR-ATS.pdf",
+    note: "The one for portals",
+  },
+] as const;
+
 export const site = {
   name: "Yassine Ben Romdhane",
   shortName: "YBR",
@@ -30,16 +72,25 @@ export const site = {
    * Never invent a social link: a dead LinkedIn is worse than none.
    */
   linkedin: null as string | null,
-  resume: "/resume.pdf",
-  resumeFr: "/resume-fr.pdf",
-  resumeAts: "/resume-ats.pdf",
-  resumeFrAts: "/resume-fr-ats.pdf",
+  resume: resumeFiles.en,
+  resumeFr: resumeFiles.fr,
+  resumeAts: resumeFiles.enAts,
+  resumeFrAts: resumeFiles.frAts,
 
-  education: {
-    school: "ESPRIM — École Supérieure Privée d'Ingénieurs de Monastir",
-    programme: "Engineering cycle, Computer Science",
-    years: "2021–2026",
-  },
+  education: [
+    {
+      school: "ESPRIMS",
+      programme: "Preparatory cycle",
+      years: "2021–2023",
+      note: "Two-year preparatory cycle in Monastir, before the engineering cycle.",
+    },
+    {
+      school: "ESPRIM — École Supérieure Privée d'Ingénieurs de Monastir",
+      programme: "Engineering cycle, Computer Science — data science track",
+      years: "2023–2026",
+      note: "National engineering degree. Final-year project at Capgemini Engineering.",
+    },
+  ] as const,
 
   languages: ["Arabic", "French", "English"],
 

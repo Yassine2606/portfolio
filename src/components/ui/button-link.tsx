@@ -1,16 +1,9 @@
 import Link from "next/link";
 import { ArrowUpRight, Download } from "@/components/ui/icons";
+import { buttonStyles, type ButtonVariant } from "@/components/ui/button-styles";
 import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "text";
-
-const styles: Record<Variant, string> = {
-  primary:
-    "button-primary bg-ink text-paper hover:bg-signal-text focus-visible:outline-signal-text inline-flex min-h-11 items-center justify-center gap-2.5 px-5 py-3 text-[15px] font-medium transition-colors duration-150 active:translate-y-px",
-  secondary:
-    "border-ink text-ink hover:bg-ink hover:text-paper inline-flex min-h-11 items-center justify-center gap-2.5 border px-5 py-3 text-[15px] font-medium transition-colors duration-150 active:translate-y-px",
-  text: "decoration-line-strong hover:decoration-signal-text inline-flex min-h-11 items-center gap-2 text-[15px] font-medium underline decoration-1 underline-offset-4 transition-colors duration-120",
-};
+type Variant = ButtonVariant;
 
 type ButtonLinkProps = {
   href: string;
@@ -32,7 +25,7 @@ export function ButtonLink({
   icon = "none",
 }: ButtonLinkProps) {
   const isExternal = external || href.startsWith("http") || href.startsWith("mailto:");
-  const classes = cn(styles[variant], "rounded-card", className);
+  const classes = cn(buttonStyles[variant], "rounded-card", className);
   const content = (
     <>
       <span>{children}</span>

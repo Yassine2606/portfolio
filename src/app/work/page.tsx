@@ -11,7 +11,7 @@ import { ContactSection } from "@/components/sections/contact-section";
 export const metadata: Metadata = pageMetadata({
   title: "Work",
   description:
-    "Four production-oriented systems documented end to end: enterprise RAG, a travel platform, an MCP monitoring agent, and MQTT access control.",
+    "Four production-oriented systems documented end to end: enterprise RAG, a travel agency platform, an MCP monitoring agent, and MQTT access control.",
   path: "/work",
 });
 

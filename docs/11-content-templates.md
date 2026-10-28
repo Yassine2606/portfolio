@@ -338,13 +338,13 @@ Rules:
 
 ### 100 words
 
-> I'm Yassine, an AI engineer based in Monastir, Tunisia. I build systems where retrieval, model behavior, backend services, and interface meet — and I care most about the part after the demo: failure modes, latency, cost, and whether an answer can be trusted. My work includes an enterprise RAG assistant at Capgemini Engineering, a three-locale travel platform, an MCP monitoring agent, and an IoT access-control system. I write the docs before the code, measure before I claim, and leave a trail from every statement on this site to its source. I'm open to AI engineering roles. [Remote, hybrid, or on-site — confirm.]
+> I'm Yassine, an AI engineer based in Monastir, Tunisia. I build systems where retrieval, model behavior, backend services, and interface meet — and I care most about the part after the demo: failure modes, latency, cost, and whether an answer can be trusted. My work includes an enterprise RAG assistant at Capgemini Engineering, a three-locale travel agency platform, an MCP monitoring agent, and an IoT access-control system. I write the docs before the code, measure before I claim, and leave a trail from every statement on this site to its source. I'm open to AI engineering roles. [Remote, hybrid, or on-site — confirm.]
 
 ### 200 words
 
 > I'm Yassine, an AI engineer based in Monastir, Tunisia. I build systems where retrieval, model behavior, backend services, and interface meet — and I care most about the part after the demo: failure modes, latency, cost, and whether an answer can be trusted.
 >
-> My work started in full-stack product engineering: a campus app with payments, push, and realtime chat; a travel platform with a quote-to-booking state machine, three locales, and a 41-model schema; an IoT access-control system with MQTT ingestion and a rule engine. Those systems taught me the constraints that make AI work real: permissions, data shape, operational cost, and what happens when a dependency fails.
+> My work started in full-stack product engineering: a campus app with payments, push, and realtime chat; a travel agency platform with a quote-to-booking state machine, three locales, and a 41-model schema; an IoT access-control system with MQTT ingestion and a rule engine. Those systems taught me the constraints that make AI work real: permissions, data shape, operational cost, and what happens when a dependency fails.
 >
 > Lately I've focused on applied AI: a RAG assistant for private documentation with hybrid retrieval, citation-grounded answers, verification, and provider failover; an MCP agent that monitors databases and endpoints and explains what it finds. I write the plan before the code, keep the architecture explainable to a founder and an engineer, and measure before I make a claim.
 >
@@ -405,7 +405,7 @@ Rules: no childhood story, no "journey", no list of every tool, no claims withou
 ### Work
 
 - Title: `Work — AI systems, documented`
-- Description: `Four production systems, documented end to end: enterprise RAG, a three-locale travel platform, an MCP monitoring agent, and an IoT access-control system.`
+- Description: `Four production systems, documented end to end: enterprise RAG, a three-locale travel agency platform, an MCP monitoring agent, and an IoT access-control system.`
 
 ### Case study template
 

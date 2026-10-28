@@ -53,17 +53,6 @@ const stackGroups = [
   },
 ];
 
-const fullExperience = [
-  ...experience,
-  {
-    year: "Ongoing",
-    company: "Wardrobe",
-    role: "AI fashion & community platform",
-    detail: "Outfit generation, clothing analysis, and a ranked community feed.",
-    href: null,
-  },
-];
-
 export default function AboutPage() {
   return (
     <>
@@ -94,12 +83,13 @@ export default function AboutPage() {
           <div className="md:col-span-7">
             <div className="measure text-ink-soft flex flex-col gap-5 text-[17px] leading-[1.65]">
               <p>
-                I studied computer engineering at ESPRIM, and most of what I know comes from
-                building systems end to end: a RAG assistant for private documentation, a travel
-                agency platform with three surfaces, an MQTT access-control system, and a monitoring
-                agent that talks to three databases. In each one, the interesting work was rarely
-                the model. It was the retrieval quality, the transaction boundary, the offline
-                transition, the reason attached to a denial.
+                I studied computer engineering at ESPRIM, after a preparatory cycle at ESPRIMS in
+                Monastir, and most of what I know comes from building systems end to end: a RAG
+                assistant for private documentation, a travel agency platform with three surfaces,
+                an MQTT access-control system, and a monitoring agent that talks to three databases.
+                In each one, the interesting work was rarely the model. It was the retrieval
+                quality, the transaction boundary, the offline transition, the reason attached to a
+                denial.
               </p>
               <p>
                 I work solo by default, which means I own the schema, the API, the worker, the
@@ -139,6 +129,31 @@ export default function AboutPage() {
           </div>
 
           <aside className="md:col-span-4 md:col-start-9">
+            <figure className="mb-8">
+              <div className="border-line bg-paper-raised relative aspect-[4/5] overflow-hidden border p-2">
+                <div className="relative h-full w-full overflow-hidden">
+                  {/* Plain <img>, not next/image: next/image injects
+                      style="color:transparent", which the production CSP blocks.
+                      The 4:5 crop and the width/height pair prevent layout shift. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/yassine.jpg"
+                    srcSet="/images/yassine-432.jpg 432w, /images/yassine-648.jpg 648w, /images/yassine.jpg 864w"
+                    sizes="(min-width: 1440px) 400px, (min-width: 768px) 30vw, 100vw"
+                    alt="Portrait of Yassine Ben Romdhane."
+                    width={864}
+                    height={1080}
+                    loading="lazy"
+                    decoding="async"
+                    className="portrait-warm h-full w-full object-cover object-center"
+                  />
+                </div>
+              </div>
+              <figcaption className="text-ink-faint mt-2 font-mono text-[9px] tracking-[0.1em] uppercase">
+                Fig. 00 / The person
+              </figcaption>
+            </figure>
+
             <dl className="border-line border-t">
               <div className="border-line flex items-baseline justify-between gap-4 border-b py-3">
                 <dt className="text-ink-faint font-mono text-[9px] tracking-[0.12em] uppercase">
@@ -186,7 +201,7 @@ export default function AboutPage() {
               </div>
             </dl>
             <p className="text-ink-faint mt-4 font-mono text-[9px] leading-relaxed tracking-[0.06em] uppercase">
-              No portrait, no stock photo. The work is the introduction.
+              No stock photo. The work is the introduction.
             </p>
           </aside>
         </div>
@@ -194,7 +209,7 @@ export default function AboutPage() {
         <section aria-labelledby="record-title">
           <SectionHeading index="02" label="Experience" id="record-title" aside="Full record" />
           <ol className="border-line border-b">
-            {fullExperience.map((item) => (
+            {experience.map((item) => (
               <li
                 key={`${item.company}-${item.role}`}
                 className="border-line border-t first:border-t-0"
@@ -216,20 +231,24 @@ export default function AboutPage() {
 
         <section aria-labelledby="education-title" className="pt-12 md:pt-16">
           <SectionHeading index="03" label="Education" id="education-title" />
-          <div className="grid gap-x-6 gap-y-2 py-5 md:grid-cols-12">
-            <span className="text-ink-faint font-mono text-[10px] tracking-[0.1em] md:col-span-1">
-              2021–26
-            </span>
-            <div className="md:col-span-5">
-              <p className="font-display text-[17px] font-medium tracking-[-0.015em]">
-                {site.education.school}
-              </p>
-              <p className="text-ink-soft mt-1 text-sm">{site.education.programme}</p>
-            </div>
-            <p className="text-ink-faint text-sm md:col-span-5 md:col-start-8">
-              Engineering cycle focused on software systems and applied AI. Final-year project: the
-              Documents Assistant case file.
-            </p>
+          <div className="border-line border-b">
+            {site.education.map((item) => (
+              <div
+                key={item.school}
+                className="border-line grid gap-x-6 gap-y-2 border-t py-5 first:border-t-0 md:grid-cols-12"
+              >
+                <span className="text-ink-faint font-mono text-[10px] tracking-[0.1em] md:col-span-1">
+                  {item.years}
+                </span>
+                <div className="md:col-span-5">
+                  <p className="font-display text-[17px] font-medium tracking-[-0.015em]">
+                    {item.school}
+                  </p>
+                  <p className="text-ink-soft mt-1 text-sm">{item.programme}</p>
+                </div>
+                <p className="text-ink-faint text-sm md:col-span-5 md:col-start-8">{item.note}</p>
+              </div>
+            ))}
           </div>
         </section>
 

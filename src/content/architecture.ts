@@ -297,6 +297,6 @@ export const architecture: Record<string, ArchitectureDoc> = {
       "A serial-to-MQTT bridge runs the same consumer path, so the system is testable without hardware.",
     ],
     caveat:
-      "Independent build. Counts come from the private repository; no employer or client data is published.",
+      "Helper project for Sagemcom Tunisia. Counts come from the private repository; no employer or client data is published.",
   },
 };
