@@ -448,60 +448,38 @@ async headers() {
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "audit:a11y": "node scripts/audit-a11y.mjs"
+    "audit:a11y": "node scripts/audit-a11y.mjs",
+    "audit:links": "node scripts/check-links.mjs",
+    "audit:lighthouse": "node scripts/audit-lighthouse.mjs"
   }
 }
 ```
 
-Planned but not configured: `test` (Vitest), `test:e2e` (Playwright suite), and `lighthouse` (Lighthouse CI).
+Not configured: `test` (Vitest) and `test:e2e` (Playwright suite). Lighthouse history/upload is not configured.
 
 ### Test layers
 
-Only the axe audit and the zod build checks are committed. The rest are targets.
+The axe, link, and Lighthouse audits and the zod build checks are committed. Vitest and the E2E suite are targets.
 
-| Layer         | Tool                     | What                                                                          |
-| ------------- | ------------------------ | ----------------------------------------------------------------------------- |
-| Unit          | Vitest (planned)         | Schema parsing, slug matching, date formatting, metadata builder, JSON-LD     |
-| Component     | Vitest + Testing Library | Evidence links, Index keyboard, mobile menu focus, copy button                |
-| E2E           | Playwright (planned)     | Home, `/work`, every case study, `/about`, 404, resume 200, no console errors |
-| Accessibility | axe-core in Playwright   | 0 violations at 320/390/1440; committed as `npm run audit:a11y`               |
-| Visual        | Playwright screenshots   | 3 viewports per route; diff on PR (optional at launch)                        |
-| Performance   | Lighthouse CLI (local)   | Budgets in `08-quality-standards.md`; CI median still planned                 |
-| Links         | `lychee` or `linkinator` | Internal + external 200s (external allowlist); not configured                 |
-| Content       | Build + zod              | Frontmatter, metric sources, evidence presence                                |
+| Layer         | Tool                     | What                                                                                |
+| ------------- | ------------------------ | ----------------------------------------------------------------------------------- |
+| Unit          | Vitest (planned)         | Schema parsing, slug matching, date formatting, metadata builder, JSON-LD           |
+| Component     | Vitest + Testing Library | Evidence links, Index keyboard, mobile menu focus, copy button                      |
+| E2E           | Playwright (planned)     | Home, `/work`, every case study, `/about`, 404, resume 200, no console errors       |
+| Accessibility | axe-core in Playwright   | 0 violations at 320/390/1440; committed as `npm run audit:a11y`                     |
+| Visual        | Playwright screenshots   | 3 viewports per route; diff on PR (optional at launch)                              |
+| Performance   | Lighthouse library       | `npm run audit:lighthouse`; three-run medians, budgets in `08-quality-standards.md` |
+| Links         | Node `fetch`             | `npm run audit:links`; 14 internal + 4 external, `--external` opt-in                |
+| Content       | Build + zod              | Frontmatter, metric sources, evidence presence                                      |
 
 ### CI (`.github/workflows/ci.yml`)
 
-```yaml
-name: ci
-on:
-  pull_request:
-  push:
-    branches: [main]
+CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, format check, typecheck, lint, build, installs Chromium, starts `next start`, then runs `audit:a11y`, `audit:links`, and `audit:lighthouse`. The server log is uploaded on failure.
 
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm run format:check
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npm run start & npx --yes wait-on http://localhost:3000
-      - run: npm run audit:a11y
-```
-
-- This workflow is not configured yet; it is the target CI shape.
-- Lighthouse CI is not configured. Add it against `next start` with a three-run median before asserting budgets.
-- Keep CI under 10 minutes. Cache Playwright browsers if needed.
-- Add a `link-check` job nightly, not on every PR (external network flakiness).
+- The workflow has not run on a remote; there is no git remote or authenticated account.
+- Lighthouse history/upload is not configured; the audit prints and asserts three-run medians.
+- Keep CI under 25 minutes. Cache Playwright browsers if needed.
+- External link checks stay local (`--external`); CI checks internal links only to avoid third-party flakiness.
 - Dependabot for npm and GitHub Actions.
 
 ---

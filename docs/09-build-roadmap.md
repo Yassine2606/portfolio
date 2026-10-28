@@ -130,7 +130,7 @@ Phase 9  Post-launch                       ongoing
 - [x] `src/app/sitemap.ts`, `robots.ts`; static `public/og.png` instead of `opengraph-image.tsx`.
 - [x] `src/app/error.tsx`.
 - [x] JSON-LD helpers.
-- [x] Prettier + ESLint + Playwright + axe + GitHub Actions workflow. Vitest and Lighthouse CI remain.
+- [x] Prettier + ESLint + Playwright + axe + GitHub Actions workflow. Vitest remains; the Lighthouse audit is a local script wired into CI.
 - [x] `.github/workflows/ci.yml` committed and actionlint-clean; not yet run.
 - [ ] `README` commands verified from a clean clone.
 - [ ] Deploy a preview to Vercel; confirm static routes and 404.
@@ -213,7 +213,7 @@ Phase 9  Post-launch                       ongoing
 - [x] Contrast audit: token ratios recorded; axe reports no contrast violations.
 - [x] 320px reflow.
 - [x] 200% zoom equivalent and WCAG text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 96–99 performance (median 97 on the final build), 100 accessibility/BP/SEO.
+- [x] Lighthouse mobile on `/` and flagship; 96–99 performance medians over three runs per route, 100 accessibility/BP/SEO; repeatable with `npm run audit:lighthouse`.
 - [x] HTML validator: 0 errors/warnings on 8 routes.
 - [x] Cross-browser scripted pass: Chromium, Firefox, and Playwright WebKit.
 - [ ] Bundle analyzer; first-load JS ≤120KB (measured 140–144KB gzip, miss); Index island ≤3KB.
@@ -246,7 +246,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] Reduced-motion pass on macOS/iOS/Windows.
 - [ ] Screen-reader pass documented.
 - [ ] Fix findings; re-run the failed gate.
-- [ ] Record the final Lighthouse/axe/link reports in `10-quality-gates.md`.
+- [x] Record the final Lighthouse/axe/link reports in `10-quality-gates.md`.
 
 **Done when:** all nine gates in `10` pass; the recruiter tests meet the pass line or the failures are understood and fixed; no P0 bug remains.
 

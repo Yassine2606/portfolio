@@ -97,7 +97,7 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is re
 
 ### Measurement
 
-- **Lighthouse:** local production runs on 28 Oct 2026 scored 96–99/100/100/100 on mobile. Home was run three times on the final build (97, 96, 97; median 97); the other routes once. An earlier set on the prior build was 99, 94, 96 with a 2.6s LCP outlier, so one run across both sets missed the 95 performance target. CI with a three-run median is still required.
+- **Lighthouse:** the repeatable audit ran three times per route on 28 Oct 2026 and scored 96–99/100/100/100 on mobile. Home medians were 96–97 (individual runs 96–99); `/work`, the flagship, and `/about` medians were 98–99. An earlier set recorded 99, 94, 96 with a 2.6s LCP outlier, so one run across all sets missed the 95 performance target, but no three-run median did. CI runs the same script; it has not run remotely yet.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
@@ -119,30 +119,19 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is re
 
 ### Budget enforcement
 
-Lighthouse CI assertions (starting point):
+`npm run audit:lighthouse` runs Lighthouse 13 three times per route and asserts the median:
 
-```json
-{
-  "ci": {
-    "collect": {
-      "url": ["http://localhost:3000/", "http://localhost:3000/work/documents-assistant"]
-    },
-    "assert": {
-      "assertions": {
-        "categories:performance": ["error", { "minScore": 0.95 }],
-        "categories:accessibility": ["error", { "minScore": 1 }],
-        "categories:best-practices": ["error", { "minScore": 0.95 }],
-        "categories:seo": ["error", { "minScore": 1 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 1800 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }],
-        "total-blocking-time": ["error", { "maxNumericValue": 200 }]
-      }
-    }
-  }
-}
-```
+| Metric          | Assertion |
+| --------------- | --------- |
+| Performance     | ≥ 95      |
+| Accessibility   | 100       |
+| Best practices  | 100       |
+| SEO             | 100       |
+| LCP             | ≤ 1800ms  |
+| CLS             | ≤ 0.05    |
+| TBT (lab proxy) | ≤ 300ms   |
 
-If a budget fails, fix the cause; do not lower the budget without an ADR.
+The script uses Playwright's Chromium. `@lhci/cli` is not used because version 0.15.1 pulled 16 dev advisories; see ADR-023. If a budget fails, fix the cause; do not lower the budget without an ADR.
 
 ---
 
@@ -279,7 +268,7 @@ All of the following true:
 - [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
 - [x] Keyboard-only pass on 4 routes; 19–31 stops each, all indicators visible, TOC anchors clear the sticky header.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile 96–99/100/100/100 on the final build; median 97; one earlier run scored 94, below the 95 performance target.
+- [x] Lighthouse mobile 96–99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.
 - [x] LCP ≤ 1.8s lab on every route except one 2.6s home outlier; CLS 0.
 - [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz; measured 140–144 KB gzip (119–123 KB Brotli), recorded as a miss.

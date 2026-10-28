@@ -248,6 +248,17 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 
 ---
 
+## ADR-023 — Run Lighthouse directly, not through `@lhci/cli`
+
+**Status:** Accepted · 28 Oct 2026
+**Context:** The quality gate needs a three-run Lighthouse median that runs locally and in CI. The standard wrapper, `@lhci/cli` 0.15.1, installed 16 dev advisories (13 high), including `zod` through `chromium-bidi`, which would break the recorded zero-vulnerability gate. The `lighthouse` 13.6.0 package installs with 0 advisories and can drive the Chromium that Playwright already downloads.
+**Decision:** Use `scripts/audit-lighthouse.mjs` with the `lighthouse` library and Playwright's Chromium. Run three times per route, assert the median (performance ≥ 95, accessibility/best-practices/SEO = 100, LCP ≤ 1.8s, CLS ≤ 0.05, TBT ≤ 300ms), and call it from `npm run audit:lighthouse` and the CI workflow.
+**Consequences:** The audit is reproducible in one command, adds no second browser, and keeps `npm audit` at 0. There is no LHCI server, run history, or report upload; the script prints the table and CI logs it. The 95 performance assertion applies to the median, so a single noisy run does not fail the gate.
+**Alternatives:** `@lhci/cli` (breaks the vulnerability gate), a GitHub-only action (cannot be validated locally), or manual Lighthouse runs (already the status quo, not repeatable).
+**Revisit if:** `@lhci/cli` ships a zero-advisory dependency tree, or run history becomes necessary.
+
+---
+
 ## Open decisions
 
 | #   | Question                                                                                  | Owner   | Needed by   |

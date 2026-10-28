@@ -115,26 +115,28 @@ The archive rows are real builds that do not get a case file. They carry a title
 
 ### Site and launch
 
-| Gap                                 | Status                                                                                                                                                                                                          |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Resume                              | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10.                                                                                           |
-| Experience, education, Wardrobe     | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.                                                                                      |
-| Availability and notice             | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.                                                                                          |
-| Remote / hybrid / on-site           | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.                                                                                               |
-| Relocation                          | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                                                                                                              |
-| Work authorization                  | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact.                                                                                    |
-| Client permissions                  | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                                                                                                               |
-| Domain                              | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                                                                                                    |
-| LinkedIn, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                                                                                                    |
-| Phone                               | Appears in the CV PDFs; site copy uses email only.                                                                                                                                                              |
-| Per-case OG cards                   | Deferred. The default `public/og.png` card is used on every page.                                                                                                                                               |
-| Automated accessibility             | Passed 28 Oct 2026: axe-core 4.14.0, 0 violations across 8 routes at 320/390/1440 plus the open mobile menu.                                                                                                    |
-| Lighthouse                          | Passed 28 Oct 2026: final build home 97/96/97 (median 97); an earlier set was 99/94/96 with a 2.6s LCP outlier; other routes one run each; mobile performance 96–99, accessibility/BP/SEO 100; desktop `/` 100. |
-| First-load JavaScript               | Measured 28 Oct 2026: 144.0KB gzip / 123.4KB Brotli on `/`, 140.0/120.0 on the flagship. The 120KB gzip target is missed; React + router are ~115KB.                                                            |
-| Links and assets                    | Passed 28 Oct 2026: 14 internal URLs and 4 external GitHub URLs return 200; repeatable with `npm run audit:links -- --external`.                                                                                |
-| Cross-browser                       | Passed 28 Oct 2026: Chromium 1248, Firefox 157, WebKit 27.2, 8 routes at 1440/390, menu/Index/copy. Real Safari and real devices not run.                                                                       |
-| CI                                  | `.github/workflows/ci.yml` committed and actionlint-clean; not run (no remote/account access).                                                                                                                  |
-| Security headers                    | Enforced 28 Oct 2026: nosniff, referrer, frame DENY, permissions, HSTS, and CSP. CSP allows inline script/style for Next; no `unsafe-eval`.                                                                     |
+| Gap                                 | Status                                                                                                                                                                                                                      |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Resume                              | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10.                                                                                                       |
+| Experience, education, Wardrobe     | Titles, dates, and scope are owner-supplied. No independent verification; Wardrobe is an ongoing project, not a case file.                                                                                                  |
+| Availability and notice             | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.                                                                                                      |
+| Remote / hybrid / on-site           | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.                                                                                                           |
+| Relocation                          | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                                                                                                                          |
+| Work authorization                  | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact.                                                                                                |
+| Client permissions                  | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                                                                                                                           |
+| Domain                              | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                                                                                                                |
+| LinkedIn, portrait, language levels | Omitted until the owner supplies them. No placeholder links.                                                                                                                                                                |
+| Phone                               | Appears in the CV PDFs; site copy uses email only.                                                                                                                                                                          |
+| Per-case OG cards                   | Deferred. The default `public/og.png` card is used on every page.                                                                                                                                                           |
+| Automated accessibility             | Passed 28 Oct 2026: axe-core 4.14.0, 0 violations across 8 routes at 320/390/1440 plus the open mobile menu.                                                                                                                |
+| Lighthouse                          | Passed 28 Oct 2026: repeatable audit, 3 runs per route; home medians 96–97 (runs 96–99), `/work`/flagship/`/about` 98–99; accessibility/BP/SEO 100; desktop `/` 100. An earlier 94 run with a 2.6s LCP outlier is recorded. |
+| Lighthouse audit script             | `npm run audit:lighthouse` runs Lighthouse 13 with Playwright's Chromium and asserts three-run medians; it is wired into the CI workflow.                                                                                   |
+| Dev dependency audit                | `npm audit` reports 0 vulnerabilities after adding `lighthouse` 13.6.0; `@lhci/cli` was rejected for adding 16 advisories (ADR-023).                                                                                        |
+| First-load JavaScript               | Measured 28 Oct 2026: 144.0KB gzip / 123.4KB Brotli on `/`, 140.0/120.0 on the flagship. The 120KB gzip target is missed; React + router are ~115KB.                                                                        |
+| Links and assets                    | Passed 28 Oct 2026: 14 internal URLs and 4 external GitHub URLs return 200; repeatable with `npm run audit:links -- --external`.                                                                                            |
+| Cross-browser                       | Passed 28 Oct 2026: Chromium 1248, Firefox 157, WebKit 27.2, 8 routes at 1440/390, menu/Index/copy. Real Safari and real devices not run.                                                                                   |
+| CI                                  | `.github/workflows/ci.yml` committed and actionlint-clean; not run (no remote/account access).                                                                                                                              |
+| Security headers                    | Enforced 28 Oct 2026: nosniff, referrer, frame DENY, permissions, HSTS, and CSP. CSP allows inline script/style for Next; no `unsafe-eval`.                                                                                 |
 
 ---
 
@@ -155,22 +157,23 @@ The EN/FR CVs are generated from `Documents/cv/source/cv-data.json`; `Documents/
 
 ## F. Change log
 
-| Date       | Change                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------- |
-| 2026-10-27 | Replaced the template with the 16 shipped evidence notes, 16 scope metrics, and three archive facts.       |
-| 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.         |
-| 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps.      |
-| 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.         |
-| 2026-10-27 | Added confirmed remote/hybrid/on-site work and relocation willingness; left authorization unclaimed.       |
-| 2026-10-27 | Recorded the confirmed visa-sponsorship requirement for roles outside Tunisia.                             |
-| 2026-10-27 | Synced the new EN/FR designed and ATS CVs from `Documents/cv/output/`; all four are one page.              |
-| 2026-10-28 | Fixed five axe violations (home link, card/archive link names, French ATS label, skip landmark).           |
-| 2026-10-28 | Fixed 320px contact overflow; added `npm run audit:a11y`; axe now reports 0 violations.                    |
-| 2026-10-28 | Recorded local Lighthouse 13.6.0 results: 96–99 final performance (median 97); an earlier 94 run recorded. |
-| 2026-10-28 | Added enforced security headers and CSP; upgraded Next.js to 16.4.3 for the audit fix.                     |
-| 2026-10-28 | `npm audit` reports 0 vulnerabilities after the Next.js upgrade.                                           |
-| 2026-10-28 | Enabled `remark-gfm`; case tables were rendering as raw pipes and overflowed in Firefox.                   |
-| 2026-10-28 | 200% zoom, text-spacing, reduced-motion, HTML validation, and Chromium/Firefox/WebKit checks passed.       |
-| 2026-10-28 | Replaced the no-op report-only CSP with an enforced policy; WebKit console warning cleared.                |
-| 2026-10-28 | Added `npm run audit:links`, the GitHub Actions CI workflow, and keyboard/viewport checks.                 |
-| 2026-10-28 | Recorded first-load JS 140–144KB gzip; 120KB target missed and documented.                                 |
+| Date       | Change                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-27 | Replaced the template with the 16 shipped evidence notes, 16 scope metrics, and three archive facts.                               |
+| 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.                                 |
+| 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps.                              |
+| 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.                                 |
+| 2026-10-27 | Added confirmed remote/hybrid/on-site work and relocation willingness; left authorization unclaimed.                               |
+| 2026-10-27 | Recorded the confirmed visa-sponsorship requirement for roles outside Tunisia.                                                     |
+| 2026-10-27 | Synced the new EN/FR designed and ATS CVs from `Documents/cv/output/`; all four are one page.                                      |
+| 2026-10-28 | Fixed five axe violations (home link, card/archive link names, French ATS label, skip landmark).                                   |
+| 2026-10-28 | Fixed 320px contact overflow; added `npm run audit:a11y`; axe now reports 0 violations.                                            |
+| 2026-10-28 | Recorded local Lighthouse 13.6.0 results: 96–99 final performance (median 96); an earlier 94 run recorded.                         |
+| 2026-10-28 | Added enforced security headers and CSP; upgraded Next.js to 16.4.3 for the audit fix.                                             |
+| 2026-10-28 | `npm audit` reports 0 vulnerabilities after the Next.js upgrade.                                                                   |
+| 2026-10-28 | Enabled `remark-gfm`; case tables were rendering as raw pipes and overflowed in Firefox.                                           |
+| 2026-10-28 | 200% zoom, text-spacing, reduced-motion, HTML validation, and Chromium/Firefox/WebKit checks passed.                               |
+| 2026-10-28 | Replaced the no-op report-only CSP with an enforced policy; WebKit console warning cleared.                                        |
+| 2026-10-28 | Added `npm run audit:links`, the GitHub Actions CI workflow, and keyboard/viewport checks.                                         |
+| 2026-10-28 | Recorded first-load JS 140–144KB gzip; 120KB target missed and documented.                                                         |
+| 2026-10-28 | Added a repeatable Lighthouse audit (`npm run audit:lighthouse`) and wired it into CI; `@lhci/cli` rejected for 16 dev advisories. |

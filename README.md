@@ -25,6 +25,11 @@ npm run format               # prettier --write .
 npm run format:check         # prettier --check .
 npm run build                # production build; validates every case file
 npm run start                # serve the production build
+
+# with the production server running in another terminal:
+npm run audit:a11y           # axe-core, 8 routes x 3 widths
+npm run audit:links -- --external
+npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
 ```
 
 `npm run build` is a content gate, not just a compile step. It fails when a case study is missing a required frontmatter field, a slug does not match its filename, a metric is malformed, or fewer than two evidence notes exist.
@@ -95,37 +100,37 @@ The full claim-to-source mapping is [`docs/evidence-ledger.md`](docs/evidence-le
 
 Last full run: 28 Oct 2026, from this directory.
 
-| Check              | Command                | Result                                                                       |
-| ------------------ | ---------------------- | ---------------------------------------------------------------------------- |
-| Types              | `npm run typecheck`    | Pass                                                                         |
-| Lint               | `npm run lint`         | Pass, 0 errors / 0 warnings                                                  |
-| Format             | `npm run format:check` | Pass                                                                         |
-| Production build   | `npm run build`        | Pass; all four case studies prerendered                                      |
-| Desktop sweep      | Playwright, 1440×1000  | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`               |
-| Mobile sweep       | Playwright, 390×844    | Same 8 routes: no horizontal overflow                                        |
-| Narrow sweep       | Playwright, 320×800    | Same 8 routes: no horizontal overflow; tables fit at 320                     |
-| Viewport sweep     | Playwright, 10 widths  | 320–2560px: 5 routes, no horizontal overflow                                 |
-| Reflow and spacing | Playwright, 640/390    | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass             |
-| Reduced motion     | Playwright             | 0 running animations; `scroll-behavior` returns to `auto`                    |
-| Accessibility      | `npm run audit:a11y`   | 0 axe-core violations: 8 routes × 3 widths, plus the open menu               |
-| Keyboard           | Playwright             | 31/24/20/19 focus stops; every indicator visible; first Tab is skip          |
-| HTML validity      | Nu HTML Checker 26.10  | 8 routes: 0 errors, 0 warnings (informational self-closing notes only)       |
-| Lighthouse mobile  | Lighthouse 13.6.0      | 96–99 on the final build (median 97); 100 accessibility, best practices, SEO |
-| Lighthouse desktop | Lighthouse 13.6.0      | 100 in all four categories on `/`                                            |
-| Cross-browser      | Playwright             | Chromium 1248, Firefox 157, WebKit 27.2: routes, menu, Index, copy           |
-| First-load JS      | 8 modern script tags   | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0                  |
-| Links and assets   | `npm run audit:links`  | 14 internal URLs, all 200; 4 external GitHub links, all 200                  |
-| Evidence rendering | Playwright + HTML      | 4 labels and 4 markers per case; no nested paragraphs                        |
-| Security headers   | `curl -I`              | nosniff, referrer, frame, permissions, HSTS, enforced CSP                    |
-| Dependencies       | `npm audit`            | 0 vulnerabilities; Next.js upgraded to 16.4.3                                |
-| Print              | Playwright             | Navigation hidden, grid collapsed, evidence notes kept                       |
-| CI                 | GitHub Actions         | Workflow committed; not run (no remote or account access)                    |
+| Check              | Command                    | Result                                                                 |
+| ------------------ | -------------------------- | ---------------------------------------------------------------------- |
+| Types              | `npm run typecheck`        | Pass                                                                   |
+| Lint               | `npm run lint`             | Pass, 0 errors / 0 warnings                                            |
+| Format             | `npm run format:check`     | Pass                                                                   |
+| Production build   | `npm run build`            | Pass; all four case studies prerendered                                |
+| Desktop sweep      | Playwright, 1440×1000      | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`         |
+| Mobile sweep       | Playwright, 390×844        | Same 8 routes: no horizontal overflow                                  |
+| Narrow sweep       | Playwright, 320×800        | Same 8 routes: no horizontal overflow; tables fit at 320               |
+| Viewport sweep     | Playwright, 10 widths      | 320–2560px: 5 routes, no horizontal overflow                           |
+| Reflow and spacing | Playwright, 640/390        | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass       |
+| Reduced motion     | Playwright                 | 0 running animations; `scroll-behavior` returns to `auto`              |
+| Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, plus the open menu         |
+| Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
+| HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |
+| Lighthouse mobile  | `npm run audit:lighthouse` | 96–99 median, 3 runs per route; 100 accessibility, best practices, SEO |
+| Lighthouse desktop | Lighthouse 13.6.0          | 100 in all four categories on `/`                                      |
+| Cross-browser      | Playwright                 | Chromium 1248, Firefox 157, WebKit 27.2: routes, menu, Index, copy     |
+| First-load JS      | 8 modern script tags       | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0            |
+| Links and assets   | `npm run audit:links`      | 14 internal URLs, all 200; 4 external GitHub links, all 200            |
+| Evidence rendering | Playwright + HTML          | 4 labels and 4 markers per case; no nested paragraphs                  |
+| Security headers   | `curl -I`                  | nosniff, referrer, frame, permissions, HSTS, enforced CSP              |
+| Dependencies       | `npm audit`                | 0 vulnerabilities; Next.js upgraded to 16.4.3                          |
+| Print              | Playwright                 | Navigation hidden, grid collapsed, evidence notes kept                 |
+| CI                 | GitHub Actions             | Workflow committed; not run (no remote or account access)              |
 
 The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 320, 390, and 1440px. It found five accessibility issues on 28 Oct 2026, all fixed: the home link name, overlong card and archive link names, the French ATS link name, and the skip link landmark. A separate 320px sweep found contact-section overflow, also fixed. The script is `scripts/audit-a11y.mjs`.
 
 Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
 
-Lighthouse home performance was 97, 96, 97 across three runs on the final build; the other routes scored 99. An earlier run set on the prior build was 99, 94, 96, where the 94 run had a 2.6s LCP outlier. Results are local lab runs, not field data or a CI median; across both sets one run fell below the 95 target, and that miss is recorded rather than discarded.
+The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced home medians of 96–97 (individual runs 96–99) and medians of 98–99 on `/work`, the flagship, and `/about`; LCP was 0.8–1.1s, CLS 0, and TBT 129–212ms. An earlier run set recorded a 94 with a 2.6s LCP outlier. Across all sets one run fell below the 95 target, but no three-run median did. Results are local lab runs, not field data or a CI median.
 
 First-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/` and 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill chunk. The 120 KB gzip budget is missed; React and the App Router runtime account for about 115 KB gzip before any site code. The budget is recorded as missed rather than redefined.
 
@@ -142,7 +147,7 @@ No deployment has been performed. The procedure is in [`docs/13-implementation-r
 Before deploying:
 
 1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview.
-2. Confirm the four CV PDFs are current, then re-run the four build gates.
+2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, and `audit:lighthouse`.
 3. Check canonical URLs, OG image resolution, the 404 status, and a printed case file.
 4. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin.
 

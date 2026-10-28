@@ -102,7 +102,7 @@ Run from `v2/` on 27–28 Oct 2026.
 | Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                      |
 | Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                    |
 | Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                      |
-| Lighthouse mobile  | Lighthouse 13.6.0, production build     | 96–99 performance, median 97; 100 accessibility/BP/SEO; home 97, 96, 97 on final build                 |
+| Lighthouse mobile  | `npm run audit:lighthouse`              | 96–99; home medians 96–97, other routes 98–99; 3 runs each; 100 a11y/BP/SEO                            |
 | Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                         |
 | First-load JS      | 8 modern script tags, gzip + Brotli     | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0; 120 KB gzip target missed                 |
 | Links and assets   | `npm run audit:links`                   | 14 internal URLs and 4 external GitHub links, all 200                                                  |
@@ -144,17 +144,19 @@ WebKit initially failed to launch because the host lacks `libavif16`. The packag
 
 ### Lighthouse
 
-The home page was run three times; the other routes once, against `next start`, using Lighthouse 13.6.0's mobile emulation:
+The repeatable audit runs Lighthouse 13 three times per route, against `next start`, and asserts the median:
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/` (median of 3)           | 97          | 100           | 100            | 100 | 1.0s | 0   | 200ms |
-| `/work`                     | 99          | 100           | 100            | 100 | 1.1s | 0   | 130ms |
-| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 1.1s | 0   | 120ms |
-| `/about`                    | 99          | 100           | 100            | 100 | 0.8s | 0   | 130ms |
-| `/` desktop preset          | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
+| `/` (median of 3)           | 96          | 100           | 100            | 100 | 0.9s | 0   | 211ms |
+| `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 142ms |
+| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 0.9s | 0   | 136ms |
+| `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.8s | 0   | 129ms |
+| `/` desktop preset (manual) | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
-On the final build, home performance was 97, 96, 97 (TBT 200, 210, 200ms), all with a 1.0s LCP. An earlier set on the prior build was 99, 94, 96, where the 94 run recorded a 2.6s LCP outlier; one run across both sets therefore fell below the 95 target. These are local lab runs, not field data or a CI assertion. Scores will vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+Home medians were 96 (individual runs 97, 96, 96; LCP 1.0s, 0.9s, 0.9s; TBT 211ms). `/work` ran 98, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+
+The audit is repeatable with `npm run audit:lighthouse` and runs in CI after the server starts. It uses the `lighthouse` library with Playwright's Chromium, so it adds no second browser download. The `@lhci/cli` wrapper was rejected: version 0.15.1 pulled 16 dev advisories, including 13 high, which would have broken the zero-vulnerability gate (ADR-023).
 
 ### JavaScript budget
 
@@ -190,8 +192,8 @@ No public claim about TranscriptoSense or Data Drift was found false. Public rep
 - No real Safari or iOS pass; Playwright WebKit 27.2 passed on Linux.
 - No real-device test.
 - No load test; the site is static.
-- No Lighthouse CI: home was run three times, the other routes once, not a CI median.
-- No CI run: the workflow, build gates, axe audit, and cross-browser checks run locally only.
+- No remote CI run: the workflow, build gates, axe audit, Lighthouse audit, and cross-browser checks run locally only.
+- No Lighthouse history/upload; the repeatable audit prints medians and asserts them but keeps no trend.
 
 Automated axe and Lighthouse passes are evidence, not certification. The quality gates in `10-quality-gates.md` still apply.
 
@@ -207,7 +209,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and local Lighthouse runs score 96–99 performance (median 97 on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and the repeatable Lighthouse audit scores 96–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
@@ -243,12 +245,13 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
 
 ### Engineering
 
-- [x] Add CI workflow: install, format check, typecheck, lint, build, start, axe, and link checks. Committed; not yet run.
+- [x] Add CI workflow: install, format check, typecheck, lint, build, start, axe, link, and Lighthouse checks. Committed; not yet run.
 - [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
 - [x] Add a repeatable link and asset check (`npm run audit:links`); 14 internal and 4 external URLs pass.
+- [x] Add a repeatable three-run Lighthouse audit (`npm run audit:lighthouse`); wired into CI, medians pass.
 - [x] Replace the no-op report-only CSP with an enforced policy; WebKit console warning cleared.
 - [ ] Harden CSP further with nonces or build-time hashes to remove `'unsafe-inline'`.
-- [ ] Add Lighthouse CI with a three-run median; the local runs are recorded above.
+- [ ] Run the CI workflow on a remote; Lighthouse history/upload is not configured.
 - [ ] Screen-reader pass; real Safari/iOS and real-device runs.
 - [ ] Per-case OG images (optional; default card works).
 - [ ] Decide on cookieless analytics; if added, update the footer copy.
@@ -268,7 +271,7 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no portrait,
    - `/`, `/work`, all four case files, `/about`, `/resume.pdf`, `/resume-fr.pdf`, `/resume-ats.pdf`, `/resume-fr-ats.pdf`, `/sitemap.xml`, `/robots.txt`.
    - Canonical URLs and OG image resolve against the final domain.
    - 404 returns a 404 status.
-   - `npm run audit:links` and `npm run audit:a11y` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`).
+   - `npm run audit:links`, `npm run audit:a11y`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`).
    - Print a case file; header/footer are gone and the evidence notes stay with their claims.
 8. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin. Keep `/resume.pdf` working across the redirect.
 9. Submit the sitemap in Search Console after the domain is final.

@@ -110,24 +110,24 @@ The first run needs `npx playwright install chromium`.
 npm run build
 npm run start
 # in another terminal:
-npx lighthouse http://localhost:3000/ --output=html --view
+npm run audit:lighthouse
 ```
 
-Lighthouse ships its own Chrome launcher; set `CHROME_PATH` if it cannot find one.
+The script uses Lighthouse 13 with Playwright's Chromium, three runs per route, and fails if a median misses the budget. Set `AUDIT_BASE_URL` for a different origin.
 
 **Recorded run — 28 Oct 2026**
 
-Lighthouse 13.6.0, mobile emulation, against `next start`. On the final build, home was run three times and the other routes once:
+Lighthouse 13.6.0, mobile emulation, against `next start`. Three runs per route; the desktop preset was run once manually:
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/` (median of 3)           | 97          | 1.0s | 0   | 200ms |
-| `/work`                     | 99          | 1.1s | 0   | 130ms |
-| `/work/documents-assistant` | 99          | 1.1s | 0   | 120ms |
-| `/about`                    | 99          | 0.8s | 0   | 130ms |
-| `/` desktop preset          | 100         | 0.3s | 0   | 10ms  |
+| `/` (median of 3)           | 96          | 0.9s | 0   | 211ms |
+| `/work` (median of 3)       | 99          | 0.9s | 0   | 142ms |
+| `/work/documents-assistant` | 99          | 0.9s | 0   | 136ms |
+| `/about` (median of 3)      | 99          | 0.8s | 0   | 129ms |
+| `/` desktop preset (manual) | 100         | 0.3s | 0   | 10ms  |
 
-Home performance was 97, 96, 97 on the final build (TBT 200, 210, 200ms), all with a 1.0s LCP. An earlier set on the prior build was 99, 94, 96; the 94 run had a 2.6s LCP outlier, so one run across both sets missed the 95 target. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a CI median; field INP and real-device timings are still pending.
+Home medians were 96 (individual runs 97, 96, 96; LCP 1.0s, 0.9s, 0.9s; TBT 211ms). `/work` ran 98, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -146,7 +146,7 @@ Home performance was 97, 96, 97 on the final build (TBT 200, 210, 200ms), all wi
 | Long tasks        | none > 200ms on load |
 | Animation         | 60fps at 4× CPU      |
 
-**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. The 94 Lighthouse run also missed the ≥95 performance target once; median is 96. Both misses are recorded, not redefined.
+**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. One earlier Lighthouse run scored 94 and missed the ≥95 target; the repeatable audit's three-run medians are 96–99. Both misses are recorded, not redefined.
 
 **Checks**
 
@@ -159,7 +159,7 @@ Home performance was 97, 96, 97 on the final build (TBT 200, 210, 200ms), all wi
 - [ ] Real mid-range Android on 4G: home <2s; case study usable.
 - [ ] Performance trace: at 4× CPU throttle, two long tasks on `/` (222ms, 213ms) and one on the flagship (258ms); TBT 200–210ms. Recorded as a miss.
 
-**Evidence:** Lighthouse JSON (28 Oct 2026, table above); manual script-sum and CSS/font measurements; 4× CPU long-task probe. Bundle analyzer report and real-device timing pending.
+**Evidence:** `npm run audit:lighthouse` output (28 Oct 2026, table above); manual script-sum and CSS/font measurements; 4× CPU long-task probe. Bundle analyzer report and real-device timing pending.
 
 ---
 
@@ -343,17 +343,17 @@ npm run audit:links -- --external
 
 ## Sign-off
 
-| Gate               | Result | Evidence                                                                                                                           | Date       | Owner   |
-| ------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
-| 0 Content          | ⬜     |                                                                                                                                    |            | Yassine |
-| 1 Recruiter tests  | ⬜     |                                                                                                                                    |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard pass; screen reader open                                                           | 2026-10-28 | Yassine |
-| 3 Performance      | ◐      | Lighthouse 96–99 final (median 97; earlier 94 outlier), desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
-| 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open                            | 2026-10-28 | Yassine |
-| 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                                   | 2026-10-28 | Yassine |
-| 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                                               | 2026-10-28 | Yassine |
-| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                                       | 2026-10-28 | Yassine |
-| 8 Analytics/launch | ⬜     |                                                                                                                                    |            | Yassine |
+| Gate               | Result | Evidence                                                                                                           | Date       | Owner   |
+| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ | ---------- | ------- |
+| 0 Content          | ⬜     |                                                                                                                    |            | Yassine |
+| 1 Recruiter tests  | ⬜     |                                                                                                                    |            | Yassine |
+| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard pass; screen reader open                                           | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Lighthouse 96–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
+| 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open            | 2026-10-28 | Yassine |
+| 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                   | 2026-10-28 | Yassine |
+| 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                               | 2026-10-28 | Yassine |
+| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                       | 2026-10-28 | Yassine |
+| 8 Analytics/launch | ⬜     |                                                                                                                    |            | Yassine |
 
 ◐ = the automated portion passed; the manual or field portion is still open.
 
