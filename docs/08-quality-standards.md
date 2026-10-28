@@ -66,14 +66,14 @@ A portfolio that fails accessibility fails the craft test. The audience includes
 
 ### Testing protocol
 
-1. **Automated:** `npm run audit:a11y` runs axe-core via Playwright on `/`, `/work`, each case study, `/about`, and a 404 at 320, 390, and 1440px. 0 violations on 28 Oct 2026.
+1. **Automated:** `npm run audit:a11y` runs axe-core via Playwright on `/`, `/work`, each case study, `/about`, and a 404 at 320, 390, and 1440px, plus a forced-colors pass at 390 and 1440px. 0 violations on 28 Oct 2026.
 2. **Keyboard:** Tab/Shift+Tab through every page; Enter/Space on controls; Escape closes the menu; no focus loss.
 3. **Screen reader:** VoiceOver on the home page and one case study; verify headings, tablist, evidence notes, figures, and link names.
 4. **Zoom/reflow:** 200% at 1280px; 320px viewport.
 5. **Reduced motion:** OS setting on; no transforms, autoplay, or view transitions.
 6. **Contrast:** automated token check + manual spot check of every text/background pair.
 
-Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated pass is recorded there; the keyboard, screen-reader, zoom, reduced-motion, and contrast checks are not complete.
+Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated, keyboard, zoom, reduced-motion, and contrast checks are recorded there; the screen-reader pass is not complete.
 
 ---
 
@@ -265,7 +265,7 @@ If it is not in the ledger, it does not go on the site.
 
 All of the following true:
 
-- [x] axe: 0 violations on every route at 320/390/1440; repeatable with `npm run audit:a11y`.
+- [x] axe: 0 violations on every route at 320/390/1440 and in forced colors at 390/1440; repeatable with `npm run audit:a11y`.
 - [x] Keyboard-only pass on 4 routes; 19–31 stops each, all indicators visible, TOC anchors clear the sticky header.
 - [ ] Screen-reader pass on home + one case study.
 - [x] Lighthouse mobile 96–99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.

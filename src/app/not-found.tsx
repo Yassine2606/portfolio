@@ -18,7 +18,7 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <Link
           href="/work"
-          className="rounded-card bg-ink text-paper hover:bg-signal-text inline-flex min-h-11 items-center px-5 py-3 text-sm font-medium transition-colors"
+          className="button-primary rounded-card bg-ink text-paper hover:bg-signal-text inline-flex min-h-11 items-center px-5 py-3 text-sm font-medium transition-colors"
         >
           See the work
         </Link>

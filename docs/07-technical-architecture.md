@@ -501,16 +501,16 @@ CI is committed and actionlint-clean. It runs checkout@v5, Node 22, `npm ci`, `n
 
 ## Error handling and failure modes
 
-| Failure                   | Behaviour                                                                   |
-| ------------------------- | --------------------------------------------------------------------------- |
-| Font fails                | Fallback stack; no layout shift because `next/font` reserves metrics        |
-| Image fails               | `alt` + caption remain; figure border holds layout via aspect ratio         |
-| JS fails                  | All content visible; Index panels stacked; menu links visible in the footer |
-| Analytics blocked         | Site works; no errors                                                       |
-| External link dead        | Link checker catches it before launch; remove or label private              |
-| MDX build error           | Build fails with file + field; never ships                                  |
-| 404                       | Useful page with Home/Work/Resume links, status 404                         |
-| Future contact form fails | Visible error, retry, mailto fallback                                       |
+| Failure                   | Behaviour                                                               |
+| ------------------------- | ----------------------------------------------------------------------- |
+| Font fails                | Fallback stack; no layout shift because `next/font` reserves metrics    |
+| Image fails               | `alt` + caption remain; figure border holds layout via aspect ratio     |
+| JS fails                  | All content visible; Index stacked; four-link nav row replaces the menu |
+| Analytics blocked         | Site works; no errors                                                   |
+| External link dead        | Link checker catches it before launch; remove or label private          |
+| MDX build error           | Build fails with file + field; never ships                              |
+| 404                       | Useful page with Home/Work/Resume links, status 404                     |
+| Future contact form fails | Visible error, retry, mailto fallback                                   |
 
 Add `src/app/error.tsx` (client) with a plain apology, a retry button, and the email. Do not expose stack traces.
 

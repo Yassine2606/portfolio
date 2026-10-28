@@ -449,6 +449,7 @@ Full spec: `06-motion-and-interaction.md`. Summary:
 - Hover content is duplicated on focus and tap.
 - Sticky header: `scroll-margin-top: 96px` on anchor targets; focus never hidden behind the header.
 - Motion respects `prefers-reduced-motion` at the component level, not only globally.
+- Forced colors: solid buttons switch to `ButtonFace`/`ButtonText` with a `Highlight` hover, so Windows High Contrast keeps the label legible.
 - Images have meaningful alt text; diagrams have a text alternative; videos have captions.
 - No text in images except screenshots (which have captions and alt).
 

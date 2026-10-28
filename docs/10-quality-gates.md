@@ -81,6 +81,7 @@ The first run needs `npx playwright install chromium`.
 **Automated**
 
 - [x] axe: 0 violations on `/`, `/work`, every case study, `/about`, and a 404 at 320, 390, and 1440px. The open mobile menu is included.
+- [x] Forced colors (Windows High Contrast emulation): 8 routes at 390 and 1440px, 0 violations. Solid buttons use `ButtonFace`/`ButtonText`, with a `Highlight` hover.
 - [x] Lighthouse accessibility = 100 on `/`, `/work`, the flagship, and `/about`.
 - [x] HTML validator: Nu HTML Checker 26.10.12, 0 errors and 0 warnings on 8 routes. Only informational self-closing-void notes remain.
 
@@ -94,7 +95,7 @@ The first run needs `npx playwright install chromium`.
 - [x] 200% zoom at 1280px equivalent (640 CSS px): 8 routes, no clipping or horizontal scroll.
 - [x] Text spacing overrides: 8 routes at 1440px and 390px; email breaks, tables scroll inside their wrapper.
 - [x] Reduced motion: 0 running animations and `scroll-behavior: auto` on `/` and the flagship.
-- [x] Contrast: token ratios are recorded in `05-design-system.md` (ink 16.06:1, soft 9.76:1, faint 5.39:1, signal-text 5.84:1, status 4.68:1); axe reports no contrast violations on shipped pairs.
+- [x] Contrast: token ratios are recorded in `05-design-system.md` (ink 16.06:1, soft 9.76:1, faint 5.39:1, signal-text 5.84:1, status 4.68:1); axe reports no contrast violations on shipped pairs, including forced colors.
 - [x] No video shipped; the architecture section uses code-generated maps.
 - [x] No colour-only meaning: status, confidentiality, and evidence kinds carry text labels; links are underlined.
 
@@ -117,17 +118,17 @@ The script uses Lighthouse 13 with Playwright's Chromium, three runs per route, 
 
 **Recorded run — 28 Oct 2026**
 
-Lighthouse 13.6.0, mobile emulation, against `next start`. Three runs per route; the desktop preset was run once manually:
+Lighthouse 13.6.0, mobile emulation, against `next start`. Three runs per route; the desktop preset was run once manually. The table is one representative run; repeated sets varied by a few points.
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/` (median of 3)           | 96          | 0.9s | 0   | 211ms |
-| `/work` (median of 3)       | 99          | 0.9s | 0   | 142ms |
-| `/work/documents-assistant` | 99          | 0.9s | 0   | 136ms |
+| `/` (median of 3)           | 96          | 0.9s | 0   | 218ms |
+| `/work` (median of 3)       | 99          | 0.9s | 0   | 131ms |
+| `/work/documents-assistant` | 99          | 0.9s | 0   | 138ms |
 | `/about` (median of 3)      | 99          | 0.8s | 0   | 129ms |
 | `/` desktop preset (manual) | 100         | 0.3s | 0   | 10ms  |
 
-Home medians were 96 (individual runs 97, 96, 96; LCP 1.0s, 0.9s, 0.9s; TBT 211ms). `/work` ran 98, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
+Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218ms). `/work` ran 99, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 129–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -309,7 +310,7 @@ npm run audit:links -- --external
 
 1. Disable JS in DevTools.
 2. `/` renders all content; Index panels are stacked with links.
-3. Header links work; menu falls back to visible links (ensure a `<noscript>` or CSS fallback).
+3. Header links work; the menu trigger is replaced by a visible four-link nav row (CSS `@media (scripting: none)`).
 4. Case studies render; video shows poster; links work.
 5. No blank sections.
 
@@ -349,7 +350,7 @@ npm run audit:links -- --external
 | ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ | ---------- | ------- |
 | 0 Content          | ⬜     |                                                                                                                    |            | Yassine |
 | 1 Recruiter tests  | ⬜     |                                                                                                                    |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0; HTML valid; 200%/spacing/motion/keyboard/no-JS (32 checks) pass; screen reader open                         | 2026-10-28 | Yassine |
+| 2 Accessibility    | ◐      | axe 0 incl. forced colors; HTML valid; 200%/spacing/motion/keyboard/no-JS pass; screen reader open                 | 2026-10-28 | Yassine |
 | 3 Performance      | ◐      | Lighthouse 96–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
 | 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open            | 2026-10-28 | Yassine |
 | 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                   | 2026-10-28 | Yassine |

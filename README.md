@@ -27,7 +27,7 @@ npm run build                # production build; validates every case file
 npm run start                # serve the production build
 
 # with the production server running in another terminal:
-npm run audit:a11y           # axe-core, 8 routes x 3 widths
+npm run audit:a11y           # axe-core, 8 routes x 3 widths + forced colors
 npm run audit:links -- --external
 npm run audit:nojs           # 8 routes with JS on and off, 390/1440
 npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
@@ -114,7 +114,7 @@ Last full run: 28 Oct 2026, from this directory.
 | Reflow and spacing | Playwright, 640/390        | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass       |
 | Reduced motion     | Playwright                 | 0 running animations; `scroll-behavior` returns to `auto`              |
 | No JavaScript      | `npm run audit:nojs`       | 8 routes, JS on/off, 390/1440: 4 stacked items, 4 header links         |
-| Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, plus the open menu         |
+| Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, open menu, forced colors   |
 | Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
 | HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |
 | Lighthouse mobile  | `npm run audit:lighthouse` | 96–99 median, 3 runs per route; 100 accessibility, best practices, SEO |
@@ -132,7 +132,7 @@ The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 3
 
 Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
 
-The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced home medians of 96–97 (individual runs 96–99) and medians of 98–99 on `/work`, the flagship, and `/about`; LCP was 0.8–1.1s, CLS 0, and TBT 129–212ms. An earlier run set recorded a 94 with a 2.6s LCP outlier. Across all sets one run fell below the 95 target, but no three-run median did. Results are local lab runs, not field data or a CI median.
+The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced home medians of 96–97 (individual runs 96–99) and medians of 98–99 on `/work`, the flagship, and `/about`; LCP was 0.8–1.2s, CLS 0, and TBT 129–224ms. An earlier run set recorded a 94 with a 2.6s LCP outlier. Across all sets one run fell below the 95 target, but no three-run median did. Results are local lab runs, not field data or a CI median.
 
 First-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/` and 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill chunk. The 120 KB gzip budget is missed; React and the App Router runtime account for about 115 KB gzip before any site code. The budget is recorded as missed rather than redefined.
 

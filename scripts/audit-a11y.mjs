@@ -80,6 +80,18 @@ for (const viewport of viewports) {
   await page.close();
 }
 
+for (const width of [390, 1440]) {
+  const page = await browser.newPage({ viewport: { width, height: 900 } });
+  await page.emulateMedia({ forcedColors: "active" });
+
+  for (const route of routes) {
+    await page.goto(baseUrl + route, { waitUntil: "networkidle" });
+    await audit(page, `forced-colors ${width} ${route}`);
+  }
+
+  await page.close();
+}
+
 await browser.close();
 console.log(`\nTOTAL: ${total} violation(s)`);
 process.exitCode = total === 0 ? 0 : 1;

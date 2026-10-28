@@ -545,10 +545,21 @@ sup.evidence-ref a:hover {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Print — a case file should survive on paper                         */
-/* ------------------------------------------------------------------ */
+/* Forced colors: keep solid buttons legible in Windows High Contrast. */
+@media (forced-colors: active) {
+  .button-primary {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
 
+  .button-primary:hover {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Progressive enhancement: the stacked index is the no-script fallback. */
 .index-nojs {
   display: none;
@@ -577,6 +588,10 @@ sup.evidence-ref a:hover {
     display: block;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Print — a case file should survive on paper                         */
+/* ------------------------------------------------------------------ */
 
 @media print {
   header,

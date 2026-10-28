@@ -102,7 +102,7 @@ Run from `v2/` on 27–28 Oct 2026.
 | CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                                 |
 | Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                      |
 | Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                    |
-| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, plus the open mobile menu                      |
+| Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, open menu, forced colors at 390/1440           |
 | Lighthouse mobile  | `npm run audit:lighthouse`              | 96–99; home medians 96–97, other routes 98–99; 3 runs each; 100 a11y/BP/SEO                            |
 | Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                         |
 | First-load JS      | 8 modern script tags, gzip + Brotli     | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0; 120 KB gzip target missed                 |
@@ -123,6 +123,8 @@ The first run found five violations, all fixed before the clean run:
 3. Archive rows had the same compressed-label problem.
 4. The French ATS link said “French CV” but its visible text was “Français”.
 5. The skip link sat outside every landmark; it now has a labelled navigation wrapper.
+
+A forced-colors pass at 390 and 1440 found two solid primary buttons — the header Resume button and the hero “Read the case files” button — whose paper-coloured label sat on a forced white background. The primary variant now carries a `.button-primary` class; under `@media (forced-colors: active)` it uses `ButtonFace`/`ButtonText`, a 1px `ButtonText` border, and a `Highlight` hover. The same override covers the 404 and error buttons. The re-run reports 0 violations on 8 routes at both widths.
 
 A separate 320px sweep found the contact email forcing a 25px horizontal overflow. The email now scales down at narrow widths, allows breaking under text-spacing overrides, and both contact columns allow shrinking. The audit is repeatable with `npm run audit:a11y` after `npm run build && npm start`. Install the browser once with `npx playwright install chromium`.
 
@@ -154,17 +156,17 @@ WebKit initially failed to launch because the host lacks `libavif16`. The packag
 
 ### Lighthouse
 
-The repeatable audit runs Lighthouse 13 three times per route, against `next start`, and asserts the median:
+The repeatable audit runs Lighthouse 13 three times per route, against `next start`, and asserts the median. The table is one representative run; repeated sets varied by a few points:
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/` (median of 3)           | 96          | 100           | 100            | 100 | 0.9s | 0   | 211ms |
-| `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 142ms |
-| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 0.9s | 0   | 136ms |
+| `/` (median of 3)           | 96          | 100           | 100            | 100 | 0.9s | 0   | 218ms |
+| `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 131ms |
+| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 0.9s | 0   | 138ms |
 | `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.8s | 0   | 129ms |
 | `/` desktop preset (manual) | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
-Home medians were 96 (individual runs 97, 96, 96; LCP 1.0s, 0.9s, 0.9s; TBT 211ms). `/work` ran 98, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+Home medians were 96 (individual runs 96, 99, 96; LCP 1.0s, 0.9s, 0.9s; TBT 218ms). `/work` ran 99, 99, 99; the flagship 99, 99, 99; `/about` 99, 99, 99. Repeated sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 129–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
 
 The audit is repeatable with `npm run audit:lighthouse` and runs in CI after the server starts. It uses the `lighthouse` library with Playwright's Chromium, so it adds no second browser download. The `@lhci/cli` wrapper was rejected: version 0.15.1 pulled 16 dev advisories, including 13 high, which would have broken the zero-vulnerability gate (ADR-023).
 
@@ -219,7 +221,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px, and the repeatable Lighthouse audit scores 96–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px and in forced colors at 390/1440, and the repeatable Lighthouse audit scores 96–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
