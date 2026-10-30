@@ -1,0 +1,203 @@
+# Evidence ledger
+
+Status: Shipped v1.0 · public re-check 27 Oct 2026
+Scope: the 16 evidence notes and 16 scope metrics rendered in the four case files, plus the three archive rows.
+
+This ledger covers the claims the site renders as evidence notes and scope metrics. Narrative paragraphs explain those claims; they are not a second claim set. If a new number, guarantee, or outcome is added to a case file, it must be added here in the same commit.
+
+## How to read the tables
+
+| Basis               | Meaning                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Public re-check** | Re-checked on 27 Oct 2026 against a shallow clone of the public repository's default branch. Paths are relative to its root. |
+| **Owner record**    | Supplied from the private project's repository or delivery record. Not independently re-checked and not publishable.         |
+| **Unmeasured**      | Designed but not run. No outcome number exists, and the site says so.                                                        |
+
+`Artifact` means a structural count or configuration fact. It is not a benchmark, a customer outcome, or a quality score.
+
+---
+
+## A. Evidence notes — 16
+
+These are the numbered notes rendered in each case file. The claim text matches the evidence register.
+
+| #   | Project             | Claim                                                                                                                | Source                                            | Kind | Basis                    |
+| --- | ------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---- | ------------------------ |
+| 01  | Documents Assistant | A separate verification call returns a pass/fail verdict before an answer streams.                                   | `ai-service/app/services/verification.py`         | repo | Owner record · private   |
+| 02  | Documents Assistant | Retrieval fuses dense cosine and Postgres full-text results with reciprocal rank fusion.                             | `ai-service/app/services/retrieval.py`            | repo | Owner record · private   |
+| 03  | Documents Assistant | The retrieval benchmark is designed but not run; no outcome numbers are published.                                   | `remarks.md` — evaluation plan                    | doc  | **Unmeasured** · private |
+| 04  | Documents Assistant | Provider failover tries NVIDIA first and falls back to Gemini on errors.                                             | `ai-service/app/services/llm_provider.py`         | repo | Owner record · private   |
+| 05  | Sadine Tours        | Quote acceptance runs in a transaction, rejects non-sent quotes, and enforces expiry.                                | `src/modules/quotes/quote.service.ts`             | repo | Owner record · private   |
+| 06  | Sadine Tours        | Decimal money leaves the API as strings; the client formats but never calculates.                                    | `src/modules/bookings/booking.service.ts`         | repo | Owner record · private   |
+| 07  | Sadine Tours        | Auth, role, and owner checks are declared as middleware contracts on privileged routes.                              | `src/plugins/auth.ts`                             | repo | Owner record · private   |
+| 08  | Sadine Tours        | The repository contains 41 Prisma models and 26 backend modules.                                                     | `prisma/schema.prisma` + `src/modules/`           | repo | Owner record · private   |
+| 09  | Anomaly Detection   | The scan path only reads: SELECT queries, counts, and read-only aggregations. No scan step writes.                   | `src/monitors/database.py` + `src/api/main.py`    | repo | **Public re-check**      |
+| 10  | Anomaly Detection   | The MCP server only accepts the mock scan type; real connectors are not wired into it yet.                           | `src/mcp_server.py`                               | repo | **Public re-check**      |
+| 11  | Anomaly Detection   | All three connectors implement the same read methods, so one detector rule set scans PostgreSQL, MySQL, and MongoDB. | `src/monitors/database.py` + `src/api/main.py`    | repo | **Public re-check**      |
+| 12  | Anomaly Detection   | The README advertises pytest, but no tests directory is committed.                                                   | `README.md` + repository tree                     | doc  | **Public re-check**      |
+| 13  | RFID Access Control | MQTT payloads are Zod-validated before dispatch; business logic lives in services, not callbacks.                    | `backend/src/modules/mqtt/mqtt.consumer.ts`       | repo | Owner record · private   |
+| 14  | RFID Access Control | Device presence is derived from heartbeats, retained status, and the broker Last Will.                               | `backend/src/modules/devices/presence.service.ts` | repo | Owner record · private   |
+| 15  | RFID Access Control | Every decision records the failed rule, so a denial can be explained after the fact.                                 | `backend/src/modules/access/access.service.ts`    | repo | Owner record · private   |
+| 16  | RFID Access Control | A serial-to-MQTT bridge exercises the identical consumer path without physical readers.                              | `scripts/serial-mqtt-bridge.ts`                   | repo | Owner record · private   |
+
+### What the public re-check found
+
+The four public evidence notes and four public metrics all held at the snapshot below. Two earlier claims did not: the API count said five routes when the repository exposes nine, and an evidence note described a dialect-normalization step that lives in the connector contract rather than in the detectors. Both were corrected on the site and in this ledger.
+
+| Check                             | Command / path                                                                       | Result                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| Concrete database connectors      | `src/monitors/database.py`                                                           | PostgreSQL, MySQL, MongoDB — three                             |
+| MCP tools                         | `grep -c '@mcp.tool' src/mcp_server.py`                                              | 4                                                              |
+| HTTP routes                       | `grep -c '@app\.' src/api/main.py`                                                   | 9                                                              |
+| Write statements in the monitor   | `grep -nEi 'insert\|update\|delete\|drop\|alter\|truncate' src/monitors/database.py` | No matches                                                     |
+| Test directory                    | `tests/`                                                                             | Absent; `README.md` still documents `pytest tests/`            |
+| Shared connector contract         | abstract methods in `DatabaseConnector`                                              | All three connectors implement the same seven read methods     |
+| Gemini model                      | `src/config/settings.py`                                                             | `gemini-2.5-flash`                                             |
+| TranscriptoSense languages        | `config/pipeline.yaml`, `README.md`                                                  | French, Arabic, Darija present                                 |
+| TranscriptoSense semantic modules | `src/audio/diarization.py`, `src/semantic/`                                          | Speakers, topics, action items present; tests directory exists |
+| Data Drift algorithms             | `src/drift/drift_detection.py`, `src/monitoring/`                                    | PSI and KS-test, plus degradation/impact analysis; no tests    |
+
+Snapshot: shallow clones of `Yassine2606/anomaly-detection-agent`, `Yassine2606/TranscriptoSense`, and `Yassine2606/Data-Drift-Decision-Intelligence-System`, default branch, 27 Oct 2026. Public repositories change; re-run the checks before launch.
+
+---
+
+## B. Scope metrics — 16
+
+These are the numbers in each case file's key-facts strip. Every row is labelled `artifact` on the site.
+
+| #   | Project             | Metric               | Value | Source / method                                                                         | Basis                  | What it does not prove                                           |
+| --- | ------------------- | -------------------- | ----- | --------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
+| 01  | Documents Assistant | Pipeline stages      | 9     | upload → queue → parse → chunk → embed → retrieve → fuse → verify → cite                | Owner record · private | Latency, throughput, or retrieval quality                        |
+| 02  | Documents Assistant | Retrieval tools      | 4     | list documents, search passages, read structure, list topics                            | Owner record · private | Tool-use accuracy; the private implementation is not public      |
+| 03  | Documents Assistant | Embedding dimensions | 384   | `all-MiniLM-L6-v2`, running locally on CPU                                              | Owner record · private | Retrieval quality; dimension is a model property                 |
+| 04  | Documents Assistant | Answer providers     | 2     | Gemini 2.5 Flash + NVIDIA NIM, with failover                                            | Owner record · private | Failover success rate; no failure-injection test is published    |
+| 05  | Sadine Tours        | Prisma models        | 41    | `prisma/schema.prisma`                                                                  | Owner record · private | Schema quality, usage, or business outcomes                      |
+| 06  | Sadine Tours        | Backend modules      | 26    | `src/modules/`                                                                          | Owner record · private | Code quality or test coverage                                    |
+| 07  | Sadine Tours        | Route handlers       | 224   | grep across `src/modules/`                                                              | Owner record · private | That all routes are reachable, tested, or correct                |
+| 08  | Sadine Tours        | Locales              | 3     | en / fr / ar message bundles                                                            | Owner record · private | Translation quality or coverage                                  |
+| 09  | Anomaly Detection   | Database connectors  | 3     | PostgreSQL, MySQL, MongoDB — read-only                                                  | **Public re-check**    | Coverage or reliability; one connector per database type         |
+| 10  | Anomaly Detection   | MCP tools            | 4     | FastMCP over stdio                                                                      | **Public re-check**    | That real monitors are wired into MCP; note 10 says they are not |
+| 11  | Anomaly Detection   | HTTP routes          | 9     | health, mock scan, scan, reports, history, chat, endpoint check, database health, stats | **Public re-check**    | That every route is exercised or tested                          |
+| 12  | Anomaly Detection   | Anomaly classes      | 3     | data quality, performance, endpoint                                                     | **Public re-check**    | Detection accuracy; no labelled evaluation                       |
+| 13  | RFID Access Control | Prisma models        | 8     | employees, skills, devices, machines, reservations, logs, alerts, admins                | Owner record · private | Coverage of the access domain                                    |
+| 14  | RFID Access Control | Backend modules      | 11    | `backend/src/modules/`                                                                  | Owner record · private | Code quality or test coverage                                    |
+| 15  | RFID Access Control | Schema migrations    | 5     | versioned Prisma migrations; no auto-sync                                               | Owner record · private | Deployment safety or rollback                                    |
+| 16  | RFID Access Control | Offline detection    | 3     | missed heartbeats, retained state, broker Last Will                                     | Owner record · private | Measured detection latency across networks; it is a threshold    |
+
+---
+
+## C. Archive facts — 3
+
+The archive rows are real builds that do not get a case file. They carry a title, one line, a year, and a link or a private label.
+
+| Project          | Line on the site                                                              | Basis                  | Notes                                                                                                                                              |
+| ---------------- | ----------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wave             | Campus community app: events, carpooling, housing, deals, tutoring, and chat. | Owner record · private | No public repository or demo. No user, revenue, or growth number is claimed.                                                                       |
+| TranscriptoSense | French, Arabic, and Darija audio into speakers, topics, and action items.     | **Public re-check**    | ASR languages, diarization, topic detection, and action extraction are present; five test modules exist. No accuracy benchmark is claimed.         |
+| Data Drift       | PSI and KS-tests that flag distribution shift and quantify the model impact.  | **Public re-check**    | PSI and KS-test are implemented; impact analysis tracks degradation. No tests directory; notebooks are the pipeline. No outcome metric is claimed. |
+
+## C2. Experience and education facts
+
+These facts appear on `/` and `/about`; they are not case-file evidence. They were checked on 28 Oct 2026 against the owner's private repositories, the CV source, and the public pages listed.
+
+| Fact                                                                                                                | Where it appears               | Basis                             | Source                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wardrobe is an AI fashion project for a small startup whose name is private; it ended in September 2026.            | Home and about experience      | Owner record                      | Owner statement, 28 Oct 2026. No public repository, demo, or screenshot is published.                                                                                                                                                                                                                               |
+| RFID access control is a helper project for Sagemcom Tunisia.                                                       | Home, about, and the RFID case | Owner record · private repo       | `Yassine2606/rfid-project`: Sagemcom branding, `Sagemcom Employee Tracking API`, and the ESPRIM PFE template. Sagemcom's [worldwide page](https://www.sagemcom.com/en/sagemcom-worldwide) lists Sagemcom Tunisie (Borj Ghorbal) and Sagemcom Software & Technologies (Megrine).                                     |
+| Sadine Tours is a travel agency, not a generic travel platform.                                                     | Home, `/work`, and the case    | Owner record · private repo       | `Yassine2606/sadine-front` and `sadine-back`: catalog covers hotels, trips, circuits, cruises, omra, and transport. No public web presence was found on 28 Oct 2026.                                                                                                                                                |
+| CPM is the Call Plan Manager, a pharma field-sales planning and approval tool built with YBInnovations in 2025–26.  | Home and about experience      | Owner record · private repo       | `Yassine2606/CPM`: `CPM SOW-Flow and Rules.docx.md` (roles, KPI rules, four-level approval); commits 11 Dec 2025 – 22 Feb 2026. No client name, public repo, or demo is published.                                                                                                                                  |
+| YBInnovations is a Tunisian software startup.                                                                       | Home and about experience      | Owner record                      | Owner statement. A Tunisian directory lists YB Innovations in Le Bardo, Tunis; it is not independently linked to these projects, so the site does not publish that address.                                                                                                                                         |
+| Preparatory cycle: ESPRIMS, 2021–2023. Engineering cycle: ESPRIM, 2023–2026, computer science (data science track). | About education and JSON-LD    | Owner record · CV source · public | `Documents/cv/source/cv-data.json` gives the engineering cycle as 2023–2026. [ESPRIM](https://www.esprit.tn/groupe-esprit/esprit-monastir-esprim/) confirms a two-year preparatory cycle and a three- or five-year engineering cycle. The 2021 start is the two-year prep inferred from the 2023 engineering start. |
+
+---
+
+## D. Proof gaps
+
+### Project evidence
+
+| Gap                                    | Where it appears             | Status                                                                                                                                                                                                                |
+| -------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flagship benchmark not run             | Documents Assistant, note 03 | 50-question annotated benchmark is designed. No Recall@5, MRR, citation accuracy, abstention, or p95 latency exists.                                                                                                  |
+| Flagship interface not published       | Documents Assistant, ADR-021 | No screenshot, demo, or repository link. Architecture and code paths only.                                                                                                                                            |
+| MCP integration is partial             | Anomaly Detection, note 10   | `scan_anomalies` accepts only `mock`; real database monitors are not wired into the MCP tools.                                                                                                                        |
+| Anomaly has no tests                   | Anomaly Detection, note 12   | `README.md` documents `pytest tests/`; no `tests/` directory is committed.                                                                                                                                            |
+| Private repositories cannot be audited | Sadine, RFID, Documents      | Source paths and counts are owner-supplied. No independent reviewer can inspect them.                                                                                                                                 |
+| No interface captures on any case      | All four cases               | The figures are code-generated architecture maps, not screenshots of a running product.                                                                                                                               |
+| No manual accessibility audit          | Site-wide                    | axe-core 4.14.0 reports 0 violations at 320/390/1440; Lighthouse accessibility is 100; keyboard focus and TOC offsets pass. Chromium, Firefox, and WebKit pass scripted checks; no screen-reader or real-device pass. |
+| No outcome metrics                     | All four cases               | No adoption, revenue, latency, accuracy, or customer numbers are published. That is deliberate.                                                                                                                       |
+
+### Site and launch
+
+| Gap                       | Status                                                                                                                                                                                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Resume                    | Resolved 27 Oct 2026: EN/FR designed and ATS PDFs synced from `Documents/cv/output/`. One page each; ATS audit 10/10. The site exposes all four through the resume picker.                                                                                                     |
+| Experience and education  | Titles, dates, and scope are owner-supplied. Wardrobe is a private-startup project that ended in September 2026, not an ongoing role. CPM's scope comes from a private SOW. ESPRIM/ESPRIMS dates cross-check against the CV source and the school's published cycle structure. |
+| Availability and notice   | Resolved 27 Oct 2026: owner confirmed available immediately, no notice period. Site copy says “Available immediately”.                                                                                                                                                         |
+| Remote / hybrid / on-site | Resolved 27 Oct 2026: owner confirmed all three work modes. Copy lists them on the hero card, about, and contact.                                                                                                                                                              |
+| Relocation                | Resolved 27 Oct 2026: owner is open to relocation. Copy says “Open to relocation”.                                                                                                                                                                                             |
+| Work authorization        | Resolved 27 Oct 2026: roles outside Tunisia require visa sponsorship. Site states this on the hero card, about, and contact.                                                                                                                                                   |
+| Client permissions        | Capgemini, Sadine, RFID, and Wave visual permissions are not confirmed. No visuals are published.                                                                                                                                                                              |
+| Domain                    | `NEXT_PUBLIC_SITE_URL` falls back to the old Vercel origin; the custom domain is unresolved.                                                                                                                                                                                   |
+| LinkedIn                  | Resolved 30 Oct 2026: profile supplied by the owner and linked from the contact block, footer, mobile menu, and `sameAs` in JSON-LD.                                                                                                                                           |
+| Language levels           | Omitted until the owner supplies them. No placeholder labels.                                                                                                                                                                                                                  |
+| Portrait                  | Resolved 28 Oct 2026: one owner-supplied portrait on `/about` only. 4:5 crop, warm monochrome, paper-matte frame. No stock or AI-generated image.                                                                                                                              |
+| Phone                     | Appears in the CV PDFs; site copy uses email only.                                                                                                                                                                                                                             |
+| Per-case OG cards         | Deferred. The default `public/og.png` card is used on every page.                                                                                                                                                                                                              |
+| Automated accessibility   | Passed 28 Oct 2026: axe-core 4.14.0, 0 violations across 8 routes at 320/390/1440, the open mobile menu, both open resume panels, and forced colors at 390/1440.                                                                                                               |
+| Lighthouse                | Passed 30 Oct 2026: repeatable audit, 3 runs per route; median 99 on `/`, `/work`, flagship, and `/about`; accessibility/BP/SEO 100; TBT 101–139ms; desktop `/` 100. An earlier 94 run with a 2.6s LCP outlier is recorded.                                                    |
+| Lighthouse audit script   | `npm run audit:lighthouse` runs Lighthouse 13 with Playwright's Chromium and asserts three-run medians; it is wired into the CI workflow.                                                                                                                                      |
+| Dev dependency audit      | `npm audit` reports 0 vulnerabilities after adding `lighthouse` 13.6.0; `@lhci/cli` was rejected for adding 16 advisories (ADR-023).                                                                                                                                           |
+| First-load JavaScript     | Measured 28 Oct 2026: 144.0KB gzip / 123.4KB Brotli on `/`, 140.0/120.0 on the flagship. The 120KB gzip target is missed; React + router are ~115KB.                                                                                                                           |
+| Links and assets          | Passed 28 Oct 2026: 14 internal URLs and 4 external GitHub URLs return 200; LinkedIn returns 999 to automated requests; the URL is owner-supplied. Repeatable with `npm run audit:links -- --external`.                                                                        |
+| No JavaScript             | Passed 28 Oct 2026: `npm run audit:nojs`, 8 routes x 390/1440 with JS on and off; four stacked Index items, five header links, and both resume disclosures open natively; no overflow; 0 axe violations with the fallback forced visible.                                      |
+| Cross-browser             | Passed 28 Oct 2026: Chromium 1248, Firefox 157, WebKit 27.2, 8 routes at 1440/390, menu/Index/copy. Real Safari and real devices not run.                                                                                                                                      |
+| CI                        | `.github/workflows/ci.yml` committed and actionlint-clean; not run (no remote/account access).                                                                                                                                                                                 |
+| Security headers          | Enforced 28 Oct 2026: nosniff, referrer, frame DENY, permissions, HSTS, and CSP. CSP blocks inline styles and allows inline script only for Next's bootstrap; no `unsafe-eval`.                                                                                                |
+
+---
+
+### CV source
+
+The EN/FR CVs are generated from `Documents/cv/source/cv-data.json`; `Documents/cv/master-facts.md` traces each metric to the PFE report or the owner's record. The 11 functional scenarios and 1.9 s median local latency come from the PFE report (Tables 5.5 and 5.7). The CV is a one-page subset: it leads with Capgemini, then YBInnovations and MyMatch, and omits Sadine, RFID, and Anomaly Detection. Do not treat the CV as a second source of site claims; re-check both when a fact changes.
+
+---
+
+## E. Re-verification procedure
+
+1. Clone each public repository at its default branch.
+2. Inspect the paths in table A and recompute the counts in table B. The commands in “What the public re-check found” are the starting point.
+3. Update the case frontmatter (`verifiedAt`) and this ledger in the same commit.
+4. If a private claim cannot be re-confirmed by the owner, remove the claim from the case file instead of weakening the source.
+5. If a screenshot, demo, or benchmark lands, replace the corresponding gap with the artifact and its method. Do not upgrade a claim because a related artifact exists.
+6. Re-check before launch and quarterly after launch. A stale claim is worse than no claim.
+
+## F. Change log
+
+| Date       | Change                                                                                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-27 | Replaced the template with the 16 shipped evidence notes, 16 scope metrics, and three archive facts.                                                                                                                               |
+| 2026-10-27 | Corrected the Anomaly route count from 5 to 9 and narrowed the read-only and normalization claims.                                                                                                                                 |
+| 2026-10-27 | Marked all private claims as owner records; added the flagship benchmark, MCP, tests, and audit gaps.                                                                                                                              |
+| 2026-10-27 | Recorded immediate availability; site copy now says “Available immediately” with no notice period.                                                                                                                                 |
+| 2026-10-27 | Added confirmed remote/hybrid/on-site work and relocation willingness; left authorization unclaimed.                                                                                                                               |
+| 2026-10-27 | Recorded the confirmed visa-sponsorship requirement for roles outside Tunisia.                                                                                                                                                     |
+| 2026-10-27 | Synced the new EN/FR designed and ATS CVs from `Documents/cv/output/`; all four are one page.                                                                                                                                      |
+| 2026-10-28 | Fixed five axe violations (home link, card/archive link names, French ATS label, skip landmark).                                                                                                                                   |
+| 2026-10-28 | Fixed 320px contact overflow; added `npm run audit:a11y`; axe now reports 0 violations.                                                                                                                                            |
+| 2026-10-28 | Recorded local Lighthouse 13.6.0 results: 97–99 final performance (home median 97); an earlier 94 run recorded.                                                                                                                    |
+| 2026-10-28 | Added enforced security headers and CSP; upgraded Next.js to 16.4.3 for the audit fix.                                                                                                                                             |
+| 2026-10-28 | `npm audit` reports 0 vulnerabilities after the Next.js upgrade.                                                                                                                                                                   |
+| 2026-10-28 | Enabled `remark-gfm`; case tables were rendering as raw pipes and overflowed in Firefox.                                                                                                                                           |
+| 2026-10-28 | 200% zoom, text-spacing, reduced-motion, HTML validation, and Chromium/Firefox/WebKit checks passed.                                                                                                                               |
+| 2026-10-28 | Replaced the no-op report-only CSP with an enforced policy; WebKit console warning cleared.                                                                                                                                        |
+| 2026-10-28 | Added `npm run audit:links`, the GitHub Actions CI workflow, and keyboard/viewport checks.                                                                                                                                         |
+| 2026-10-28 | Recorded first-load JS 140–144KB gzip; 120KB target missed and documented.                                                                                                                                                         |
+| 2026-10-28 | Added a repeatable Lighthouse audit (`npm run audit:lighthouse`) and wired it into CI; `@lhci/cli` rejected for 16 dev advisories.                                                                                                 |
+| 2026-10-28 | Added a no-JS fallback: stacked Home Index, five-link narrow header (including EN/FR resume links), CSS `@media (scripting: none)`; verified at 390/1440.                                                                          |
+| 2026-10-28 | Fixed forced-colors contrast on primary buttons; axe now passes 8 routes in Windows High Contrast emulation.                                                                                                                       |
+| 2026-10-28 | Updated experience: Wardrobe ended Sep 2026, RFID is a Sagemcom Tunisia helper project, Sadine is a travel agency, CPM added with YBInnovations, and education split into ESPRIMS prep (2021–23) and ESPRIM engineering (2023–26). |
+| 2026-10-28 | Removed the last inline styles (hero stagger now uses `--hero-delay`), tightened `style-src` to `'self'`, and verified no CSP violations in Chromium, Firefox, or WebKit.                                                          |
+| 2026-10-28 | Replaced the English-default CV link with a four-version native disclosure; verified four filenames, Escape/outside click, and no-JS operation.                                                                                    |
+| 2026-10-28 | Added the owner-supplied portrait on `/about` as a 4:5 warm monochrome print; switched to a plain `<img>` after `next/image` emitted a CSP-blocked inline style.                                                                   |
+| 2026-10-28 | Re-ran Lighthouse after the picker and portrait: 97/99/98/99; `/about` best practices restored to 100; axe and no-JS audits clean.                                                                                                 |
+| 2026-10-30 | Added the owner-supplied LinkedIn profile to the contact block, footer, mobile menu, and JSON-LD `sameAs`; external link check skips LinkedIn's 999 bot response. Lighthouse re-ran at 99/99/99/99 (TBT 101–139ms).                |

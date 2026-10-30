@@ -1,81 +1,109 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
-import { InlineScript } from "@/components/ui/inline-script";
-import { getSite } from "@/lib/content";
-import { SITE_URL } from "@/lib/site";
+import {
+  Bricolage_Grotesque,
+  Instrument_Sans,
+  Instrument_Serif,
+  JetBrains_Mono,
+} from "next/font/google";
+import { site } from "@/content/site";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
+  variable: "--font-bricolage",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
+  variable: "--font-instrument",
+  display: "swap",
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const site = getSite();
-  const base = SITE_URL;
-  return {
-    title: `${site.name} — ${site.role}`,
-    description: site.hero.subtext,
-    metadataBase: new URL(base),
-    alternates: { canonical: base },
-    authors: [{ name: site.name }],
-    creator: site.name,
-    openGraph: {
-      title: `${site.name} — ${site.role}`,
-      description: site.hero.subtext,
-      type: "website",
-      url: base,
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: site.hero.subtext }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${site.name} — ${site.role}`,
-      description: site.hero.subtext,
-      images: ["/og.png"],
-    },
-  };
-}
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: {
+    default: "Yassine Ben Romdhane — AI Engineer",
+    template: "%s — Yassine Ben Romdhane",
+  },
+  description:
+    "AI engineer building production RAG systems, agents, and the backend infrastructure that keeps them honest. Four systems documented end to end.",
+  applicationName: "Yassine Ben Romdhane — Portfolio",
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: site.url,
+    siteName: site.name,
+    title: "Yassine Ben Romdhane — AI Engineer",
+    description:
+      "AI systems, with the receipts. Four production-oriented systems documented end to end: RAG, agents, IoT, and platform engineering.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "AI systems, with the receipts. — Yassine Ben Romdhane, AI engineer.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yassine Ben Romdhane — AI Engineer",
+    description: "AI systems, with the receipts.",
+    images: [
+      {
+        url: "/og.png",
+        alt: "AI systems, with the receipts. — Yassine Ben Romdhane, AI engineer.",
+      },
+    ],
+  },
+  robots: { index: true, follow: true },
+};
 
 export const viewport: Viewport = {
-  themeColor: "#0a0d0c",
+  themeColor: "#f6f2ea",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${bricolage.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
     >
-      <head>
-        {/*
-          Apply the stored theme before first paint so there is no flash of
-          the wrong palette. This mirrors src/lib/theme.ts — keep them in
-          sync. No localStorage / unknown value: fall back to the OS scheme.
-        */}
-        <InlineScript
-          html={`(function(){try{var s=localStorage.getItem("theme");var l=s==="light"||((s==="system"||!s)&&window.matchMedia("(prefers-color-scheme: light)").matches);var r=document.documentElement;r.setAttribute("data-theme",l?"light":"dark");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",l?"#f2f6f3":"#0a0d0c")}catch(e){}})()`}
-        />
-      </head>
-      <body className="min-h-full">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-accent-ink"
-        >
-          Skip to content
-        </a>
-        {children}
-        <Analytics />
+      <body className="grain flex min-h-dvh flex-col">
+        <nav aria-label="Skip navigation">
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
+        </nav>
+        <SiteHeader />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
       </body>
     </html>
   );

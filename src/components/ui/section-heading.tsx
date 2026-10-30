@@ -1,22 +1,30 @@
-interface SectionHeadingProps {
-  id?: string;
-  eyebrow: string;
-  title: string;
-  intro?: string;
-}
+import { cn } from "@/lib/utils";
 
-export function SectionHeading({ id, eyebrow, title, intro }: SectionHeadingProps) {
+type SectionHeadingProps = {
+  index: string;
+  label: string;
+  aside?: React.ReactNode;
+  id?: string;
+  className?: string;
+};
+
+export function SectionHeading({ index, label, aside, id, className }: SectionHeadingProps) {
   return (
-    <div id={id} className="scroll-mt-24">
-      <p className="mb-3 font-mono text-sm tracking-tight text-accent">{eyebrow}</p>
-      <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-        {title}
-      </h2>
-      {intro && (
-        <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted">
-          {intro}
-        </p>
+    <div
+      className={cn(
+        "border-line flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b pb-3",
+        className,
       )}
+    >
+      <h2 id={id} className="scroll-mt-24 font-mono text-[11px] tracking-[0.14em] uppercase">
+        <span className="text-ink-faint">{index} /</span>{" "}
+        <span className="text-ink font-medium">{label}</span>
+      </h2>
+      {aside ? (
+        <div className="text-ink-faint font-mono text-[10px] tracking-[0.08em] uppercase">
+          {aside}
+        </div>
+      ) : null}
     </div>
   );
 }

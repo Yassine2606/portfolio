@@ -1,0 +1,199 @@
+---
+title: "RFID Access Control"
+slug: "rfid-access-control"
+tagline: "Badge scans become explainable access decisions, audit records, and live dashboard events."
+descriptor: "MQTT · access decisions"
+summary: "A helper project for Sagemcom Tunisia: ESP32 readers publish badge scans over MQTT, a Fastify service evaluates employee status, certification, machine authorization, and schedule, then writes an audit record and broadcasts the decision in real time."
+year: 2026
+role: "Solo — helper project, Sagemcom Tunisia"
+duration: "2026"
+status: "in-development"
+featured: true
+order: 4
+confidentiality: "private"
+contract:
+  problem: "Factory access lived on paper charts with no audit trail and certifications checked from memory."
+  constraint: "Sagemcom Tunisia's security brief, physical hardware, and no client or employee data published."
+  proof: "Eight models, five migrations, a deterministic engine, and offline detection within three missed heartbeats."
+capabilities: ["MQTT", "IoT", "Realtime", "Access control", "Prisma"]
+stack:
+  ai: []
+  backend: ["Fastify", "TypeScript", "Prisma", "MQTT", "Socket.IO"]
+  frontend: ["React", "Vite", "TanStack Query"]
+  infra: ["Docker", "EMQX", "NGINX", "Redis"]
+  data: ["PostgreSQL", "Redis"]
+links: []
+metrics:
+  - label: "Prisma models"
+    value: "8"
+    kind: "artifact"
+    source: "employees, skills, devices, machines, reservations, logs, alerts, admins"
+    measuredAt: "2026-10-27"
+  - label: "Backend modules"
+    value: "11"
+    kind: "artifact"
+    source: "backend/src/modules/"
+    measuredAt: "2026-10-27"
+  - label: "Schema migrations"
+    value: "5"
+    kind: "artifact"
+    source: "versioned Prisma migrations; no auto-sync"
+    measuredAt: "2026-10-27"
+  - label: "Offline detection"
+    value: "3"
+    kind: "artifact"
+    source: "missed heartbeats, retained state, broker Last Will"
+    measuredAt: "2026-10-27"
+evidence:
+  - id: "ev-1"
+    claim: "MQTT payloads are Zod-validated before dispatch; business logic lives in services, not callbacks."
+    source: "backend/src/modules/mqtt/mqtt.consumer.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-2"
+    claim: "Device presence is derived from heartbeats, retained status, and the broker Last Will."
+    source: "backend/src/modules/devices/presence.service.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-3"
+    claim: "Every decision records the failed rule, so a denial can be explained after the fact."
+    source: "backend/src/modules/access/access.service.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-4"
+    claim: "A serial-to-MQTT bridge exercises the identical consumer path without physical readers."
+    source: "scripts/serial-mqtt-bridge.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+seo:
+  title: "RFID Access Control — MQTT decisions"
+  description: "A helper project for Sagemcom Tunisia: ESP32 badge scans over MQTT, a deterministic decision engine, audit logs, offline detection, and a live dashboard."
+  ogAlt: "RFID access control system map: edge readers, MQTT ingestion, decision engine, live dashboard."
+---
+
+## Context
+
+In a factory, knowing who may stand next to which machine is often a paper chart and a supervisor's memory. Employees carry access cards with no audit trail. Skill certifications expire, but nobody checks at the moment of use. A night-shift operator is judged by the badge on their chest, not verified against the machine they are about to start.
+
+Built as a helper project for Sagemcom Tunisia, the platform replaces that with a decision: an RFID badge scanned by an ESP32-connected reader becomes an MQTT event, and a backend decides allow or deny from four inputs — the employee is active, the skill certification is valid, the employee is authorized on that specific machine, and the schedule permits it. Every scan becomes an access log. Every denial has a reason.
+
+## Problem
+
+This is a security system before it is a dashboard. The constraints reflect that:
+
+- **Physical input is untrusted.** MQTT payloads can be malformed, duplicated, or delayed. Validation happens before anything else.
+- **Every decision must be explainable.** "Denied" is not enough; the log has to say which rule failed.
+- **Presence is not an event.** A device going offline is not a message someone remembers to send.
+- **No hardware on the desk.** The system had to be verifiable end to end before a reader was flashed.
+- **Schema changes are not casual.** Access logs are audit records; migrations are versioned and applied explicitly.
+
+## Architecture
+
+<Architecture project="rfid-access-control" />
+
+## Decisions
+
+### Keep the MQTT callback thin
+
+The consumer's job is to validate and dispatch. It parses the payload with Zod, rejects malformed events, and hands a typed object to the access service. The engine, the audit write, and the alert decision happen in one service path that can be tested without a broker.
+
+<Claim
+  id="ev-1"
+  n="1"
+  source="backend/src/modules/mqtt/mqtt.consumer.ts"
+  kind="repo"
+  isPrivate
+  note="Private repository. The callback validates and dispatches; it does not decide."
+>
+  Every inbound scan, heartbeat, and status event is validated against a schema before dispatch. A
+  malformed payload never reaches the access engine.
+</Claim>
+
+This is more indirection than writing the decision inside the callback. It is also the only way to test the decision path without standing up EMQX and a reader.
+
+### Presence is derived, not reported
+
+A single "device offline" message is unreliable: the device may be unplugged, the network may be down, or the message may never arrive. The system combines three signals instead — heartbeats upsert the device row, retained status holds the last known state, and the broker's Last Will flips a device offline when the connection drops.
+
+<Claim
+  id="ev-2"
+  n="2"
+  source="backend/src/modules/devices/presence.service.ts"
+  kind="repo"
+  isPrivate
+  note="Private repository. Presence is a derived state, not a flag set by the device."
+>
+  Offline detection is derived from three missed heartbeats plus retained state and the broker Last
+  Will. A dropped connection produces an offline transition without a custom message from the
+  reader.
+</Claim>
+
+### Every denial carries its reason
+
+A boolean is not an audit record. The engine evaluates employee status, certification validity, machine authorization, and schedule, then writes the decision and the failed rule in the same service path.
+
+<Claim
+  id="ev-3"
+  n="3"
+  source="backend/src/modules/access/access.service.ts"
+  kind="repo"
+  isPrivate
+  note="Private repository. The decision returns a reason alongside the boolean."
+>
+  The access engine evaluates employee status, certification validity, machine authorization, and
+  schedule, then writes the decision and the failed rule to the audit log in the same service path.
+</Claim>
+
+### A serial bridge instead of a hardware dependency
+
+The unlock for the whole project was a serial-to-MQTT bridge: a USB reader publishes through the same consumer path as a networked ESP32. The decision engine, the audit log, and the dashboard could be verified before any hardware existed. When the firmware was flashed, only the transport changed.
+
+<Claim
+  id="ev-4"
+  n="4"
+  source="scripts/serial-mqtt-bridge.ts"
+  kind="repo"
+  isPrivate
+  note="Private repository. The bridge is a development tool, not a production dependency."
+>
+  The bridge reads badge scans from a serial port and publishes the same validated event shape the
+  ESP32 firmware emits, so the backend has one ingestion contract.
+</Claim>
+
+### Versioned migrations, never auto-sync
+
+Five migrations built the schema in order: employees, auth, presence fields, alert context, machine reservations. The engineering rules in the repository forbid Prisma's auto-sync against shared environments. An access log that changes shape by accident is not an audit log.
+
+## Evidence
+
+The counts are repository artifacts: eight Prisma models, eleven backend modules, five migrations, eleven dashboard pages, and one firmware file. The employee portal, alerts, attendance records, and reporting all read from the same event stream as the access decision. No employer or employee data is published; the repository is private.
+
+## Reliability
+
+| Failure                 | What the system does                                                           |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| Malformed MQTT payload  | Rejected by schema validation before dispatch                                  |
+| Broker connection drops | Last Will marks the device offline; retained state holds the last known status |
+| Reader loses network    | Missed heartbeats trigger the offline path within three intervals              |
+| Decision is denied      | Audit record stores the failed rule and the inputs                             |
+| No physical reader      | Serial bridge runs the identical consumer path                                 |
+| Schema drift            | Versioned migrations; auto-sync is forbidden                                   |
+
+The honest limits: there is no multi-site support, no offline edge decisioning while the broker is unreachable, and no biometric factor. The dashboard is an operational view, not a certified compliance product.
+
+## Outcome
+
+The system runs end to end in Docker: EMQX, PostgreSQL, Redis, the Fastify API, and the React dashboard. A badge scan produces a validated event, an allow/deny decision with a reason, an audit record, and a live dashboard update. The same path runs from a serial reader when no ESP32 is available.
+
+What is not claimed: a deployment at a named factory, a measured reduction in incidents, or a compliance certification. Those would require a client engagement and evidence this project does not have.
+
+## Next
+
+- Add offline edge synchronization so readers can keep deciding during a broker outage.
+- Add multi-site support with per-site machines and schedules.
+- Add attendance exports and scheduled reports.
+- Evaluate a biometric factor as a second authentication signal, not a replacement for the badge.

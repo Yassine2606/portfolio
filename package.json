@@ -1,22 +1,28 @@
 {
-  "name": "portfolio",
+  "name": "portfolio-v2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "audit:a11y": "node scripts/audit-a11y.mjs",
+    "audit:links": "node scripts/check-links.mjs",
+    "audit:nojs": "node scripts/audit-nojs.mjs",
+    "audit:lighthouse": "node scripts/audit-lighthouse.mjs"
   },
   "dependencies": {
-    "@icons-pack/react-simple-icons": "^13.13.0",
-    "@phosphor-icons/react": "^2.1.10",
-    "@vercel/analytics": "^2.0.1",
-    "motion": "^13.0.0",
-    "next": "^16.3.5",
+    "gray-matter": "^4.0.3",
+    "next": "16.4.3",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "resend": "^6.19.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -24,8 +30,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "axe-core": "^4.14.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.4.3",
+    "lighthouse": "^13.6.0",
+    "playwright": "^1.64.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,41 +1,42 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Silence the build warning about the stray lockfile outside the repo:
-  // pin Turbopack's workspace root to this project (== cwd at build time).
-  turbopack: {
-    root: process.cwd(),
+const root = dirname(fileURLToPath(import.meta.url));
+const isDev = process.env.NODE_ENV === "development";
+
+// React's development build uses eval() for stack reconstruction and Next's
+// dev overlay injects styles. Keep both exceptions out of production.
+const scriptSrc = isDev ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsafe-inline'";
+const styleSrc = isDev ? "'self' 'unsafe-inline'" : "'self'";
+
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "X-Frame-Options", value: "DENY" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
+  {
+    key: "Content-Security-Policy",
+    value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'`,
+  },
+];
 
-  // No version disclosure in responses.
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
   poweredByHeader: false,
-
+  agentRules: false,
+  turbopack: {
+    root,
+  },
   async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          // No embeds, no clickjacking surface: nothing here is framed.
-          { key: "X-Frame-Options", value: "DENY" },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
-          // Deliberately no HSTS: Vercel already sends its own
-          // `strict-transport-security` on deployments; a second value here
-          // would only duplicate it.
-          // Deliberately no CSP yet: the no-FOUC theme script is inline by
-          // design (it must run before paint) and analytics inject scripts,
-          // so a strict policy needs a nonce strategy first. Revisit with
-          // one — a half-policy is worse than none.
-        ],
-      },
-    ];
+    return [{ source: "/(.*)", headers: securityHeaders }];
   },
 };
 

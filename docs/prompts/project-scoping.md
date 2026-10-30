@@ -1,154 +1,200 @@
-# Agent Prompt — Project Scoping & Content Extraction
+# Agent prompt — project scoping & evidence extraction
 
-Run this prompt with any coding agent (Claude Code, Cursor, opencode, etc.) pointed at the
-portfolio repo. The agent's job is to turn Yassine's real projects into the structured,
-factual data the portfolio consumes directly at build time — no API, no CMS.
+Use this prompt with a coding agent (Claude Code, opencode, Cursor, etc.) pointed at one real repo at a time. The output is a draft case study in `src/content/work/<slug>.mdx` plus a list of missing evidence.
+
+The agent is a **research assistant**, not the author. A human reads, checks, and edits every line before it ships.
 
 ---
 
 ## Context
 
-You are content engineer for a premium, minimal, technical portfolio for an AI engineer.
-The portfolio's only job is to convince technical recruiters, CTOs, and startup founders
-that this person builds **production-quality AI software**. Every claim on the page must be
-real, because the audience will check.
+You are extracting evidence for a recruiter-facing portfolio for **Yassine Ben Romdhane**, an AI and full-stack engineer. The site's rule is simple:
 
-The frontend renders projects from JSON files in `src/content/projects/*.json`.
-You are producing those files. Your output is the contract between the repos and the UI.
+> Every checkable claim has a source, an explicit `private / not measured` label, or it does not ship.
+
+The audience is technical recruiters, hiring managers, and founders. They will check the work. Your job is to make that easy.
+
+Read these files before starting:
+
+- `docs/01-brief.md` — positioning and audience
+- `docs/03-content-strategy.md` — evidence standard, project selection
+- `docs/11-content-templates.md` — frontmatter, MDX skeleton, decision blocks
+- `src/lib/content/schema.ts` — the frontmatter contract
+
+---
 
 ## Golden rules
 
-1. **Facts only.** Never invent metrics, dates, outcomes, or features. If a number is not
-   present in a README, a commit, an issue, a benchmark file, or the code itself — omit it
-   (use `null`) or write "n/a".
-2. **Traceability.** Every claim must trace to a repo artifact (README section, test, CI
-   config, manifest, commit history). If you can't trace it, it doesn't ship.
-3. **Dual audience.** Write the case study for a technical recruiter AND a non-engineer
-   founder. Architecture must be explainable to both. No jargon without a one-line gloss.
-4. **No template fluff.** No "leveraged", "harnessed", "cutting-edge", "seamless".
-   Confident, plain, specific.
-5. **Confidence, not volume.** 3-5 well-documented projects beat 15 thin ones.
+1. **Facts only.** Never invent a metric, date, user count, outcome, benchmark, employer, or feature. If it is not in the repo, a README, a commit, an issue, a benchmark file, or a deployment config, omit it or write `Not measured`.
+2. **Traceability.** Every claim gets a source path, a commit SHA, a URL, or an explicit label.
+3. **Verify the stack from manifests**, not memory: `package.json`, `pyproject.toml`, `requirements.txt`, `docker-compose.yml`, `Dockerfile`, `prisma/schema.prisma`, `next.config.*`.
+4. **Private is a label, not a hole.** If the repo is private, say so. Never fabricate a demo or a screenshot.
+5. **Depth over volume.** Three to five decisions with alternatives and costs beat twenty features.
+6. **Plain language.** Explain the system to a smart founder and a staff engineer in the same paragraph. Define jargon once.
+7. **No template fluff.** Ban: passionate, innovative, cutting-edge, seamless, robust, scalable (unless defined), leveraged, harnessed, spearheaded.
+8. **Numbers need a method.** A count of routes is `scope`, not impact. A percentage needs a denominator and a measurement method.
+
+---
 
 ## Inputs
 
-The repos to scope. If not given, inventory the local filesystem and GitHub profile and
-propose the list first, then proceed once confirmed.
+For the target project, collect:
+
+- Repo path or URL; default branch; last commit date.
+- README and `docs/` (read first).
+- Manifests and lockfiles.
+- Docker/Compose, CI, deployment config.
+- Database schema/migrations.
+- Tests, benchmarks, eval scripts, notebooks.
+- Screenshots or demo assets already in the repo (usually none).
+- The old case study JSON in `../src/content/projects/<slug>.json` if it exists — use only as a lead, verify everything.
+
+If the repo URL is private, use the local checkout. Do not request credentials in chat.
+
+---
 
 ## Procedure
 
-1. **Inventory** — for each project collect: repo URL, primary language, description,
-   star count, last commit date, license.
-2. **Read** the README and `docs/` first. Extract the problem, solution shape,
-   architecture, and feature set as stated by the author.
-3. **Verify the stack from code**, not vibes:
-   - JS/TS: `package.json`, `tsconfig.json`, `next.config.*`
-   - Python: `pyproject.toml`, `requirements.txt`, `poetry.lock`
-   - Infra: `Dockerfile`, `docker-compose.yml`, `*.tf`, `.github/workflows/*`
-4. **Mine metrics only from evidence**: stars, documented benchmark/eval numbers,
-   load-test results in the repo, CI badges, documented user counts. Otherwise omit.
-5. **Classify capabilities** against this enum (used by the "Engineering" and "AI Systems"
-   sections, so be accurate):
-   `RAG`, `Multi-Agent`, `MCP`, `LLM Pipelines`, `Embeddings`, `Vector Search`,
-   `Tool Calling`, `Workflow Orchestration`, plus `Frontend`, `Backend`, `Cloud`,
-   `DevOps`, `Databases`, `Tooling`.
-6. **Build the architecture graph honestly.** Nodes are real components (e.g.
-   `ChromaDB`, `FastAPI`, `Next.js`, `Redis`). Edges are real data flow. One sentence per
-   node. If a component is unknown to you, leave it out rather than guess.
-7. **Write the case study** in the fixed order: problem → requirements → solution →
-   architecture → implementation → results → lessons → future.
-8. **Pick the featured projects**: max 3. These are the ones that best prove
-   production-quality AI engineering (real users, shipped, documented). Mark
-   `"featured": true`.
-9. **Emit the JSON.**
+### 1. Inventory
+
+Record: repo URL, primary language, description, last commit date, license, stars (if public), and whether the repo is public/private.
+
+### 2. Read for the problem
+
+From the README/docs, extract:
+
+- The user and the problem.
+- What the system does.
+- The hard constraint (privacy, latency, cost, legacy data, deadline).
+- What is explicitly out of scope.
+
+### 3. Verify the stack
+
+List only what the manifests and code prove. Group into `ai`, `backend`, `frontend`, `infra`, `data`. Use the exact names (`PostgreSQL`, not "SQL database"; `pgvector`, not "vector DB").
+
+### 4. Mine evidence
+
+Collect only:
+
+- **Repo artifacts:** file paths, schema counts, module counts, route counts, locales, migration counts.
+- **Measured results:** benchmark output, eval scripts, load tests, CI results, documented user counts.
+- **Deploy facts:** Docker services, CI workflows, hosting config.
+- **Explicit gaps:** no tests, no benchmark, no screenshots, private repo.
+
+For each metric, record:
+
+```yaml
+label: "Recall@5"
+value: "0.00"
+kind: measured | artifact | scope
+source: "docs/evidence/rag-eval.md"
+measuredAt: "YYYY-MM-DD"
+```
+
+Max 4 metrics. If you cannot find a real value, do not invent one.
+
+### 5. Build the architecture
+
+Nodes = real components. Edges = real data flow. One sentence per node.
+
+```yaml
+nodes:
+  - stage: "Client"
+    name: "React app"
+    type: "frontend"
+    detail: "Upload, chat, citations."
+  - stage: "API"
+    name: "Express API"
+    type: "backend"
+    detail: "Auth, jobs, SSE."
+```
+
+Rules:
+
+- Group nodes into ordered stages.
+- No node you cannot point to in the code or Compose file.
+- No edge you cannot explain.
+- If a component is unknown, leave it out rather than guess.
+- Include a plain-language `summary` of the flow.
+
+### 6. Find the decisions
+
+Identify 3–5 real decisions. For each:
+
+- **Choice:** what was done.
+- **Alternative:** what a reasonable engineer might have done instead.
+- **Why:** the constraint that drove the choice.
+- **Cost:** what the choice made worse.
+
+If you cannot find an alternative or a cost, it is not a decision — drop it.
+
+### 7. Find the failure modes
+
+What breaks? How is it detected? What is the fallback? What still breaks today? Use the code and the README; do not speculate beyond a labeled `Unknown`.
+
+### 8. Draft the case study
+
+Use the exact skeleton in `docs/11-content-templates.md`:
+
+- Frontmatter (validated by zod)
+- Intro (≤ 80 words)
+- Context
+- Problem and constraints
+- Architecture
+- Decisions and tradeoffs (3–5)
+- Evidence (figures, claims, metrics)
+- Reliability
+- Outcome
+- What I'd do differently
+- Missing evidence list (outside the MDX, in your response)
+
+Word budget: flagship 1,800–2,400; featured 1,200–1,800.
+
+### 9. List missing evidence
+
+Before finishing, output a checklist:
+
+- Permissions needed.
+- Screenshots to capture (exact screens).
+- Demo to record (exact flow).
+- Metrics to measure (method + sample).
+- Links that are private or dead.
+- Claims you removed because you could not source them.
+
+Do not fill gaps with prose. Leave them visible.
+
+---
 
 ## Output format
 
-One file per project at `src/content/projects/<slug>.json` conforming to the schema below.
-All strings are plain text or minimal Markdown. Use `null` for unknown values. Never add
-fields outside the schema. `<slug>` must be URL-safe and lowercase-hyphenated.
+Write `src/content/work/<slug>.mdx` with valid frontmatter and MDX body. Also return a short report:
 
-```json
-{
-  "slug": "docu-rag",
-  "title": "DocuRAG — Semantic Search for Support Docs",
-  "tagline": "One-sentence hook, < 12 words.",
-  "summary": "2-3 sentences for the card.",
-  "year": 2025,
-  "role": "Solo",
-  "status": "production",
-  "featured": true,
-  "links": {
-    "github": "https://github.com/yassine/docurag",
-    "demo": "https://docurag.demo",
-    "docs": null
-  },
-  "stack": {
-    "ai": ["OpenAI", "sentence-transformers"],
-    "backend": ["FastAPI", "PostgreSQL"],
-    "frontend": ["Next.js", "Tailwind CSS"],
-    "infra": ["Docker", "Fly.io"],
-    "data": ["ChromaDB", "Redis"]
-  },
-  "capabilities": ["RAG", "Embeddings", "Vector Search"],
-  "caseStudy": {
-    "problem": "3-5 paragraphs of markdown.",
-    "requirements": ["bullet", "list", "of requirements"],
-    "solution": "2-4 paragraphs of markdown.",
-    "architecture": {
-      "description": "1-2 paragraphs in plain language.",
-      "nodes": [
-        {
-          "id": "ui",
-          "label": "Next.js UI",
-          "type": "frontend",
-          "description": "One sentence."
-        },
-        {
-          "id": "api",
-          "label": "FastAPI service",
-          "type": "backend",
-          "description": "One sentence."
-        }
-      ],
-      "edges": [
-        { "from": "ui", "to": "api", "label": "query + top-k" },
-        { "from": "api", "to": "db", "label": "embed & retrieve" }
-      ]
-    },
-    "implementation": "2-4 paragraphs. Name the real tools and the tradeoffs you made.",
-    "challenges": [
-      { "title": "Chunk-level latency", "resolution": "Cached embeddings, precomputed at index time." }
-    ],
-    "results": [
-      { "metric": "nDCG@10", "value": "0.71", "source": "eval notebook committed to repo" }
-    ],
-    "lessons": ["3-5 honest bullets", "including what you would do differently"],
-    "future": ["optional", "bullets"]
-  },
-  "gallery": [
-    { "src": "/projects/docu-rag/search.png", "alt": "Screenshot of the search UI showing cited answers" }
-  ]
-}
+```md
+## Scoped: <project>
+
+- Repo: <url or local path>
+- Public/private: <status>
+- Evidence found: <n> claims, <n> metrics
+- Missing: <list>
+- Metrics removed for lack of source: <list>
+- Decisions found: <n>
+- Suggested featured rank: <1-7>
 ```
 
-## Image assets
+Frontmatter must satisfy `workFrontmatterSchema`. `slug` must match the filename. `evidence` must have at least one entry. `metrics` max 4.
 
-For each project, also record a list of screenshot opportunities (UI, architecture diagram,
-terminal output) with a suggested filename and alt text in `gallery`. The human will capture
-them; the frontend expects them under `public/projects/<slug>/`.
+---
 
-## Acceptance checklist
+## Hard rejects
 
-- [ ] Every field factual and traceable to a repo artifact.
-- [ ] No metric without a `source`.
-- [ ] Stack verified from manifests, not assumed.
-- [ ] `capabilities` only contains enum values, and only ones the project genuinely uses.
-- [ ] Architecture nodes/edges are real, not decorative.
-- [ ] Max 3 projects flagged `featured`.
-- [ ] Files land at `src/content/projects/<slug>.json` and parse with `JSON.parse`.
+- Invented metrics, users, testimonials, dates, or outcomes.
+- "Confidential" used to avoid naming what was built.
+- A GitHub/demo link that 404s or requires a login.
+- A screenshot of a different product.
+- A feature list with no problem.
+- "Scalable", "robust", "seamless" without a definition.
+- A decision with no alternative or no cost.
+- More than 4 metrics.
+- Claiming production use without a deployment or user evidence.
 
-## Output summary to report back
-
-For each project, return: slug, title, 1-line verdict on whether it proves
-production-quality AI engineering, and any fields you had to leave `null` because the
-evidence was missing (so the human knows what to supply).
+If the project cannot meet the standard, say so and recommend archive status. A thin case study is worse than no case study.

@@ -1,62 +1,228 @@
-# Portfolio — Yassine Ben Romdhane, AI Engineer
+# Portfolio v2 — Yassine Ben Romdhane
 
-Single-page portfolio built with Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + Motion. Content-driven: every section renders from JSON validated at build time with zod.
+A recruiter-facing portfolio for an AI engineer. Four systems are documented as case files, with evidence notes and scope metrics attached to the claims.
 
-## Getting started
+**Status:** built and verified locally (v1.0). Not deployed.
+**Availability:** immediate, no notice period.
+**Work:** remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
+**CV:** English and French, designed and ATS-friendly versions, offered through a four-version picker.
+**Design direction:** engineering dossier — warm paper, blue-black ink, one vermillion signal, editorial type, evidence in the margin.
+**Tagline:** _AI systems, with the receipts._
+
+---
+
+## Quick start
+
+Node 22 is tested.
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build (also validates all content JSON)
-npm run start    # serve the production build
-npm run lint     # eslint
+cp .env.example .env.local   # set NEXT_PUBLIC_SITE_URL if you want a non-local canonical
+npm run dev                  # http://localhost:3000
+npm run typecheck            # tsc --noEmit
+npm run lint                 # eslint
+npm run format               # prettier --write .
+npm run format:check         # prettier --check .
+npm run build                # production build; validates every case file
+npm run start                # serve the production build
+
+# with the production server running in another terminal:
+npm run audit:a11y           # axe-core, 8 routes x 3 widths + forced colors
+npm run audit:links -- --external
+npm run audit:nojs           # 8 routes with JS on and off, 390/1440
+npm run audit:lighthouse     # Lighthouse 13, 3 runs per route
 ```
 
-Copy `.env.example` to `.env.local` for local contact-form testing. The site runs without env vars (contact form returns 503 until `RESEND_API_KEY` is set).
+`npm run build` is a content gate, not just a compile step. It fails when a case study is missing a required frontmatter field, a slug does not match its filename, a metric is malformed, or fewer than two evidence notes exist.
 
-## Environment
+---
 
-| Var | Required | What it does |
-|---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | No | Canonical URL for metadata, sitemap, robots, OG. Falls back to the production domain in `src/lib/site.ts`. |
-| `RESEND_API_KEY` | For contact form | Sends via Resend. Unset → `POST /api/contact` returns 503. |
-| `CONTACT_EMAIL` | No | Inbox for form messages. Defaults to the site contact email (`site.json`) when unset. |
+## What is shipped
 
-The contact endpoint is rate-limited (5 messages per 10 minutes per IP, `429` + `Retry-After`) and silently drops honeypot submissions.
+| Route                                      | State  | Notes                                                            |
+| ------------------------------------------ | ------ | ---------------------------------------------------------------- |
+| `/`                                        | Static | Hero, Index preview, method, experience, archive, about, contact |
+| `/work`                                    | Static | Featured case, three case cards, archive rows, contact           |
+| `/work/documents-assistant`                | SSG    | Flagship; partially private                                      |
+| `/work/sadine`                             | SSG    | Private client system                                            |
+| `/work/anomaly-detection-agent`            | SSG    | Public repository                                                |
+| `/work/rfid-access-control`                | SSG    | Private build                                                    |
+| `/about`                                   | Static | Profile, portrait, experience, education, stack, availability    |
+| `/resume.pdf`                              | Asset  | English designed CV, one page                                    |
+| `/resume-fr.pdf`                           | Asset  | French designed CV, one page                                     |
+| `/resume-ats.pdf`                          | Asset  | English ATS-friendly CV                                          |
+| `/resume-fr-ats.pdf`                       | Asset  | French ATS-friendly CV                                           |
+| `/404`                                     | Static | Recovery page                                                    |
+| `/sitemap.xml`, `/robots.txt`, `/icon.svg` | Static | App Router metadata routes                                       |
 
-## Content
+Also shipped: header and footer, a four-version resume picker (native disclosure, works without JS), an owner-supplied portrait on `/about`, focus-trapped mobile menu, home Index with tabs and a mobile accordion, per-case table of contents, evidence margin, scope metrics, code-generated system maps, previous/next case navigation, print stylesheet, Person/CreativeWork/BreadcrumbList/ItemList JSON-LD, canonical metadata, and a default 1200×630 Open Graph card at `public/og.png`.
 
-- `src/content/site.json` — hero, nav, engineering clusters, toolbox, timeline, philosophy, contact + links (including `Resume: /resume.pdf`).
-- `src/content/projects/*.json` — one file per project: summary, stack, capabilities, full case study (problem → future), architecture graph, results, gallery.
-- Schema is the contract: `src/lib/content/schema.ts` (`parseProject` / `parseSite`). A malformed file or dangling architecture edge fails `npm run build`, never runtime.
-- Presentation order: `flagship` first, then `order` ascending (`src/components/sections/featured-work.tsx`).
-- Results honesty rule: only numbers traceable to repo artifacts (module counts, migrations, locales, pipeline stages). No benchmarks without a committed benchmark. Empty `results` renders no block.
-- Private repos: `links.github: null` hides the GitHub button and renders a `Private repo` badge. No private URLs are ever emitted.
+### What is deliberately not shipped
 
-## Resume
+- No contact form, dark mode, blog, analytics script, or animation runtime.
+- No deployment, custom domain, or git remote. The canonical fallback is the old Vercel origin until `NEXT_PUBLIC_SITE_URL` is set.
+- No screenshots or recorded demos. The figures are architecture maps, not interface captures.
+- No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
+- No CI run, screen-reader pass, or real Safari device pass yet. Chromium, Firefox, and Playwright WebKit scripted checks pass at desktop and mobile widths; the CI workflow is committed but has not run.
+- No language proficiency levels. LinkedIn is linked from the contact block, footer, and mobile menu. The CV PDFs include the phone number; site copy uses email only.
+- No stock photography or AI-generated portrait. The one portrait is owner-supplied and appears only on `/about`.
 
-`public/resume.pdf` is served at `/resume.pdf` and linked from hero (`Resume (PDF)`), contact links, and footer via `site.json`. Replace the file in place to update it — no code change needed.
+---
 
-## Structure
+## Content model
 
-```
-src/app/            # layout, page, sitemap, robots, /api/contact
-src/components/sections/  # Nav, Hero, FeaturedWork, Engineering, Timeline, Toolbox, Philosophy, Contact, Footer
-src/components/ui/  # ArchitectureDiagram, PipelineFlow, SectionHeading, ThemeToggle
-src/components/motion/    # Reveal primitive
-src/content/        # site.json + projects/*.json
-src/lib/content/    # schema (zod) + loaders
-src/lib/ /src/hooks/      # theme, scroll-to, scroll-lock, dialog flag, media query
-public/             # og.png, resume.pdf
-docs/               # PRD.md (vision), PLAN.md (build plan + decision log)
-```
+Each case study is a validated MDX file:
 
-Design tokens (palette, glass, radii, motion curves) live in `src/app/globals.css`. Dark is primary; light mode is a token swap via `data-theme`. Motion follows the regimes in `docs/PLAN.md` (reveal default, scrubbed/pinned desktop-only, reduced-motion static).
+- `src/content/work/*.mdx` — body plus frontmatter.
+- `src/lib/content/schema.ts` — zod contracts for title, tagline, contract, capabilities, stack, links, metrics, evidence, and SEO.
+- `src/lib/content/load.ts` — reads, validates, sorts, and resolves previous/next.
+- `src/lib/content/mdx-components.tsx` — maps `Claim` and `Architecture` into MDX.
+- `src/components/evidence/claim.tsx` — claim, inline marker, and evidence margin.
+- `src/components/work/architecture-view.tsx` — stage cards, text flow, and boundary note.
 
-## Deploy
+**MDX constraint:** `next-mdx-remote`'s RSC mode strips JSX expression attributes for safety. Props must be string literals in MDX (`n="1"`, not `n={1}`). `Claim` also derives the number from the `id` as a fallback. This is a library security behaviour, not a site bug.
 
-Vercel (or any Next.js host). Set `NEXT_PUBLIC_SITE_URL` to the production domain plus `RESEND_API_KEY` / `CONTACT_EMAIL` for the contact form. No database, no CMS, fully static except `/api/contact`.
+Every `Claim` renders its source in the margin on wide screens and in reading order on mobile. The source is either a public repository path, a private repository path labelled `private`, or an explicit unmeasured plan.
 
-## Known gaps
+---
 
-No test suite or CI yet. No project screenshots (`gallery` is empty across all projects). Phase 8 quality gate (Lighthouse, budgets) has not been run — see `docs/PLAN.md` decision log.
+## Evidence policy
+
+1. **No borrowed proof.** Do not use a screenshot of another product, a stock dashboard, or an invented metric.
+2. **Partial proof is allowed if it is labelled.** The flagship is partially private: architecture and code paths are described, but no interface, repository, or benchmark is published.
+3. **Private stays private.** Sadine, RFID, and the flagship do not publish customer, employee, or client data.
+4. **Artifacts are not outcomes.** A model count, module count, or route count is labelled `artifact`. It does not imply quality, adoption, or correctness.
+5. **Unmeasured is a status, not a footnote.** The 50-question RAG benchmark is listed as not run.
+
+The full claim-to-source mapping is [`docs/evidence-ledger.md`](docs/evidence-ledger.md). The build and verification record is [`docs/13-implementation-report.md`](docs/13-implementation-report.md).
+
+---
+
+## Verification
+
+Last full run: 28 Oct 2026, from this directory.
+
+| Check              | Command                    | Result                                                                 |
+| ------------------ | -------------------------- | ---------------------------------------------------------------------- |
+| Types              | `npm run typecheck`        | Pass                                                                   |
+| Lint               | `npm run lint`             | Pass, 0 errors / 0 warnings                                            |
+| Format             | `npm run format:check`     | Pass                                                                   |
+| Production build   | `npm run build`            | Pass; all four case studies prerendered                                |
+| Desktop sweep      | Playwright, 1440×1000      | 8 routes: no horizontal overflow, no visible `undefined`/`NaN`         |
+| Mobile sweep       | Playwright, 390×844        | Same 8 routes: no horizontal overflow                                  |
+| Narrow sweep       | Playwright, 320×800        | Same 8 routes: no horizontal overflow; tables fit at 320               |
+| Viewport sweep     | Playwright, 10 widths      | 320–2560px: 5 routes, no horizontal overflow                           |
+| Reflow and spacing | Playwright, 640/390        | 200% zoom equivalent and WCAG 1.4.12 text-spacing overrides pass       |
+| Reduced motion     | Playwright                 | 0 running animations; `scroll-behavior` returns to `auto`              |
+| No JavaScript      | `npm run audit:nojs`       | 8 routes, JS on/off, 390/1440: 4 stacked items, 4 header links         |
+| Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, open menu, forced colors   |
+| Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
+| HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |
+| Lighthouse mobile  | `npm run audit:lighthouse` | 99 median on all four routes, 3 runs each; 100 a11y/BP/SEO             |
+| Lighthouse desktop | Lighthouse 13.6.0          | 100 in all four categories on `/`                                      |
+| Cross-browser      | Playwright                 | Chromium 1248, Firefox 157, WebKit 27.2: routes, menu, Index, copy     |
+| First-load JS      | 8 modern script tags       | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0            |
+| Links and assets   | `npm run audit:links`      | 14 internal URLs, all 200; 4 GitHub links 200; LinkedIn 999 bot-block  |
+| Evidence rendering | Playwright + HTML          | 4 labels and 4 markers per case; no nested paragraphs                  |
+| Security headers   | `curl -I`                  | nosniff, referrer, frame, permissions, HSTS, enforced CSP              |
+| Dependencies       | `npm audit`                | 0 vulnerabilities; Next.js upgraded to 16.4.3                          |
+| Print              | Playwright                 | Navigation hidden, grid collapsed, evidence notes kept                 |
+| CI                 | GitHub Actions             | Workflow committed; not run (no remote or account access)              |
+
+The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 320, 390, and 1440px. It found five accessibility issues on 28 Oct 2026, all fixed: the home link name, overlong card and archive link names, the French ATS link name, and the skip link landmark. A separate 320px sweep found contact-section overflow, also fixed. The script is `scripts/audit-a11y.mjs`.
+
+Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
+
+The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced a median of 99 on all four routes on 30 Oct 2026: home runs 99, 96, 99; `/work` 99, 98, 99; the flagship 95, 99, 99; `/about` 99, 99, 99. LCP was 0.9–1.2s, CLS 0, and TBT 101–139ms. Earlier sets put home at 96–97 and the other routes at 98–99, and one run recorded a 94 with a 2.6s LCP outlier. No three-run median fell below the 95 target. Results are local lab runs, not field data or a CI median.
+
+First-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/` and 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill chunk. The 120 KB gzip budget is missed; React and the App Router runtime account for about 115 KB gzip before any site code. The budget is recorded as missed rather than redefined.
+
+WebKit 27.2 now passes the same scripted checks as Chromium and Firefox. The host lacked `libavif16`; the package and its two dependencies were unpacked into the Playwright WebKit bundle, which is an environment workaround, not a Safari UI test. NVDA/VoiceOver, real-device, and CI runs are still outstanding.
+
+Public-repository claims were re-checked against shallow clones on 27 Oct 2026. The anomaly route count was corrected from 5 to 9, and two overbroad read-only/normalization sentences were narrowed. Details and commands are in the evidence ledger.
+
+---
+
+## Deployment
+
+Not deployed yet. The site is ready to ship.
+
+**Repository layout matters.** `v2/` is currently its own Git repository and is not tracked by the parent repo. A Vercel project connected to the parent repo cannot build `v2/` until those files are committed there. Three clean paths:
+
+1. **Replace the existing project from the CLI (fastest, same URL):**
+   ```bash
+   cd v2
+   vercel login
+   vercel link      # select the existing portfolio project
+   vercel --prod
+   ```
+   Set `NEXT_PUBLIC_SITE_URL` in Project → Settings → Environment Variables first. The old deployment stays in the Deployments list for rollback.
+2. **Standalone repo (recommended for ongoing updates):** push `v2/` to its own GitHub repo and import it into Vercel, then move the domain from the old project to the new one. The old deployment stays available for rollback, and the v2 commit history stays intact.
+3. **Same repo, Root Directory `v2`:** retire the nested `v2/.git`, commit `v2/` into the parent repo, set Project → Settings → Root Directory to `v2`, and redeploy. Use this only if the existing Vercel project must keep its current Git connection.
+
+Do not set Root Directory to `v2` while it is still a nested repo: the parent repo sees only a gitlink, not the files.
+
+Then:
+
+1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview. If the domain stays `yassine-ben-romdhane.vercel.app`, the existing fallback is already correct.
+2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. Check each picker row downloads the filename it claims.
+3. Move or add the domain, then verify HTTPS, canonical URLs, OG image resolution, the 404 status, and a printed case file.
+4. Submit the sitemap and keep the previous deployment until the new one has been checked.
+
+---
+
+## Stack
+
+- Next.js 16.4.3 (App Router, RSC, static-first) · React 19.2.8 · TypeScript strict with `noUncheckedIndexedAccess`
+- Tailwind CSS v4 with an OKLCH semantic token layer
+- MDX via `next-mdx-remote` 6, `gray-matter`, `rehype-slug`, and zod validation
+- CSS-first motion; no animation runtime (ADR-006)
+- No database, auth, CMS, analytics, or client state library
+
+Full rationale: [`docs/07-technical-architecture.md`](docs/07-technical-architecture.md) and [`docs/12-decision-log.md`](docs/12-decision-log.md).
+
+---
+
+## Documentation map
+
+Read in order the first time. After that, use it as a working reference.
+
+| #   | Document                                                                     | What it decides                                                      |
+| --- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 00  | [`docs/README.md`](docs/README.md)                                           | Status, ownership, how to use the docs                               |
+| 01  | [`docs/01-brief.md`](docs/01-brief.md)                                       | Audience, positioning, success tests, scope, aesthetic commitment    |
+| 02  | [`docs/02-recruiter-research.md`](docs/02-recruiter-research.md)             | Who visits, how they scan, what convinces them, what repels them     |
+| 03  | [`docs/03-content-strategy.md`](docs/03-content-strategy.md)                 | Project selection, evidence standard, content gaps, proof backlog    |
+| 04  | [`docs/04-information-architecture.md`](docs/04-information-architecture.md) | Routes, page specs, wireframes, journeys, navigation                 |
+| 05  | [`docs/05-design-system.md`](docs/05-design-system.md)                       | Palette, type, grid, components, imagery, tokens                     |
+| 06  | [`docs/06-motion-and-interaction.md`](docs/06-motion-and-interaction.md)     | Motion lens, the Index, the evidence margin, reduced motion          |
+| 07  | [`docs/07-technical-architecture.md`](docs/07-technical-architecture.md)     | Stack, rendering, content model, folder structure, CI, deployment    |
+| 08  | [`docs/08-quality-standards.md`](docs/08-quality-standards.md)               | Accessibility, performance, SEO, security, content quality           |
+| 09  | [`docs/09-build-roadmap.md`](docs/09-build-roadmap.md)                       | Phases, tasks, estimates, dependencies, launch criteria              |
+| 10  | [`docs/10-quality-gates.md`](docs/10-quality-gates.md)                       | Pre-launch gates, manual test scripts, sign-off                      |
+| 11  | [`docs/11-content-templates.md`](docs/11-content-templates.md)               | Case-study skeleton, copy worksheets, resume bullets, scoping prompt |
+| 12  | [`docs/12-decision-log.md`](docs/12-decision-log.md)                         | Why the big calls were made; when to revisit                         |
+| 13  | [`docs/13-implementation-report.md`](docs/13-implementation-report.md)       | What shipped, how it was verified, what is still open                |
+| —   | [`docs/evidence-ledger.md`](docs/evidence-ledger.md)                         | Claim-to-source ledger for the 16 evidence notes and 16 metrics      |
+| —   | [`docs/prompts/project-scoping.md`](docs/prompts/project-scoping.md)         | Agent prompt that turns a repo into an evidence-backed case study    |
+
+---
+
+## Open owner inputs
+
+Resolved 27 Oct 2026: availability and work arrangements — immediate, no notice period; remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
+
+These block launch or would materially strengthen it:
+
+1. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
+2. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
+3. **Identity and contact:** custom domain, language proficiency labels, target-role priority. Portrait resolved 28 Oct 2026; LinkedIn resolved 30 Oct 2026.
+4. **Audit:** CI run, screen-reader, real Safari, and real-device passes.
+
+The site avoids unconfirmed claims: no placeholder social links, phone number in site copy, or language levels.
+
+---
+
+## Repository note
+
+This is a standalone git repository inside the old portfolio directory. The outer portfolio stays untouched, and `/v2/` is excluded from the outer repository through `.git/info/exclude`. The outer working tree has a pre-existing `package-lock.json` modification that is unrelated to this work.

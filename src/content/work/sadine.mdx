@@ -1,0 +1,202 @@
+---
+title: "Sadine Tours"
+slug: "sadine"
+tagline: "A travel agency platform with three surfaces, one transactional core, and three locales."
+descriptor: "Agency platform · 3 locales"
+summary: "A from-scratch agency platform: public catalog, admin ERP, and customer account over one Fastify/Prisma API. Quotes become bookings through an audited state machine, money never touches a float, and access rules are enforced as contracts."
+year: 2026
+role: "Solo"
+duration: "2026"
+status: "in-development"
+featured: true
+order: 2
+confidentiality: "private"
+contract:
+  problem: "Catalog, quotes, and bookings lived in spreadsheets and inboxes; customers could not see their requests."
+  constraint: "Shared production database with v1 during the rewrite; three locales; money that cannot drift."
+  proof: "Forty-one models, 224 route handlers, and one transactional quote-to-booking state machine."
+capabilities: ["State machines", "RBAC", "Prisma", "Next.js", "Localization"]
+stack:
+  ai: []
+  backend: ["Fastify", "TypeScript", "Prisma", "zod", "JWT"]
+  frontend: ["Next.js", "React", "next-intl", "TanStack Query"]
+  infra: ["Docker", "OpenAPI"]
+  data: ["PostgreSQL"]
+links: []
+metrics:
+  - label: "Prisma models"
+    value: "41"
+    kind: "artifact"
+    source: "prisma/schema.prisma"
+    measuredAt: "2026-10-27"
+  - label: "Backend modules"
+    value: "26"
+    kind: "artifact"
+    source: "src/modules/"
+    measuredAt: "2026-10-27"
+  - label: "Route handlers"
+    value: "224"
+    kind: "artifact"
+    source: "grep across src/modules/"
+    measuredAt: "2026-10-27"
+  - label: "Locales"
+    value: "3"
+    kind: "artifact"
+    source: "en / fr / ar message bundles"
+    measuredAt: "2026-10-27"
+evidence:
+  - id: "ev-1"
+    claim: "Quote acceptance runs in a transaction, rejects non-sent quotes, and enforces expiry."
+    source: "src/modules/quotes/quote.service.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-2"
+    claim: "Decimal money leaves the API as strings; the client formats but never calculates."
+    source: "src/modules/bookings/booking.service.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-3"
+    claim: "Auth, role, and owner checks are declared as middleware contracts on privileged routes."
+    source: "src/plugins/auth.ts"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+  - id: "ev-4"
+    claim: "The repository contains 41 Prisma models and 26 backend modules."
+    source: "prisma/schema.prisma + src/modules/"
+    kind: "repo"
+    private: true
+    verifiedAt: "2026-10-27"
+seo:
+  title: "Sadine Tours — travel agency platform"
+  description: "A travel agency platform with a public catalog, admin ERP, and customer account over one API: audited quote-to-booking state machine, RBAC, and three locales."
+  ogAlt: "Sadine Tours system map: three client surfaces over one transactional Fastify API."
+---
+
+## Context
+
+Sadine Tours ran the way many agencies do. The catalog — hotels, trips, circuits, cruises, omra, transport — lived in spreadsheets and admin screens. Customers emailed quote requests and waited. After submitting a request, a traveler could not see its status, view the resulting quote, accept it, or track the booking. Staff had no single workflow, and every status change lived in someone's inbox.
+
+The project is a from-scratch v2 rewrite into one platform with three surfaces: a public catalog where travelers request quotes, an admin ERP where agents quote and book, and a customer account where travelers can see, accept, and track their own requests. The rewrite had to land without taking the running business offline.
+
+## Problem
+
+Three surfaces multiply the usual failure modes. The hard parts were not visual:
+
+- **One database, two systems.** v2 shared the production PostgreSQL instance with v1 during migration. Two Prisma clients, one canonical schema, and migrations from v2 only.
+- **A lifecycle, not a status field.** Quotes expire; acceptance races; bookings copy passenger and item data; every transition needs an audit entry.
+- **Money.** Prices are decimals. A float anywhere in the chain is a defect waiting for a support ticket.
+- **Three locales.** English, French, and Arabic across public, account, and admin surfaces, with locale-aware formatting.
+- **Privilege.** A customer must never enumerate another traveler's data, even by guessing an ID.
+
+## Architecture
+
+<Architecture project="sadine" />
+
+## Decisions
+
+### A modular monolith, not services
+
+A solo build with transactional workflows does not benefit from network boundaries between quotes and bookings. One Fastify application, 26 modules, thin routes over service layers. Each service is testable through `app.inject()` against a `buildApp()` factory, not a module-level singleton. The boundary that matters is the service boundary, not a deployment boundary.
+
+### The quote-to-booking state machine
+
+The deepest surface in the product is the transition from a quote request to an accepted quote to a booking. It is modeled as explicit transitions with expiry, not as booleans edited from an admin form.
+
+<Claim
+  id="ev-1"
+  n="1"
+  source="src/modules/quotes/quote.service.ts"
+  kind="repo"
+  isPrivate
+  note="Private client repository. The transition is a single service method, not a controller branch."
+>
+  Acceptance rejects any quote that is not in the SENT state, checks `validUntil` inside the
+  transaction, marks expired quotes EXPIRED, and copies passenger and item data into the booking
+  exactly once.
+</Claim>
+
+The design cost is more code and a stricter admin flow: an agent cannot "just fix" a quote state. The benefit is that a double click, a retry, or two agents working the same quote cannot create two bookings.
+
+### Decimal strings at the boundary
+
+Money leaves the API as strings. The client formats with `Intl.NumberFormat` per locale and never performs arithmetic on a price. This is deliberately inconvenient: it forces every total to be computed on the server, where the database type is correct.
+
+### Route groups per surface, one frontend
+
+Public, account, and admin live under a locale-prefixed `[locale]` segment with separate route groups. One deployable frontend, three products. Shared auth, query factories, and design primitives; strict server/client boundaries inside each group.
+
+### Privilege as middleware contracts
+
+`authenticate` is always a preHandler. `requireRole` runs after it and never silently falls back. `requireOwner` gates the operations that can change roles or reach another user's record. Customer endpoints derive the user ID from the JWT rather than accepting it as a parameter.
+
+## Evidence
+
+<Claim
+  id="ev-2"
+  n="2"
+  source="src/modules/bookings/booking.service.ts"
+  kind="repo"
+  isPrivate
+  note="Private client repository. Prisma Decimal values are serialized as strings at the service boundary."
+>
+  Booking totals, quote totals, and invoice amounts are computed server-side from Prisma Decimal
+  values and serialized as strings. No client path performs money arithmetic.
+</Claim>
+
+The counts on this page come from the private repository: 41 Prisma models, 26 backend modules, 224 route handlers, and three locale bundles. They are artifacts, not business outcomes. There are no customer numbers, revenue figures, or screenshots in this case study, because the system belongs to the client and none of that is mine to publish.
+
+## Reliability
+
+The failure modes that mattered were the boring ones.
+
+<Claim
+  id="ev-3"
+  n="3"
+  source="src/plugins/auth.ts"
+  kind="repo"
+  isPrivate
+  note="Private client repository. The rule is enforced centrally rather than remembered per route."
+>
+  Every privileged route declares `authenticate`, then `requireRole`, then `requireOwner` where
+  needed. A route that forgets the chain fails review, and a customer ID in a query string is never
+  trusted.
+</Claim>
+
+| Failure                     | What the system does                                                        |
+| --------------------------- | --------------------------------------------------------------------------- |
+| Two acceptance clicks       | One transition succeeds; the second is rejected by state and expiry checks  |
+| Expired quote               | Marked EXPIRED; acceptance refuses it                                       |
+| v1 and v2 running together  | Shared database, one canonical Prisma schema, migrations from v2 only       |
+| Customer guesses another ID | Customer endpoints derive the user from the JWT; no client-supplied user ID |
+| Money formatting per locale | Server computes decimals; client formats strings                            |
+| Partial deploy              | Incremental cutover; v1 stays live until v2 is ready                        |
+
+The honest limit: this is a client system in active development. "Production-ready" here means the safety properties are implemented and reviewed; it does not mean a public launch date or a measured business result.
+
+## Outcome
+
+The v2 platform covers the full agency flow: a localized catalog, quote requests, an admin ERP for catalog and lifecycle operations, and a customer account with quote acceptance and booking tracking. The backend is 26 modules over 41 models; the frontend serves three locales from one codebase.
+
+<Claim
+  id="ev-4"
+  n="4"
+  source="prisma/schema.prisma + src/modules/"
+  kind="repo"
+  isPrivate
+  note="Counts verified against the repository on 27 Oct 2026. They describe scope, not quality."
+>
+  The repository contains 41 Prisma models across catalog, users, quotes, bookings, audit logs, CMS
+  pages, and invoices, organized into 26 backend modules.
+</Claim>
+
+What is not claimed: conversion, revenue, uptime, or user counts. Those belong to the client and are not measured here.
+
+## Next
+
+- Add end-to-end tests for the full quote-to-booking path, including concurrent acceptance.
+- Add observability around transition failures and queue-free email delivery.
+- Harden the admin audit view so every lifecycle change is readable without a database query.
+- Document the cutover playbook for the remaining v1 surfaces.

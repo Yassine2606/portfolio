@@ -1,34 +1,53 @@
-import { getProjects, getSite } from "@/lib/content";
-import { Nav } from "@/components/sections/nav";
-import { Hero } from "@/components/sections/hero";
-import { FeaturedWork } from "@/components/sections/featured-work";
-import { Engineering } from "@/components/sections/engineering";
-import { Timeline } from "@/components/sections/timeline";
-import { Toolbox } from "@/components/sections/toolbox";
-import { Philosophy } from "@/components/sections/philosophy";
-import { Contact } from "@/components/sections/contact";
-import { Footer } from "@/components/sections/footer";
+import { getFeaturedWork } from "@/lib/content/load";
+import { personJsonLd } from "@/lib/seo/jsonld";
+import { Hero } from "@/components/home/hero";
+import { IndexTabs, type IndexItem } from "@/components/home/index-tabs";
+import { Method } from "@/components/home/method";
+import { Experience } from "@/components/home/experience";
+import { AboutPreview } from "@/components/home/about-preview";
+import { ContactSection } from "@/components/sections/contact-section";
+import { SectionHeading } from "@/components/ui/section-heading";
 
-export default function Home() {
-  const site = getSite();
-  const projects = getProjects();
+export default function HomePage() {
+  const featured = getFeaturedWork();
+
+  const items: IndexItem[] = featured.map((work, index) => ({
+    slug: work.slug,
+    index: String(index + 1).padStart(2, "0"),
+    title: work.frontmatter.title,
+    descriptor: work.frontmatter.descriptor,
+    outcome: work.frontmatter.summary,
+    year: String(work.frontmatter.year),
+    stack: work.frontmatter.capabilities.slice(0, 4),
+  }));
 
   return (
     <>
-      <Nav site={site} />
-      <main id="main">
-        <Hero
-          site={site}
-          projectSlugs={projects.map((p) => p.slug)}
-        />
-        <FeaturedWork projects={projects} />
-        <Engineering site={site} projects={projects} />
-        <Timeline site={site} />
-        <Toolbox site={site} projects={projects} />
-        <Philosophy site={site} />
-        <Contact site={site} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
+      />
+
+      <main id="main" className="mx-auto max-w-[1440px] px-5 md:px-10">
+        <Hero />
+
+        <section aria-labelledby="index-title" id="index" className="scroll-mt-24 py-14 md:py-24">
+          <SectionHeading
+            index="01"
+            label="Selected systems"
+            id="index-title"
+            aside={`${String(featured.length).padStart(2, "0")} case files`}
+          />
+          <div className="pt-8">
+            <IndexTabs items={items} />
+          </div>
+        </section>
+
+        <Method />
+        <Experience />
+        <AboutPreview />
+        <ContactSection />
       </main>
-      <Footer site={site} />
     </>
   );
 }

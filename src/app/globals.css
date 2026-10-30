@@ -1,226 +1,735 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — semantic layer.
- * Dark is the primary theme. Light mode is a later swap: define tokens on
- * `[data-theme="light"]` without touching any component styles.
+ * Portfolio v2 — semantic token layer.
+ * Light-first "engineering dossier": warm paper, blue-black ink, one vermillion signal.
+ * Every colour is OKLCH. No pure #000 or #fff. Components consume tokens only.
  *
- * Palette: off-black base + off-white text + ONE accent (desaturated emerald).
- * No pure #000 / #fff anywhere.
+ * Contrast (paper #f6f2ea):
+ *   ink       16.06:1
+ *   ink-soft   9.76:1
+ *   ink-faint  5.39:1
+ *   signal-text 5.84:1  (use for text)
+ *   signal     4.10:1  (large text / graphics only)
+ *   status     4.68:1
  */
 
 :root {
-  /* Base surfaces — slightly green-tinted, never pure black/white */
-  --background: #0a0d0c;
-  --surface: #111513;
-  --surface-raised: #181d1a;
-  --foreground: #eef3ef;
-  --muted: #9aa8a1;
-  --muted-faint: #75817a; /* ≥4.5:1 on --background and --surface (AA small text) */
-  --danger: #e28f7c; /* form errors only — desaturated, not the accent hue */
+  /* Surfaces */
+  --paper: oklch(0.962 0.012 85);
+  --paper-raised: oklch(0.985 0.008 85);
 
-  /* Semantic borders */
-  --border: rgba(238, 243, 239, 0.09);
-  --border-strong: rgba(238, 243, 239, 0.16);
+  /* Text */
+  --ink: oklch(0.205 0.018 265);
+  --ink-soft: oklch(0.36 0.015 265);
+  --ink-faint: oklch(0.5 0.012 265);
 
-  /* RGB triplets for alpha variants (rgba(var(--accent-rgb), 0.x)) */
-  --background-rgb: 10, 13, 12;
-  --foreground-rgb: 238, 243, 239;
-  --surface-rgb: 17, 21, 19;
+  /* Structure */
+  --line: oklch(0.885 0.012 85);
+  --line-strong: oklch(0.8 0.014 85);
 
-  /* Accent — desaturated emerald. The only hue on the page. */
-  --accent: #4fc793;
-  --accent-rgb: 79, 199, 147;
-  --accent-hover: #6bdaa8;
-  --accent-strong: #2f9c6d;
-  --accent-ink: #04231a; /* text on accent fills */
-  --accent-faint: rgba(var(--accent-rgb), 0.12);
-  --accent-focus: rgba(var(--accent-rgb), 0.35);
+  /* Signal — the only saturated hue. Text uses signal-text. */
+  --signal: oklch(0.585 0.19 33);
+  --signal-text: oklch(0.5 0.17 33);
+  --signal-wash: oklch(0.585 0.19 33 / 0.08);
 
-  /* Glass spec */
-  --glass-bg: rgba(17, 21, 19, 0.62);
-  --glass-border: rgba(238, 243, 239, 0.1);
-  --glass-blur: 16px;
+  /* Semantic */
+  --status: oklch(0.52 0.11 155);
+  --danger: oklch(0.5 0.17 25);
 
-  /* Radii — one scale */
-  --radius-ui: 0.4rem;
-  --radius-card: 0.9rem;
-  --radius-glass: 1.1rem;
+  /* Type families (wired to next/font in layout.tsx) */
+  --font-display-family: var(--font-bricolage), "Helvetica Neue", sans-serif;
+  --font-sans-family: var(--font-instrument), "Helvetica Neue", sans-serif;
+  --font-mono-family: var(--font-jetbrains), ui-monospace, monospace;
+  --font-serif-family: var(--font-instrument-serif), Georgia, serif;
 
-  /* Shadows */
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
-    0 12px 40px -18px rgba(0, 0, 0, 0.6);
-  --shadow-raised: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 24px 60px -24px rgba(0, 0, 0, 0.75);
+  /* Motion — starting points, tuned in browser */
+  --ease-in-out-token: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-ui: 200ms;
+  --dur-reveal: 480ms;
+  --dur-scene: 800ms;
 
-  /* Motion tokens */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-micro: 150ms;
-  --dur-reveal: 500ms;
-  --dur-choreography: 800ms;
+  /* Structure */
+  --measure: 64ch;
+  --page-max: 1440px;
+  --radius-card-token: 2px;
+  --radius-pill-token: 999px;
+  --ease-expo-token: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-faint: var(--muted-faint);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-accent-strong: var(--accent-strong);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-faint: var(--accent-faint);
-  --color-accent-focus: var(--accent-focus);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-signal: var(--signal);
+  --color-signal-text: var(--signal-text);
+  --color-signal-wash: var(--signal-wash);
+  --color-status: var(--status);
   --color-danger: var(--danger);
 
-  --color-glass: var(--glass-bg);
-  --color-glass-border: var(--glass-border);
+  --font-display: var(--font-display-family);
+  --font-sans: var(--font-sans-family);
+  --font-mono: var(--font-mono-family);
+  --font-serif: var(--font-serif-family);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --radius-card: var(--radius-card-token);
+  --radius-pill: var(--radius-pill-token);
 
-  --radius-ui: var(--radius-ui);
-  --radius-card: var(--radius-card);
-  --radius-glass: var(--radius-glass);
-
-  --shadow-card: var(--shadow-card);
-  --shadow-raised: var(--shadow-raised);
-}
-
-/*
- * Light mode token swap — smoke-tested, dark remains primary. Flip with
- * <html data-theme="light">; every component reads tokens, so nothing else
- * needs changing. Contrast: accent on light is darkened for AA.
- */
-[data-theme="light"] {
-  color-scheme: light;
-  --background: #f2f6f3;
-  --surface: #fbfdfb;
-  --surface-raised: #eaf0ec;
-  --foreground: #0d1713;
-  --muted: #47534d;
-  --muted-faint: #5f6d66; /* ≥4.5:1 on light surfaces (AA small text) */
-  --danger: #a5442f; /* form errors only — desaturated, not the accent hue */
-
-  --border: rgba(13, 23, 19, 0.12);
-  --border-strong: rgba(13, 23, 19, 0.22);
-
-  --background-rgb: 242, 246, 243;
-  --foreground-rgb: 13, 23, 19;
-  --surface-rgb: 251, 253, 251;
-
-  --accent: #1a7450; /* floor for AA: ≥4.5:1 as text on light surfaces AND as bg under accent-ink — do not lighten past #1a7450 */
-  --accent-rgb: 26, 116, 80;
-  --accent-hover: #146247;
-  --accent-strong: #146247;
-  --accent-ink: #f4fbf7;
-  --accent-faint: rgba(var(--accent-rgb), 0.12);
-  --accent-focus: rgba(var(--accent-rgb), 0.35);
-
-  --glass-bg: rgba(251, 253, 251, 0.7);
-  --glass-border: rgba(13, 23, 19, 0.1);
-
-  --shadow-card: 0 1px 0 rgba(13, 23, 19, 0.03) inset,
-    0 12px 40px -18px rgba(13, 23, 19, 0.14);
-  --shadow-raised: 0 1px 0 rgba(13, 23, 19, 0.04) inset,
-    0 24px 60px -24px rgba(13, 23, 19, 0.18);
+  --ease-out-expo: var(--ease-expo-token);
+  --ease-in-out: var(--ease-in-out-token);
 }
 
 @layer base {
-  * {
-    border-color: var(--border);
-  }
-
   html {
-    scroll-padding-top: 88px;
-    color-scheme: dark;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans-family);
+    font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Global background system — base gradient + fixed noise + ambient light */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background: radial-gradient(
-        ellipse 80% 50% at 50% -10%,
-        rgba(var(--accent-rgb), 0.07),
-        transparent
-      ),
-      var(--background);
-    pointer-events: none;
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
   }
 
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body::before {
-      display: none;
-    }
+  p {
+    text-wrap: pretty;
   }
 
   ::selection {
-    background: var(--accent-faint);
-    color: var(--foreground);
+    background: var(--signal);
+    color: var(--paper-raised);
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent-focus);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  /* Terminal-style caret for the contact CTA line. Reduced-motion gate above
-     collapses the blink to a static caret. */
-  @keyframes caret-blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
-  }
-
-  .caret {
-    display: inline-block;
-    width: 0.5rem;
-    height: 1.15em;
-    margin-left: 0.3rem;
-    vertical-align: -0.22em;
-    background: currentColor;
+    outline: 2px solid var(--signal-text);
+    outline-offset: 3px;
     border-radius: 1px;
-    animation: caret-blink 1.05s steps(1) infinite;
+  }
+
+  a {
+    text-underline-offset: 0.18em;
+  }
+}
+
+/* Paper grain. Static, pointer-transparent, low opacity. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono-family);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero entrance — transform only; the H1 is never opacity: 0.         */
+/* ------------------------------------------------------------------ */
+
+.hero-line {
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line-inner {
+    animation: line-rise 620ms var(--ease-expo-token) both;
+  }
+
+  .hero-line:nth-child(2) .hero-line-inner {
+    animation-delay: 80ms;
+  }
+
+  .hero-rise {
+    animation: rise-in 520ms var(--ease-expo-token) both;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(24px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Portrait — a warm monochrome print, not a stock photo               */
+/* ------------------------------------------------------------------ */
+
+.portrait-warm {
+  filter: grayscale(1) sepia(0.16) contrast(1.03) brightness(1.02);
+}
+
+/* ------------------------------------------------------------------ */
+/* Resume picker — a native disclosure, styled as a file slip          */
+/* ------------------------------------------------------------------ */
+
+.resume-summary {
+  list-style: none;
+}
+
+.resume-summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-summary::marker {
+  content: "";
+}
+
+.resume-chevron {
+  transition: transform var(--dur-ui) var(--ease-in-out-token);
+}
+
+.resume-menu[open] .resume-chevron {
+  transform: rotate(180deg);
+}
+
+.resume-panel {
+  animation: resume-in 160ms var(--ease-expo-token) both;
+}
+
+@keyframes resume-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resume-option {
+  transition:
+    background-color var(--dur-micro) var(--ease-in-out-token),
+    color var(--dur-micro) var(--ease-in-out-token);
+}
+
+.resume-option:hover,
+.resume-option:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.resume-option:focus-visible {
+  outline-offset: -3px;
+}
+
+.resume-option:hover .resume-option-muted,
+.resume-option:focus-visible .resume-option-muted {
+  color: color-mix(in oklab, var(--paper) 65%, transparent);
+}
+
+.resume-option-icon {
+  transition: transform var(--dur-ui) var(--ease-expo-token);
+}
+
+.resume-option:hover .resume-option-icon,
+.resume-option:focus-visible .resume-option-icon {
+  transform: translateY(2px);
+}
+
+@media (forced-colors: active) {
+  .resume-option:hover,
+  .resume-option:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile menu                                                         */
+/* ------------------------------------------------------------------ */
+
+.menu-sheet {
+  animation: menu-in var(--dur-ui) var(--ease-expo-token) both;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Case-study prose                                                    */
+/* ------------------------------------------------------------------ */
+
+.prose-dossier {
+  counter-reset: dossier-section;
+}
+
+.prose-dossier > p,
+.prose-dossier > ul,
+.prose-dossier > ol {
+  max-width: 68ch;
+}
+
+.prose-dossier > h2:first-child {
+  margin-top: 0;
+}
+
+.prose-dossier h2 {
+  counter-increment: dossier-section;
+  font-family: var(--font-display-family);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 6rem;
+}
+
+.prose-dossier h2::before {
+  content: counter(dossier-section, decimal-leading-zero) " / ";
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.prose-dossier h3 {
+  font-family: var(--font-display-family);
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin-top: 2.25rem;
+}
+
+.prose-dossier p {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-top: 1rem;
+}
+
+.prose-dossier > p:first-of-type {
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.prose-dossier ul,
+.prose-dossier ol {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.prose-dossier li {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.prose-dossier ul {
+  list-style: square;
+}
+
+.prose-dossier ol {
+  list-style: decimal;
+}
+
+.prose-dossier li::marker {
+  color: var(--signal-text);
+  font-family: var(--font-mono-family);
+  font-size: 0.75em;
+}
+
+.prose-dossier a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition:
+    text-decoration-color 120ms ease,
+    color 120ms ease;
+}
+
+.prose-dossier a:hover {
+  color: var(--signal-text);
+  text-decoration-color: var(--signal-text);
+}
+
+.prose-dossier code {
+  font-family: var(--font-mono-family);
+  font-size: 0.875em;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  padding: 0.1em 0.32em;
+  border-radius: 2px;
+}
+
+.prose-dossier pre {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.prose-dossier pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose-table-wrap {
+  margin-top: 1.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose-table-wrap table {
+  margin-top: 0;
+}
+
+.prose-dossier table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.prose-dossier th,
+.prose-dossier td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.65rem 0.75rem 0.65rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-dossier th {
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.prose-dossier td {
+  color: var(--ink-soft);
+}
+
+@media (max-width: 360px) {
+  .prose-dossier table {
+    font-size: 0.8125rem;
+  }
+
+  .prose-dossier th,
+  .prose-dossier td {
+    padding: 0.5rem 0.625rem 0.5rem 0;
+  }
+}
+
+.prose-dossier strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose-dossier blockquote {
+  margin-top: 1.5rem;
+  border-left: 2px solid var(--signal);
+  padding-left: 1rem;
+  font-family: var(--font-serif-family);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ */
+/* Claim + evidence margin                                             */
+/* ------------------------------------------------------------------ */
+
+.claim {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.claim__body p {
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.claim__body > p + p {
+  margin-top: 1rem;
+}
+
+.claim__note {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  border-left: 2px solid var(--signal);
+  padding-left: 0.75rem;
+}
+
+.claim__label {
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal-text);
+  margin-bottom: 0.25rem;
+}
+
+.claim__source {
+  display: block;
+  font-family: var(--font-mono-family);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1200px) {
+  .claim {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: 2rem;
+  }
+
+  .claim__note {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 0.5rem;
+    margin-top: 0.35rem;
+  }
+}
+
+.claim__note:target {
+  background: var(--signal-wash);
+  outline: 1px solid var(--signal-wash);
+}
+
+sup.evidence-ref {
+  font-family: var(--font-mono-family);
+  font-size: 0.625rem;
+  line-height: 1;
+  vertical-align: super;
+  margin-left: 0.15em;
+}
+
+sup.evidence-ref a {
+  color: var(--signal-text);
+  text-decoration: none;
+}
+
+sup.evidence-ref a:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Case-study figures reveal (progressive, case pages only)            */
+/* ------------------------------------------------------------------ */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Forced colors: keep solid buttons legible in Windows High Contrast. */
+@media (forced-colors: active) {
+  .button-primary {
+    background-color: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+
+  .button-primary:hover {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Progressive enhancement: the stacked index is the no-script fallback. */
+.index-nojs {
+  display: none;
+}
+
+.nojs-nav {
+  display: none;
+}
+
+@media (scripting: none) {
+  .index-js {
+    display: none;
+  }
+
+  .index-nojs {
+    display: block;
+  }
+
+  .js-menu {
+    display: none !important;
+  }
+}
+
+@media (scripting: none) and (max-width: 767px) {
+  .nojs-nav {
+    display: block;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Print — a case file should survive on paper                         */
+/* ------------------------------------------------------------------ */
+
+@media print {
+  header,
+  footer,
+  nav[aria-label="On this page"],
+  .no-print {
+    display: none !important;
+  }
+
+  .case-body {
+    display: block !important;
+  }
+
+  .case-body > aside {
+    display: none !important;
+  }
+
+  .claim__note a[href^="#"] {
+    display: none !important;
+  }
+
+  .prose-dossier a[href^="#"]::after {
+    content: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .prose-dossier {
+    max-width: none;
+  }
+
+  .prose-dossier a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555;
+  }
+
+  .claim {
+    display: block;
+  }
+
+  .claim__note {
+    border-left: 0;
+    border-top: 1px solid #999;
+    padding-left: 0;
+  }
+
+  figure,
+  table {
+    break-inside: avoid;
   }
 }
