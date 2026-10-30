@@ -91,7 +91,7 @@ The CSP is enforced. `script-src` still includes `'unsafe-inline'` because Next 
 
 ## 2. Verification log
 
-Run from `v2/` on 27–28 Oct 2026.
+Run from the repository root on 27–28 Oct 2026.
 
 | Check              | Command                                 | Result                                                                                                      |
 | ------------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -291,14 +291,14 @@ The site currently avoids the unconfirmed claims: no placeholder social links, n
 
 ## 5. Deploy procedure
 
-**Repository layout first.** `v2/` is its own Git repository and is not tracked by the parent repo. The fastest replacement is a CLI deploy from `v2/` to the existing Vercel project (`vercel link`, then `vercel --prod`), which keeps the same domain and leaves the previous deployment for rollback. For auto-deploy, either push `v2/` as a standalone repo and import it into Vercel, or retire `v2/.git`, commit `v2/` into the parent repo, and set the Vercel project's Root Directory to `v2`. Setting Root Directory to `v2` before those files are committed produces a build with no app.
+**Repository layout.** The verified v2 tree now sits at the repository root. Commit `563f84a` has two parents: the legacy root history and the v2 history (tag `v2-premerge`). The legacy site is preserved at tag `legacy-root-v1` and branch `legacy/root-v1`. Vercel builds the root app on every push to `main`; no Root Directory override is needed.
 
 1. `npm ci`
 2. `npm run typecheck`
 3. `npm run lint`
 4. `npm run format:check`
 5. `NEXT_PUBLIC_SITE_URL=https://<final-domain> npm run build`
-6. Deploy to Vercel with the same environment variable set for Production and Preview.
+6. Push to `main`; Vercel builds and promotes the deployment to Production. Keep the previous deployment for rollback.
 7. Verify:
    - `/`, `/work`, all four case files, `/about`, `/resume.pdf`, `/resume-fr.pdf`, `/resume-ats.pdf`, `/resume-fr-ats.pdf`, `/sitemap.xml`, `/robots.txt`.
    - Canonical URLs and OG image resolve against the final domain.
@@ -306,7 +306,7 @@ The site currently avoids the unconfirmed claims: no placeholder social links, n
    - `npm run audit:links -- --external`, `npm run audit:a11y`, `npm run audit:nojs`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`). LinkedIn is owner-supplied and answers automated requests with 999; open it once from a normal browser session instead of treating 999 as a failure.
    - Every resume row downloads the filename it claims, in both languages and both formats.
    - Print a case file; header/footer are gone and the evidence notes stay with their claims.
-8. Move the domain from the old project to the new one. If the origin stays the same, no redirect is needed; keep the old deployment for rollback. If the origin changes, 301 the old origin to the new one and keep `/resume.pdf` working across the redirect.
+8. If a custom domain is added, set `NEXT_PUBLIC_SITE_URL` and 301 the old `yassine-ben-romdhane.vercel.app` origin to it; keep `/resume.pdf` working across the redirect. If the origin stays the same, no redirect is needed.
 9. Submit the sitemap in Search Console after the domain is final.
 
 If `NEXT_PUBLIC_SITE_URL` is unset, the site falls back to the old Vercel URL. That is safe for previews and wrong for a custom domain.

@@ -145,29 +145,14 @@ Public-repository claims were re-checked against shallow clones on 27 Oct 2026. 
 
 ## Deployment
 
-Not deployed yet. The site is ready to ship.
+The v2 site is the repository root. Vercel builds the root Next.js app on every push to `main`; no Root Directory override is needed. The legacy root portfolio remains in history at tag `legacy-root-v1` and branch `legacy/root-v1`.
 
-**Repository layout matters.** `v2/` is currently its own Git repository and is not tracked by the parent repo. A Vercel project connected to the parent repo cannot build `v2/` until those files are committed there. Three clean paths:
-
-1. **Replace the existing project from the CLI (fastest, same URL):**
-   ```bash
-   cd v2
-   vercel login
-   vercel link      # select the existing portfolio project
-   vercel --prod
-   ```
-   Set `NEXT_PUBLIC_SITE_URL` in Project → Settings → Environment Variables first. The old deployment stays in the Deployments list for rollback.
-2. **Standalone repo (recommended for ongoing updates):** push `v2/` to its own GitHub repo and import it into Vercel, then move the domain from the old project to the new one. The old deployment stays available for rollback, and the v2 commit history stays intact.
-3. **Same repo, Root Directory `v2`:** retire the nested `v2/.git`, commit `v2/` into the parent repo, set Project → Settings → Root Directory to `v2`, and redeploy. Use this only if the existing Vercel project must keep its current Git connection.
-
-Do not set Root Directory to `v2` while it is still a nested repo: the parent repo sees only a gitlink, not the files.
-
-Then:
-
-1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview. If the domain stays `yassine-ben-romdhane.vercel.app`, the existing fallback is already correct.
-2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. Check each picker row downloads the filename it claims.
-3. Move or add the domain, then verify HTTPS, canonical URLs, OG image resolution, the 404 status, and a printed case file.
-4. Submit the sitemap and keep the previous deployment until the new one has been checked.
+1. Push to `main`; Vercel builds and promotes the deployment to Production.
+2. Keep `NEXT_PUBLIC_SITE_URL` set to the final origin for Production and Preview. If the origin stays `https://yassine-ben-romdhane.vercel.app`, the fallback in `src/content/site.ts` is already correct.
+3. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links -- --external`, `audit:nojs`, and `audit:lighthouse`. Check each picker row downloads the filename it claims.
+4. Verify HTTPS, canonical URLs, the OG image, the 404 status, both embedded fonts, and a printed case file.
+5. Submit the sitemap in Search Console after the domain is final.
+6. Keep the previous deployment until the new one has been checked; promote it from Vercel if the new build regresses. In git, roll back with `git reset --hard legacy-root-v1`.
 
 ---
 
@@ -223,6 +208,6 @@ The site avoids unconfirmed claims: no placeholder social links, phone number in
 
 ---
 
-## Repository note
+## Repository history
 
-This is a standalone git repository inside the old portfolio directory. The outer portfolio stays untouched, and `/v2/` is excluded from the outer repository through `.git/info/exclude`. The outer working tree has a pre-existing `package-lock.json` modification that is unrelated to this work.
+The legacy root portfolio was replaced by the verified v2 tree in commit `563f84a` on 30 Oct 2026. The merge commit has two parents: the legacy root history and the v2 history. The legacy site is preserved at tag `legacy-root-v1` and branch `legacy/root-v1`; the imported v2 history is tagged `v2-premerge`. The old root had a single page, so no route redirects were required. A pre-existing `package-lock.json` modification was backed up before the replacement and discarded with the legacy build.
