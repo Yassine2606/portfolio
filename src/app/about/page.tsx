@@ -145,7 +145,7 @@ export default function AboutPage() {
                     height={1080}
                     loading="lazy"
                     decoding="async"
-                    className="portrait-warm h-full w-full object-cover object-center"
+                    className="h-full w-full object-cover object-center"
                   />
                 </div>
               </div>

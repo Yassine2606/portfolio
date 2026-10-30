@@ -413,7 +413,7 @@ CSS:
 
 ### Portrait
 
-- One owner-supplied image, `/about` only. 4:5 crop, warm monochrome filter, paper-matte frame with a 1px border and 8px padding. Caption `Fig. 00 / The person` in mono 9px uppercase.
+- One owner-supplied image, `/about` only. 4:5 crop, original colors, paper-matte frame with a 1px border and 8px padding. Caption `Fig. 00 / The person` in mono 9px uppercase.
 - Plain `<img>` with a three-width `srcset` (432/648/864), not `next/image`: the component injects an inline `color:transparent` style that the production CSP blocks.
 - Alt text: "Portrait of Yassine Ben Romdhane." No "professional headshot of a confident…".
 - No stock photo, no AI-generated portrait, no studio backdrop.

@@ -2,7 +2,7 @@
 
 A recruiter-facing portfolio for an AI engineer. Four systems are documented as case files, with evidence notes and scope metrics attached to the claims.
 
-**Status:** built and verified locally (v1.0). Not deployed.
+**Status:** live at https://yassine-ben-romdhane.vercel.app (v1.0, deployed 30 Oct 2026).
 **Availability:** immediate, no notice period.
 **Work:** remote, hybrid, or on-site; open to relocation; visa sponsorship required outside Tunisia.
 **CV:** English and French, designed and ATS-friendly versions, offered through a four-version picker.

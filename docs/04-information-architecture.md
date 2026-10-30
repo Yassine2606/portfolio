@@ -363,7 +363,7 @@ Human context and the full record, for the visitor who already believes the work
 4. **Education**: ESPRIMS preparatory cycle, 2021–2023; ESPRIM engineering cycle, 2023–2026. No course list.
 5. **Stack**: grouped by use, each group 4–8 items, with links to projects where used. No logos.
 6. **Languages**: Arabic, French, English (confirm levels).
-7. **Portrait**: one owner-supplied image, 4:5 crop, warm monochrome, paper-matte frame, caption `Fig. 00 / The person`. Alt text: "Portrait of Yassine Ben Romdhane."
+7. **Portrait**: one owner-supplied image, 4:5 crop, original colors, paper-matte frame, caption `Fig. 00 / The person`. Alt text: "Portrait of Yassine Ben Romdhane."
 8. **Contact**: same block as home.
 
 No "fun facts", no "my journey", no "I fell in love with code at 12".

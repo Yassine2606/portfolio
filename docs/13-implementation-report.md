@@ -1,6 +1,6 @@
 # 13 — Implementation report
 
-Status: Shipped locally v1.0 · 30 Oct 2026
+Status: Deployed v1.0 · 30 Oct 2026
 Companion: `07-technical-architecture.md`, `10-quality-gates.md`, `evidence-ledger.md`
 Scope: what was built, how it was verified, what is still missing.
 
@@ -40,7 +40,7 @@ The files and labels come from `resumeFiles` and `resumeVersions` in `src/conten
 
 ### Portrait
 
-`/about` carries one owner-supplied portrait: a 4:5 crop, warm monochrome filter, paper-matte frame, and the caption `Fig. 00 / The person`. It is a plain `<img>` with a three-width `srcset` (432/648/864) rather than `next/image`, because `next/image` injects `style="color:transparent"` and the production CSP blocks inline styles. The portrait appears nowhere else.
+`/about` carries one owner-supplied portrait: a 4:5 crop, original colors, paper-matte frame, and the caption `Fig. 00 / The person`. It is a plain `<img>` with a three-width `srcset` (432/648/864) rather than `next/image`, because `next/image` injects `style="color:transparent"` and the production CSP blocks inline styles. The portrait appears nowhere else.
 
 ### Content model
 
@@ -111,7 +111,7 @@ Run from the repository root on 27–28 Oct 2026.
 | Availability copy  | Playwright, 1440×1000 / 390×844         | “Available immediately”, remote/hybrid/on-site, relocation, and sponsorship requirement; no overflow        |
 | CV assets          | `pdfinfo` + `pdftotext` + `cv_audit.py` | 4 PDFs, 1 page each; EN/FR text extractable; EN and FR ATS audit 10/10                                      |
 | Resume picker      | Playwright, Chromium/Firefox/WebKit     | Header/hero panels open; Escape returns focus; outside click closes; 4 correct filenames; works with JS off |
-| Portrait           | Playwright + Lighthouse                 | 4:5 crop, warm filter, correct `srcset` at 320/390/1440; 0 CSP console errors; BP 100                       |
+| Portrait           | Playwright + Lighthouse                 | 4:5 crop, original colors, correct `srcset` at 320/390/1440; 0 CSP console errors; BP 100                   |
 | Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                           |
 | Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                         |
 | Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, open menu, forced colors at 390/1440                |
@@ -279,7 +279,7 @@ The site currently avoids the unconfirmed claims: no placeholder social links, n
 - [x] Replace the no-op report-only CSP with an enforced policy; WebKit console warning cleared.
 - [x] Remove inline styles and tighten `style-src` to `'self'`; hero stagger uses CSS custom properties.
 - [x] Replace the single default CV with a four-version picker; verified open, keyboard, outside click, and no-JS.
-- [x] Add the owner-supplied portrait as a 4:5 warm monochrome image; plain `<img>` keeps the CSP free of inline styles.
+- [x] Add the owner-supplied portrait as a 4:5 full-color image; plain `<img>` keeps the CSP free of inline styles.
 - [ ] Harden `script-src` further with nonces or build-time hashes to remove `'unsafe-inline'`.
 - [ ] Run the CI workflow on a remote; Lighthouse history/upload is not configured.
 - [ ] Screen-reader pass; real Safari/iOS and real-device runs.
@@ -310,6 +310,13 @@ The site currently avoids the unconfirmed claims: no placeholder social links, n
 9. Submit the sitemap in Search Console after the domain is final.
 
 If `NEXT_PUBLIC_SITE_URL` is unset, the site falls back to the old Vercel URL. That is safe for previews and wrong for a custom domain.
+
+### Launch record
+
+- Live origin: `https://yassine-ben-romdhane.vercel.app`.
+- Initial production deployment: `CgSnF9mUzkAvWytp3cyhdwjvkeHr` on 30 Oct 2026, from commit `200da47`.
+- Rollback: the previous Vercel deployment remains in the project; source rollback is `git reset --hard legacy-root-v1`.
+- Live checks: 17 routes and assets returned the expected status; `/missing-page` returned 404; canonical and OG URLs resolved; security headers and CSP were present; axe found 0 violations; the no-JS audit passed; internal and external links passed.
 
 ---
 

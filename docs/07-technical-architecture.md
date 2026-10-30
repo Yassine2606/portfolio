@@ -17,7 +17,7 @@ Principle: **static-first, content-safe, cheap to run, hard to break.**
 | Content   | MDX + `gray-matter` + zod + `remark-gfm` | latest                                   | Long-form case studies with typed frontmatter, GFM tables, and reusable components        |
 | Fonts     | `next/font/google`                       | —                                        | Self-hosted, subset, zero layout shift                                                    |
 | Analytics | None at launch                           | —                                        | Planned: Vercel Analytics + Speed Insights; footer claims no tracking                     |
-| Hosting   | Vercel                                   | —                                        | Not deployed; static build verified locally                                               |
+| Hosting   | Vercel                                   | Root of `Yassine2606/portfolio`          | Live at `https://yassine-ben-romdhane.vercel.app`; auto-deploy on `main`                  |
 | Tests     | Playwright + axe-core                    | 1.64, 4.14                               | `npm run audit:a11y`: 8 routes × 3 widths; Chromium + Firefox scripted checks; CI planned |
 | CI        | GitHub Actions                           | —                                        | Not configured; local gates only                                                          |
 

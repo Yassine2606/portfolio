@@ -180,7 +180,7 @@ Home medians were 99 (individual runs 99, 96, 99; LCP 1.1s, 0.9s, 0.9s; TBT 139m
 - [x] Internal links descriptive; 14 internal URLs resolve; no orphan pages.
 - [x] Image alt text present; decorative marks hidden.
 
-**Evidence:** `npm run audit:links` (14 internal, 4 GitHub links all 200, LinkedIn 999 bot-block; 30 Oct 2026); metadata and JSON-LD parse checks in `seo-links` output; sitemap and robots fetched from the running server. Social preview screenshots, external schema validation, GSC, and the domain move depend on deployment.
+**Evidence:** `npm run audit:links` (14 internal, 4 GitHub links all 200, LinkedIn 999 bot-block; 30 Oct 2026, repeated against the live origin); metadata and JSON-LD parse checks in `seo-links` output; sitemap and robots fetched from the running server and live origin. Social preview validators, external schema validation, and GSC remain.
 
 ---
 
@@ -357,7 +357,7 @@ npm run audit:links -- --external
 | 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open         | 2026-10-28 | Yassine |
 | 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                | 2026-10-28 | Yassine |
 | 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                            | 2026-10-28 | Yassine |
-| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                    | 2026-10-28 | Yassine |
+| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; Vercel access audit open                                       | 2026-10-30 | Yassine |
 | 8 Analytics/launch | ⬜     |                                                                                                                 |            | Yassine |
 
 ◐ = the automated portion passed; the manual or field portion is still open.

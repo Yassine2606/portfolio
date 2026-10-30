@@ -134,7 +134,7 @@ Phase 9  Post-launch                       ongoing
 - [x] Prettier + ESLint + Playwright + axe + GitHub Actions workflow. Vitest remains; the Lighthouse audit is a local script wired into CI.
 - [x] `.github/workflows/ci.yml` committed and actionlint-clean; not yet run.
 - [ ] `README` commands verified from a clean clone.
-- [ ] Deploy a preview to Vercel; confirm static routes and 404.
+- [x] Deploy to Vercel; preview build succeeded (protected), production routes and 404 verified 30 Oct 2026.
 
 **Done when:** `npm run build` validates content; `typecheck`, `lint`, `format:check`, unit, E2E, and Lighthouse run locally and in CI; a preview URL is live; every route returns the expected status.
 
@@ -174,7 +174,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] `Claim` + `EvidenceNote` components; margin layout at ≥1200.
 - [ ] TOC: sticky desktop, `<details>` mobile, active section.
 - [ ] Prev/next case file + back to work.
-- [ ] `/about`: intro, looking for, experience, education, stack, languages, portrait (owner-supplied, 4:5, warm monochrome), contact.
+- [ ] `/about`: intro, looking for, experience, education, stack, languages, portrait (owner-supplied, 4:5, original colors), contact.
 - [ ] Metadata + OG image per case study.
 - [ ] JSON-LD `CreativeWork` + `BreadcrumbList`.
 - [ ] Print styles for case studies.
@@ -328,9 +328,9 @@ All true:
 - [ ] Lighthouse mobile ≥95 all categories; CWV budgets met.
 - [ ] No broken links; no dead buttons; no "coming soon".
 - [ ] Metadata, OG, sitemap, JSON-LD, analytics verified.
-- [ ] Security headers live; CSP enforced locally, deploy check pending.
+- [x] Security headers live; CSP enforced locally and on the production origin.
 - [ ] Real-device test passed.
-- [ ] Old site backed up/tagged; domain redirect works.
+- [x] Old site tagged `legacy-root-v1`; the origin is unchanged, so no redirect is needed.
 
 ---
 

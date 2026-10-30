@@ -24,8 +24,8 @@ Review cadence: end of each phase; then quarterly.
 | `10-quality-gates.md`            | Locked v1.0 | 9 launch gates + manual scripts                      |
 | `11-content-templates.md`        | Locked v1.0 | Case study, screenshots, resume, prompt              |
 | `12-decision-log.md`             | Living      | ADR index; append, never rewrite history             |
-| `13-implementation-report.md`    | Shipped     | What was built, verified, and left open              |
-| `evidence-ledger.md`             | Shipped     | 16 evidence notes, 16 scope metrics, 3 archive facts |
+| `13-implementation-report.md`    | Deployed    | What was built, verified, and left open              |
+| `evidence-ledger.md`             | Deployed    | 16 evidence notes, 16 scope metrics, 3 archive facts |
 | `prompts/project-scoping.md`     | Locked v1.0 | Agent prompt for evidence extraction                 |
 
 "Locked" means the direction is decided. Small corrections are fine; changing a locked decision requires an ADR entry and a written reason.
@@ -78,7 +78,7 @@ These still block launch or would strengthen it. Defaults that were shipped with
 - [ ] Custom domain choice and budget. **Default applied:** fallback Vercel URL until the domain is set (ADR-019).
 - [ ] Languages to list (Arabic / French / English) and proficiency labels. **Default applied:** languages listed without levels.
 - [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer. Copy targets AI engineering roles.
-- [x] Portrait — resolved 28 Oct 2026: one owner-supplied image on `/about` only, 4:5, warm monochrome, paper-matte frame.
+- [x] Portrait — resolved 28 Oct 2026: one owner-supplied image on `/about` only, 4:5, original colors, paper-matte frame.
 
 Resolved 27 Oct 2026: availability — available immediately, with no notice period. The site says “Available immediately” in the header, hero, footer, mobile menu, about, and contact copy.
 
