@@ -228,7 +228,7 @@ Answer these before Phase 1. They are repeated in `docs/README.md` and the roadm
 - [ ] What Capgemini allows: architecture, screenshots, metrics, name, logo.
 - [ ] Permission for Sadine, RFID, Wave visuals; redaction rules.
 - [ ] Demo plan for the flagship: hosted synthetic corpus, recorded walkthrough, or both.
-- [ ] LinkedIn URL, preferred contact channel, phone policy for the public CV.
+- [x] LinkedIn URL and preferred contact channel (LinkedIn supplied 30 Oct 2026; email remains the primary channel), phone policy for the public CV.
 - [ ] Domain choice.
 - [ ] Languages and proficiency labels.
 - [ ] Role priority and target companies (for copy emphasis, not name-dropping).

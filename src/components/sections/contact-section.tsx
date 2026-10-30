@@ -3,6 +3,7 @@ import { CopyEmail } from "@/components/ui/copy-email";
 import { ArrowUpRight, Download } from "@/components/ui/icons";
 
 const links = [
+  { label: "LinkedIn", href: site.linkedin, external: true },
   { label: "GitHub", href: site.github, external: true },
   { label: "Resume — English (PDF)", href: site.resume, external: false },
   { label: "CV — Français (PDF)", href: site.resumeFr, external: false },

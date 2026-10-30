@@ -135,6 +135,14 @@ export function MobileMenu() {
               >
                 GitHub ↗
               </a>
+              <a
+                href={site.linkedin}
+                rel="me noreferrer"
+                target="_blank"
+                className="text-ink-soft text-sm"
+              >
+                LinkedIn ↗
+              </a>
 
               <div>
                 <p className="text-ink-faint font-mono text-[9px] tracking-[0.14em] uppercase">

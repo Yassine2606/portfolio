@@ -116,19 +116,19 @@ npm run audit:lighthouse
 
 The script uses Lighthouse 13 with Playwright's Chromium, three runs per route, and fails if a median misses the budget. Set `AUDIT_BASE_URL` for a different origin.
 
-**Recorded run — 28 Oct 2026**
+**Recorded run — 30 Oct 2026**
 
 Lighthouse 13.6.0, mobile emulation, against `next start`. Three runs per route; the desktop preset was run once manually. The table is one representative run; repeated sets varied by a few points.
 
 | Route                       | Performance | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ---- | --- | ----- |
-| `/` (median of 3)           | 97          | 0.9s | 0   | 196ms |
+| `/` (median of 3)           | 99          | 0.9s | 0   | 139ms |
 | `/work` (median of 3)       | 99          | 0.9s | 0   | 134ms |
-| `/work/documents-assistant` | 98          | 0.9s | 0   | 139ms |
-| `/about` (median of 3)      | 99          | 0.9s | 0   | 107ms |
+| `/work/documents-assistant` | 99          | 0.9s | 0   | 131ms |
+| `/about` (median of 3)      | 99          | 0.9s | 0   | 101ms |
 | `/` desktop preset (manual) | 100         | 0.3s | 0   | 10ms  |
 
-Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196ms). `/work` ran 99, 99, 98; the flagship 98, 98, 99; `/about` 99, 99, 99. This is the latest set, run after the resume picker and portrait shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 107–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
+Home medians were 99 (individual runs 99, 96, 99; LCP 1.1s, 0.9s, 0.9s; TBT 139ms). `/work` ran 99, 98, 99; the flagship 95, 99, 99; `/about` 99, 99, 99. This is the latest set, run on 30 Oct 2026 after the resume picker, portrait, and LinkedIn link shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 101–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. Accessibility, best practices, and SEO scored 100 on every route. These are local lab runs, not a remote CI median; field INP and real-device timings are still pending.
 
 **Budgets**
 
@@ -147,7 +147,7 @@ Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196m
 | Long tasks        | none > 200ms on load |
 | Animation         | 60fps at 4× CPU      |
 
-**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. One earlier Lighthouse run scored 94 and missed the ≥95 target; the repeatable audit's three-run medians are 97–99. Both misses are recorded, not redefined.
+**Measured:** first-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/`, and 139.3–140.0 / 119.4–120.0 on the other routes, excluding the `noModule` polyfill. **The 120 KB gzip budget is missed.** React DOM (45.2 KB) and the App Router/Turbopack runtime (70.1 KB) account for about 115 KB before site code. One earlier Lighthouse run scored 94 and missed the ≥95 target; the repeatable audit's latest three-run medians are 99 on all four routes. Both misses are recorded, not redefined.
 
 **Checks**
 
@@ -180,7 +180,7 @@ Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196m
 - [x] Internal links descriptive; 14 internal URLs resolve; no orphan pages.
 - [x] Image alt text present; decorative marks hidden.
 
-**Evidence:** `npm run audit:links` (14 internal, 4 external, all 200; 28 Oct 2026); metadata and JSON-LD parse checks in `seo-links` output; sitemap and robots fetched from the running server. Social preview screenshots, external schema validation, GSC, and the domain redirect depend on deployment.
+**Evidence:** `npm run audit:links` (14 internal, 4 GitHub links all 200, LinkedIn 999 bot-block; 30 Oct 2026); metadata and JSON-LD parse checks in `seo-links` output; sitemap and robots fetched from the running server. Social preview screenshots, external schema validation, GSC, and the domain move depend on deployment.
 
 ---
 
@@ -191,7 +191,7 @@ Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196m
 - [x] Every `mailto:` opens the correct address.
 - [x] Copy-email writes the address and announces "Copied".
 - [x] Resume downloads from the header/hero picker, contact, footer, and mobile menu; all four filenames and content types verified.
-- [x] GitHub link opens the right profile; LinkedIn only if supplied.
+- [x] GitHub and LinkedIn links open the right profiles.
 - [x] Prev/next case files work; no self-link.
 - [x] Mobile menu links work and close the menu.
 - [x] Index links navigate to the correct case file.
@@ -206,7 +206,7 @@ Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196m
 npm run audit:links -- --external
 ```
 
-**Evidence:** `npm run audit:links` report (14 internal + 4 external, all 200); Playwright functional script on 28 Oct 2026 (prev/next, menu close, Index, back/forward, asset responses, 404 links).
+**Evidence:** `npm run audit:links` report (14 internal + 4 GitHub links all 200, LinkedIn 999 bot-block); Playwright functional script on 28 Oct 2026 (prev/next, menu close, Index, back/forward, asset responses, 404 links).
 
 ---
 
@@ -348,17 +348,17 @@ npm run audit:links -- --external
 
 ## Sign-off
 
-| Gate               | Result | Evidence                                                                                                           | Date       | Owner   |
-| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ | ---------- | ------- |
-| 0 Content          | ⬜     |                                                                                                                    |            | Yassine |
-| 1 Recruiter tests  | ⬜     |                                                                                                                    |            | Yassine |
-| 2 Accessibility    | ◐      | axe 0 incl. forced colors; HTML valid; 200%/spacing/motion/keyboard/no-JS pass; screen reader open                 | 2026-10-28 | Yassine |
-| 3 Performance      | ◐      | Lighthouse 97–99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-28 | Yassine |
-| 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open            | 2026-10-28 | Yassine |
-| 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                   | 2026-10-28 | Yassine |
-| 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                               | 2026-10-28 | Yassine |
-| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                       | 2026-10-28 | Yassine |
-| 8 Analytics/launch | ⬜     |                                                                                                                    |            | Yassine |
+| Gate               | Result | Evidence                                                                                                        | Date       | Owner   |
+| ------------------ | ------ | --------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
+| 0 Content          | ⬜     |                                                                                                                 |            | Yassine |
+| 1 Recruiter tests  | ⬜     |                                                                                                                 |            | Yassine |
+| 2 Accessibility    | ◐      | axe 0 incl. forced colors; HTML valid; 200%/spacing/motion/keyboard/no-JS pass; screen reader open              | 2026-10-28 | Yassine |
+| 3 Performance      | ◐      | Lighthouse 99 medians, 3 runs/route, desktop 100; JS 140–144 KB gz misses 120; 4× long tasks; field/device open | 2026-10-30 | Yassine |
+| 4 SEO              | ◐      | SEO 100; titles/canonical/JSON-LD parse; links pass; social previews and external schema validator open         | 2026-10-28 | Yassine |
+| 5 Functional       | ◐      | Link check, menu, Index, copy, CVs, prev/next, back/forward pass; real-device click-through open                | 2026-10-28 | Yassine |
+| 6 Cross-browser    | ◐      | Chromium, Firefox, WebKit pass; real Safari/Edge/iOS/Android not run                                            | 2026-10-28 | Yassine |
+| 7 Security         | ◐      | Headers + enforced CSP, 0 audit vulnerabilities; domain/deploy controls open                                    | 2026-10-28 | Yassine |
+| 8 Analytics/launch | ⬜     |                                                                                                                 |            | Yassine |
 
 ◐ = the automated portion passed; the manual or field portion is still open.
 

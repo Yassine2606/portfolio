@@ -74,7 +74,7 @@ These still block launch or would strengthen it. Defaults that were shipped with
 - [ ] Capgemini permission: what can be shown, what must be anonymized, whether screenshots are allowed. **Default applied:** partially private, no screenshots or repository link (ADR-021).
 - [ ] Permission for Sadine, RFID, and Wave visuals. **Default applied:** no visuals; system maps only.
 - [ ] Public demo plan for the flagship: synthetic corpus, recorded walkthrough, or both.
-- [ ] LinkedIn URL and preferred contact channel. **Default applied:** LinkedIn omitted; email and GitHub only.
+- [x] LinkedIn URL — resolved 30 Oct 2026: profile linked from the contact block, footer, mobile menu, and JSON-LD.
 - [ ] Custom domain choice and budget. **Default applied:** fallback Vercel URL until the domain is set (ADR-019).
 - [ ] Languages to list (Arabic / French / English) and proficiency labels. **Default applied:** languages listed without levels.
 - [ ] Target role priority: AI Engineer, Applied ML, Full-Stack AI, Founding Engineer. Copy targets AI engineering roles.

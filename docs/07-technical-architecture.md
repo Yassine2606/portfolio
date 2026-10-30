@@ -343,7 +343,7 @@ export function buildMetadata(input: {
 
 ### JSON-LD
 
-- Home: `Person` with `name`, `jobTitle`, `url`, `sameAs` (GitHub; LinkedIn added only when supplied), `knowsAbout`, `alumniOf`, `address` (city/country only).
+- Home: `Person` with `name`, `jobTitle`, `url`, `sameAs` (GitHub and LinkedIn), `knowsAbout`, `alumniOf`, `address` (city/country only).
 - Case study: `CreativeWork` with `name`, `description`, `author` (Person), `dateCreated`, `keywords`, `url`, `image`.
 - `/work`: `CollectionPage` + `ItemList`.
 - Breadcrumbs: `BreadcrumbList` on case studies.
@@ -384,7 +384,7 @@ No form. The contact block contains:
 
 - `mailto:yassine.ben.romdhanee@gmail.com` (visible address).
 - A Copy button (`navigator.clipboard.writeText`, fallback to selecting the text).
-- GitHub, Resume. Add LinkedIn only when the owner supplies the URL.
+- GitHub, LinkedIn, Resume. External links use `rel="me noreferrer"`.
 - `aria-live="polite"` confirmation: "Email copied".
 
 This removes Resend, rate limiting, spam, and a server route from the launch scope. If a form is added later (ADR-009), it needs: server action or route handler, zod validation, honeypot, rate limit (Upstash or Vercel KV), Turnstile if spam appears, accessible success/error states, and a no-JS fallback (`mailto`). Do not add a form without those.
@@ -476,7 +476,7 @@ The axe, link, and Lighthouse audits and the zod build checks are committed. Vit
 | Accessibility | axe-core in Playwright   | 0 violations at 320/390/1440; committed as `npm run audit:a11y`                     |
 | Visual        | Playwright screenshots   | 3 viewports per route; diff on PR (optional at launch)                              |
 | Performance   | Lighthouse library       | `npm run audit:lighthouse`; three-run medians, budgets in `08-quality-standards.md` |
-| Links         | Node `fetch`             | `npm run audit:links`; 14 internal + 4 external, `--external` opt-in                |
+| Links         | Node `fetch`             | `npm run audit:links`; 14 internal + 5 external, `--external` opt-in                |
 | Content       | Build + zod              | Frontmatter, metric sources, evidence presence                                      |
 
 ### CI (`.github/workflows/ci.yml`)

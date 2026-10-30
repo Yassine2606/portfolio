@@ -234,7 +234,7 @@ Six rows on the home page: the current roles plus the earlier YBInnovations buil
 - Headline: "Let's build something that survives production."
 - One sentence: role types, location/remote.
 - Email as a visible address + Copy button (`aria-live` confirmation).
-- GitHub, Resume (four versions via the header picker). Add LinkedIn only when the owner supplies the URL.
+- GitHub, LinkedIn, Resume (four versions via the header picker).
 - No form at launch. No "contact me" that opens a mail client with no context.
 
 ---

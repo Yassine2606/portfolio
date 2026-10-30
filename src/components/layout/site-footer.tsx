@@ -37,6 +37,16 @@ export function SiteFooter() {
             </li>
             <li>
               <a
+                href={site.linkedin}
+                rel="me noreferrer"
+                target="_blank"
+                className="text-ink-soft hover:text-signal-text decoration-line-strong underline decoration-1 underline-offset-4 transition-colors"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a
                 href={site.resume}
                 className="text-ink-soft hover:text-signal-text decoration-line-strong underline decoration-1 underline-offset-4 transition-colors"
               >

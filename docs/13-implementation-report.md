@@ -1,6 +1,6 @@
 # 13 — Implementation report
 
-Status: Shipped locally v1.0 · 28 Oct 2026
+Status: Shipped locally v1.0 · 30 Oct 2026
 Companion: `07-technical-architecture.md`, `10-quality-gates.md`, `evidence-ledger.md`
 Scope: what was built, how it was verified, what is still missing.
 
@@ -115,10 +115,10 @@ Run from `v2/` on 27–28 Oct 2026.
 | Security headers   | `curl -I`                               | nosniff, referrer, frame DENY, permissions, HSTS, and enforced CSP on every route                           |
 | Dependencies       | `npm audit`                             | 0 vulnerabilities after upgrading Next.js to 16.4.3                                                         |
 | Accessibility      | `npm run audit:a11y`                    | axe-core 4.14.0, 0 violations: 8 routes × 320/390/1440, open menu, forced colors at 390/1440                |
-| Lighthouse mobile  | `npm run audit:lighthouse`              | 97–99; home 97, `/work` 99, flagship 98, `/about` 99; 3 runs each; 100 a11y/BP/SEO                          |
+| Lighthouse mobile  | `npm run audit:lighthouse`              | 99 on all four routes; 3 runs each; 100 a11y/BP/SEO; TBT 101–139ms                                          |
 | Lighthouse desktop | Lighthouse 13.6.0, production build     | `/` 100 in all four categories                                                                              |
 | First-load JS      | 8 modern script tags, gzip + Brotli     | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0; 120 KB gzip target missed                      |
-| Links and assets   | `npm run audit:links`                   | 14 internal URLs and 4 external GitHub links, all 200                                                       |
+| Links and assets   | `npm run audit:links`                   | 14 internal URLs and 4 GitHub links, all 200; LinkedIn owner-supplied, 999 bot-block                        |
 | Cross-browser      | Playwright, Chromium/Firefox/WebKit     | Chromium 1248, Firefox 157, WebKit 27.2: 8 routes, menu, Index, copy, no overflow                           |
 | Keyboard           | Playwright                              | 31/24/20/19 focus stops on `/`, `/work`, flagship, `/about`; all indicators visible; first Tab is skip      |
 | Print              | Playwright, print media                 | Header/footer/TOC hidden, article grid collapsed, claim notes inline, no `#hash` URLs printed               |
@@ -174,13 +174,13 @@ The repeatable audit runs Lighthouse 13 three times per route, against `next sta
 
 | Route                       | Performance | Accessibility | Best practices | SEO | LCP  | CLS | TBT   |
 | --------------------------- | ----------- | ------------- | -------------- | --- | ---- | --- | ----- |
-| `/` (median of 3)           | 97          | 100           | 100            | 100 | 0.9s | 0   | 196ms |
+| `/` (median of 3)           | 99          | 100           | 100            | 100 | 0.9s | 0   | 139ms |
 | `/work` (median of 3)       | 99          | 100           | 100            | 100 | 0.9s | 0   | 134ms |
-| `/work/documents-assistant` | 98          | 100           | 100            | 100 | 0.9s | 0   | 139ms |
-| `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.9s | 0   | 107ms |
+| `/work/documents-assistant` | 99          | 100           | 100            | 100 | 0.9s | 0   | 131ms |
+| `/about` (median of 3)      | 99          | 100           | 100            | 100 | 0.9s | 0   | 101ms |
 | `/` desktop preset (manual) | 100         | 100           | 100            | 100 | 0.3s | 0   | 10ms  |
 
-Home medians were 97 (individual runs 97, 98, 96; LCP 1.1s, 0.9s, 0.9s; TBT 196ms). `/work` ran 99, 99, 98; the flagship 98, 98, 99; `/about` 99, 99, 99. This is the latest set, run after the resume picker and portrait shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 107–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
+Home medians were 99 (individual runs 99, 96, 99; LCP 1.1s, 0.9s, 0.9s; TBT 139ms). `/work` ran 99, 98, 99; the flagship 95, 99, 99; `/about` 99, 99, 99. This is the latest set, run on 30 Oct 2026 after the resume picker, portrait, and LinkedIn link shipped. Earlier sets put home at 96–97 and the other routes at 98–99; TBT medians ranged 101–224ms. An earlier set recorded 99, 94, 96 on the prior build, where the 94 run had a 2.6s LCP outlier. Across all sets one run fell below 95, but no three-run median did. These are local lab runs, not field data or a remote CI run. Scores vary by machine. `TBT` is used as a lab proxy; INP needs field data.
 
 The audit is repeatable with `npm run audit:lighthouse` and runs in CI after the server starts. It uses the `lighthouse` library with Playwright's Chromium, so it adds no second browser download. The `@lhci/cli` wrapper was rejected: version 0.15.1 pulled 16 dev advisories, including 13 high, which would have broken the zero-vulnerability gate (ADR-023).
 
@@ -195,7 +195,7 @@ Measured against the served HTML of the production build, summing the gzip size 
 | `/work/documents-assistant` | 8       | 140.0 KB | 120.0 KB |
 | `/about`                    | 8       | 139.3 KB | 119.4 KB |
 
-The 120 KB gzip budget is **not met**. About 115 KB gzip is React DOM (45.2 KB) plus the App Router/Turbopack runtime (70.1 KB) before any site component; the remaining chunks are shared app code and the small client islands. The four routes differ by less than 5 KB, which confirms that page code is not the driver. Options if the 120 KB target becomes mandatory: a non-hydrated static HTML build, a framework with a smaller client runtime, or dropping client navigation and interactive islands. None of those is worth doing for a portfolio that already scores 97–99 on mobile performance; the miss is recorded rather than hidden.
+The 120 KB gzip budget is **not met**. About 115 KB gzip is React DOM (45.2 KB) plus the App Router/Turbopack runtime (70.1 KB) before any site component; the remaining chunks are shared app code and the small client islands. The four routes differ by less than 5 KB, which confirms that page code is not the driver. Options if the 120 KB target becomes mandatory: a non-hydrated static HTML build, a framework with a smaller client runtime, or dropping client navigation and interactive islands. None of those is worth doing for a portfolio that already scores 99 on mobile performance; the miss is recorded rather than hidden.
 
 ### What was checked visually
 
@@ -235,7 +235,7 @@ These are shipped on purpose:
 4. **No screenshot evidence exists for any project.** The diagrams are honest substitutes; they are not proof of a running interface.
 5. **The CV is a one-page subset.** It is current as of 27 Oct 2026, but it omits Sadine, RFID, and Anomaly Detection, and it includes the phone number. Re-sync all four PDFs after any fact or metric change.
 6. **No analytics.** The footer claims no tracking pixels; keep that true unless the copy changes.
-7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px and in forced colors at 390/1440, and the repeatable Lighthouse audit scores 97–99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
+7. **Automated audits are not a certification.** axe-core 4.14.0 reports zero WCAG 2.2 A/AA violations at 320, 390, and 1440px and in forced colors at 390/1440, and the repeatable Lighthouse audit scores 99 performance (three-run medians on the final build) and 100 accessibility, best practices, and SEO. Chromium, Firefox, and Playwright WebKit pass scripted cross-browser checks. Screen-reader, real Safari, real-device, and remote CI runs remain. First-load JavaScript is 140–144 KB gzip, above the 120 KB target.
 8. **Public evidence is a snapshot.** The public repositories can change after 27 Oct 2026; the ledger records the commit date, not a permanent guarantee.
 
 ---
@@ -254,12 +254,12 @@ Resolved 27 Oct 2026: CV — English and French designed PDFs, plus English and 
 - [ ] Permission for Sadine, RFID, and Wave visuals.
 - [ ] Flagship demo format: synthetic corpus, recorded walkthrough, or both.
 - [ ] Domain choice and budget; then set `NEXT_PUBLIC_SITE_URL`.
-- [ ] LinkedIn URL and preferred contact channel.
+- [x] LinkedIn URL — resolved 30 Oct 2026: `https://www.linkedin.com/in/mohamed-yassine-ben-romdhane-603a37294/`, linked from the contact block, footer, mobile menu, and JSON-LD.
 - [x] Portrait — resolved 28 Oct 2026: one owner-supplied image on `/about`.
 - [ ] Language proficiency labels.
 - [ ] Target role priority.
 
-The site currently avoids the unconfirmed claims: no LinkedIn link, no phone number in site copy, no language levels.
+The site currently avoids the unconfirmed claims: no placeholder social links, no phone number in site copy, no language levels.
 
 ### Evidence sprint
 
@@ -273,7 +273,7 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no phone num
 
 - [x] Add CI workflow: install, dependency audit, format check, typecheck, lint, build, start, axe, link, no-JS, and Lighthouse checks. Committed; not yet run.
 - [x] Add a repeatable axe audit (`npm run audit:a11y`); 0 violations on 28 Oct 2026.
-- [x] Add a repeatable link and asset check (`npm run audit:links`); 14 internal and 4 external URLs pass.
+- [x] Add a repeatable link and asset check (`npm run audit:links`); 14 internal URLs and 4 GitHub links pass; LinkedIn is skipped as a bot block.
 - [x] Add a repeatable no-JS audit (`npm run audit:nojs`); 8 routes, JS on/off, 32 checks pass.
 - [x] Add a repeatable three-run Lighthouse audit (`npm run audit:lighthouse`); wired into CI, medians pass.
 - [x] Replace the no-op report-only CSP with an enforced policy; WebKit console warning cleared.
@@ -291,6 +291,8 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no phone num
 
 ## 5. Deploy procedure
 
+**Repository layout first.** `v2/` is its own Git repository and is not tracked by the parent repo. The fastest replacement is a CLI deploy from `v2/` to the existing Vercel project (`vercel link`, then `vercel --prod`), which keeps the same domain and leaves the previous deployment for rollback. For auto-deploy, either push `v2/` as a standalone repo and import it into Vercel, or retire `v2/.git`, commit `v2/` into the parent repo, and set the Vercel project's Root Directory to `v2`. Setting Root Directory to `v2` before those files are committed produces a build with no app.
+
 1. `npm ci`
 2. `npm run typecheck`
 3. `npm run lint`
@@ -301,10 +303,10 @@ The site currently avoids the unconfirmed claims: no LinkedIn link, no phone num
    - `/`, `/work`, all four case files, `/about`, `/resume.pdf`, `/resume-fr.pdf`, `/resume-ats.pdf`, `/resume-fr-ats.pdf`, `/sitemap.xml`, `/robots.txt`.
    - Canonical URLs and OG image resolve against the final domain.
    - 404 returns a 404 status.
-   - `npm run audit:links`, `npm run audit:a11y`, `npm run audit:nojs`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`).
+   - `npm run audit:links -- --external`, `npm run audit:a11y`, `npm run audit:nojs`, and `npm run audit:lighthouse` pass against the deployed origin (`BASE_URL`/`AUDIT_BASE_URL`). LinkedIn is owner-supplied and answers automated requests with 999; open it once from a normal browser session instead of treating 999 as a failure.
    - Every resume row downloads the filename it claims, in both languages and both formats.
    - Print a case file; header/footer are gone and the evidence notes stay with their claims.
-8. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin. Keep `/resume.pdf` working across the redirect.
+8. Move the domain from the old project to the new one. If the origin stays the same, no redirect is needed; keep the old deployment for rollback. If the origin changes, 301 the old origin to the new one and keep `/resume.pdf` working across the redirect.
 9. Submit the sitemap in Search Console after the domain is final.
 
 If `NEXT_PUBLIC_SITE_URL` is unset, the site falls back to the old Vercel URL. That is safe for previews and wrong for a custom domain.

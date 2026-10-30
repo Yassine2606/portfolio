@@ -91,7 +91,7 @@ Append new entries; do not rewrite history. If a decision changes, add a new ADR
 **Consequences:** Less code, no spam, no PII storage, no 503 states. Cost: no in-page message capture; some visitors prefer a form.
 **Alternatives:** Resend form (scope), Formspree (third party), mailto only (less friendly).
 **Revisit if:** 30-day analytics show high contact-section engagement and low email clicks, or a recruiter explicitly asks for a form.
-**Update · 27 Oct 2026:** The LinkedIn URL was not supplied before the local v1.0 build, so the shipped contact block carries email, GitHub, and the resume only. Add LinkedIn when the owner supplies the profile URL; do not ship a placeholder.
+**Update · 27 Oct 2026:** The LinkedIn URL was not supplied before the local v1.0 build, so the shipped contact block carried email, GitHub, and the resume only. **Update · 30 Oct 2026:** the owner supplied the profile, and LinkedIn is now linked from the contact block, footer, mobile menu, and JSON-LD `sameAs`.
 
 ---
 

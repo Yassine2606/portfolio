@@ -67,11 +67,7 @@ export const site = {
 
   email: "yassine.ben.romdhanee@gmail.com",
   github: "https://github.com/Yassine2606",
-  /**
-   * Deliberately empty until the owner supplies the profile URL.
-   * Never invent a social link: a dead LinkedIn is worse than none.
-   */
-  linkedin: null as string | null,
+  linkedin: "https://www.linkedin.com/in/mohamed-yassine-ben-romdhane-603a37294/",
   resume: resumeFiles.en,
   resumeFr: resumeFiles.fr,
   resumeAts: resumeFiles.enAts,

@@ -64,7 +64,7 @@ Also shipped: header and footer, a four-version resume picker (native disclosure
 - No screenshots or recorded demos. The figures are architecture maps, not interface captures.
 - No retrieval benchmark for the flagship. The evaluation is designed but unrun, and the case file says so.
 - No CI run, screen-reader pass, or real Safari device pass yet. Chromium, Firefox, and Playwright WebKit scripted checks pass at desktop and mobile widths; the CI workflow is committed but has not run.
-- No LinkedIn link or language proficiency levels. The CV PDFs include the phone number; site copy uses email only.
+- No language proficiency levels. LinkedIn is linked from the contact block, footer, and mobile menu. The CV PDFs include the phone number; site copy uses email only.
 - No stock photography or AI-generated portrait. The one portrait is owner-supplied and appears only on `/about`.
 
 ---
@@ -118,11 +118,11 @@ Last full run: 28 Oct 2026, from this directory.
 | Accessibility      | `npm run audit:a11y`       | 0 axe-core violations: 8 routes × 3 widths, open menu, forced colors   |
 | Keyboard           | Playwright                 | 31/24/20/19 focus stops; every indicator visible; first Tab is skip    |
 | HTML validity      | Nu HTML Checker 26.10      | 8 routes: 0 errors, 0 warnings (informational self-closing notes only) |
-| Lighthouse mobile  | `npm run audit:lighthouse` | 97–99 median, 3 runs per route; 100 accessibility, best practices, SEO |
+| Lighthouse mobile  | `npm run audit:lighthouse` | 99 median on all four routes, 3 runs each; 100 a11y/BP/SEO             |
 | Lighthouse desktop | Lighthouse 13.6.0          | 100 in all four categories on `/`                                      |
 | Cross-browser      | Playwright                 | Chromium 1248, Firefox 157, WebKit 27.2: routes, menu, Index, copy     |
 | First-load JS      | 8 modern script tags       | `/` 144.0 KB gzip / 123.4 KB Brotli; flagship 140.0 / 120.0            |
-| Links and assets   | `npm run audit:links`      | 14 internal URLs, all 200; 4 external GitHub links, all 200            |
+| Links and assets   | `npm run audit:links`      | 14 internal URLs, all 200; 4 GitHub links 200; LinkedIn 999 bot-block  |
 | Evidence rendering | Playwright + HTML          | 4 labels and 4 markers per case; no nested paragraphs                  |
 | Security headers   | `curl -I`                  | nosniff, referrer, frame, permissions, HSTS, enforced CSP              |
 | Dependencies       | `npm audit`                | 0 vulnerabilities; Next.js upgraded to 16.4.3                          |
@@ -133,7 +133,7 @@ The axe audit covers `/`, `/work`, all four case files, `/about`, and a 404 at 3
 
 Markdown tables in the case files now render as real tables through `remark-gfm`; before the fix they were literal pipe text, which caused horizontal overflow in Firefox. Tables are wrapped in a keyboard-focusable scroll container and fit at 320px after the narrow-width type adjustment.
 
-The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced a home median of 97 (individual runs 97, 98, 96), 99 on `/work`, 98 on the flagship, and 99 on `/about`; LCP was 0.9–1.1s, CLS 0, and TBT 107–196ms. Earlier sets put home at 96–97 and the other routes at 98–99, and one run recorded a 94 with a 2.6s LCP outlier. No three-run median fell below the 95 target. Results are local lab runs, not field data or a CI median.
+The repeatable Lighthouse audit (`npm run audit:lighthouse`, Lighthouse 13, three runs per route) produced a median of 99 on all four routes on 30 Oct 2026: home runs 99, 96, 99; `/work` 99, 98, 99; the flagship 95, 99, 99; `/about` 99, 99, 99. LCP was 0.9–1.2s, CLS 0, and TBT 101–139ms. Earlier sets put home at 96–97 and the other routes at 98–99, and one run recorded a 94 with a 2.6s LCP outlier. No three-run median fell below the 95 target. Results are local lab runs, not field data or a CI median.
 
 First-load JavaScript is 144.0 KB gzip / 123.4 KB Brotli on `/` and 140.0 / 120.0 on the flagship, excluding the `noModule` polyfill chunk. The 120 KB gzip budget is missed; React and the App Router runtime account for about 115 KB gzip before any site code. The budget is recorded as missed rather than redefined.
 
@@ -145,14 +145,29 @@ Public-repository claims were re-checked against shallow clones on 27 Oct 2026. 
 
 ## Deployment
 
-No deployment has been performed. The procedure is in [`docs/13-implementation-report.md`](docs/13-implementation-report.md).
+Not deployed yet. The site is ready to ship.
 
-Before deploying:
+**Repository layout matters.** `v2/` is currently its own Git repository and is not tracked by the parent repo. A Vercel project connected to the parent repo cannot build `v2/` until those files are committed there. Three clean paths:
 
-1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview.
+1. **Replace the existing project from the CLI (fastest, same URL):**
+   ```bash
+   cd v2
+   vercel login
+   vercel link      # select the existing portfolio project
+   vercel --prod
+   ```
+   Set `NEXT_PUBLIC_SITE_URL` in Project → Settings → Environment Variables first. The old deployment stays in the Deployments list for rollback.
+2. **Standalone repo (recommended for ongoing updates):** push `v2/` to its own GitHub repo and import it into Vercel, then move the domain from the old project to the new one. The old deployment stays available for rollback, and the v2 commit history stays intact.
+3. **Same repo, Root Directory `v2`:** retire the nested `v2/.git`, commit `v2/` into the parent repo, set Project → Settings → Root Directory to `v2`, and redeploy. Use this only if the existing Vercel project must keep its current Git connection.
+
+Do not set Root Directory to `v2` while it is still a nested repo: the parent repo sees only a gitlink, not the files.
+
+Then:
+
+1. Set `NEXT_PUBLIC_SITE_URL` to the final origin for Production and Preview. If the domain stays `yassine-ben-romdhane.vercel.app`, the existing fallback is already correct.
 2. Confirm the four CV PDFs are current, then re-run the build gates and `audit:a11y`, `audit:links`, `audit:nojs`, and `audit:lighthouse`. Check each picker row downloads the filename it claims.
-3. Check canonical URLs, OG image resolution, the 404 status, and a printed case file.
-4. Point the domain, then 301 the old `yassine-ben-romdhane.vercel.app` origin.
+3. Move or add the domain, then verify HTTPS, canonical URLs, OG image resolution, the 404 status, and a printed case file.
+4. Submit the sitemap and keep the previous deployment until the new one has been checked.
 
 ---
 
@@ -201,10 +216,10 @@ These block launch or would materially strengthen it:
 
 1. **Permissions:** what Capgemini allows (screenshots, demo, repository), and whether Sadine, RFID, or Wave can publish redacted visuals.
 2. **Flagship proof:** synthetic-corpus demo, recorded walkthrough, or both; run the 50-question retrieval benchmark.
-3. **Identity and contact:** custom domain, LinkedIn URL, language proficiency labels, target-role priority. Portrait resolved 28 Oct 2026.
+3. **Identity and contact:** custom domain, language proficiency labels, target-role priority. Portrait resolved 28 Oct 2026; LinkedIn resolved 30 Oct 2026.
 4. **Audit:** CI run, screen-reader, real Safari, and real-device passes.
 
-The site avoids unconfirmed claims: no LinkedIn placeholder, phone number in site copy, or language levels.
+The site avoids unconfirmed claims: no placeholder social links, phone number in site copy, or language levels.
 
 ---
 

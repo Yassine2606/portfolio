@@ -150,7 +150,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] How I work: three principles, each linked to evidence.
 - [ ] Experience: six rows, correct titles/dates.
 - [ ] About preview (no portrait on home; the one portrait lives on `/about`).
-- [ ] Contact: email, copy, GitHub, Resume. Add LinkedIn only when supplied.
+- [ ] Contact: email, copy, GitHub, LinkedIn, Resume.
 - [ ] Footer: links, colophon, last updated.
 - [ ] `/work`: four featured cards + three archive rows.
 - [ ] Empty/loading/error states for images and links.
@@ -214,7 +214,7 @@ Phase 9  Post-launch                       ongoing
 - [x] Contrast audit: token ratios recorded; axe reports no contrast violations.
 - [x] 320px reflow.
 - [x] 200% zoom equivalent and WCAG text-spacing overrides.
-- [x] Lighthouse mobile on `/` and flagship; 97–99 performance medians over three runs per route, 100 accessibility/BP/SEO; repeatable with `npm run audit:lighthouse`.
+- [x] Lighthouse mobile on `/` and flagship; 99 performance medians over three runs per route, 100 accessibility/BP/SEO; repeatable with `npm run audit:lighthouse`.
 - [x] HTML validator: 0 errors/warnings on 8 routes.
 - [x] Cross-browser scripted pass: Chromium, Firefox, and Playwright WebKit.
 - [ ] Bundle analyzer; first-load JS ≤120KB (measured 140–144KB gzip, miss); Index island ≤3KB.
@@ -224,7 +224,7 @@ Phase 9  Post-launch                       ongoing
 - [ ] JSON-LD validation: local parse passes; external Schema Markup Validator pending.
 - [x] Sitemap + robots + 404 status.
 - [x] Security headers + enforced CSP.
-- [x] Link check: 14 internal + 4 external, no dead controls.
+- [x] Link check: 14 internal + 5 external (LinkedIn 999 bot-block), no dead controls.
 - [ ] Content audit against the ledger; banned words; spelling.
 - [ ] Real-device test: mid-range Android + iPhone on 4G.
 - [x] Print test.

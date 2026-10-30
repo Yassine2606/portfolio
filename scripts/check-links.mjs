@@ -111,8 +111,11 @@ if (checkExternal) {
       const response = await get(href, {
         headers: { "user-agent": "Mozilla/5.0 (portfolio link check)" },
       });
-      const ok = response.status >= 200 && response.status < 400;
-      console.log(`${ok ? "ok  " : "FAIL"} ${response.status} ${href}`);
+      // LinkedIn answers automated requests with 999 even when the profile is
+      // public, so a 999 from linkedin.com is a bot block, not a dead link.
+      const botBlocked = response.status === 999 && new URL(href).hostname.endsWith("linkedin.com");
+      const ok = (response.status >= 200 && response.status < 400) || botBlocked;
+      console.log(`${ok ? (botBlocked ? "skip" : "ok  ") : "FAIL"} ${response.status} ${href}`);
       if (!ok) fail(href, `expected 2xx/3xx, got ${response.status}`);
     } catch (error) {
       fail(href, error.message);

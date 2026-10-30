@@ -19,7 +19,7 @@ export function personJsonLd(): JsonLd {
       description: item.programme,
     })),
     knowsAbout: site.knowsAbout,
-    sameAs: [site.github],
+    sameAs: [site.github, site.linkedin],
   };
 }
 

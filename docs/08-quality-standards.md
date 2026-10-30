@@ -97,7 +97,7 @@ Document the pass in `10-quality-gates.md`. The 28 Oct 2026 automated, keyboard,
 
 ### Measurement
 
-- **Lighthouse:** the repeatable audit ran three times per route on 28 Oct 2026 and scored 97–99/100/100/100 on mobile. Home median was 97 (individual runs 97, 98, 96); `/work` was 99, the flagship 98, and `/about` 99. An earlier set recorded 99, 94, 96 with a 2.6s LCP outlier, so one run across all sets missed the 95 performance target, but no three-run median did. CI runs the same script; it has not run remotely yet.
+- **Lighthouse:** the repeatable audit ran three times per route on 30 Oct 2026 and scored 99/100/100/100 on mobile on all four routes. Individual performance runs were home 99, 96, 99; `/work` 99, 98, 99; the flagship 95, 99, 99; `/about` 99, 99, 99. LCP was 0.9–1.2s and TBT 101–139ms. An earlier set recorded 99, 94, 96 with a 2.6s LCP outlier, so one run across all sets missed the 95 performance target, but no three-run median did. CI runs the same script; it has not run remotely yet.
 - **WebPageTest** once before launch: Moto G4 / Slow 4G, first view + repeat view.
 - **Vercel Speed Insights** after launch: field p75 for LCP, INP, CLS.
 - **Real device:** one mid-range Android and one iPhone on a real network, not just DevTools.
@@ -268,7 +268,7 @@ All of the following true:
 - [x] axe: 0 violations on every route at 320/390/1440 and in forced colors at 390/1440; repeatable with `npm run audit:a11y`.
 - [x] Keyboard-only pass on 4 routes; 19–31 stops each, all indicators visible, TOC anchors clear the sticky header.
 - [ ] Screen-reader pass on home + one case study.
-- [x] Lighthouse mobile 97–99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.
+- [x] Lighthouse mobile 99/100/100/100; medians of three runs per route; one earlier run scored 94, below the 95 performance target.
 - [x] LCP ≤ 1.8s lab on every route except one 2.6s home outlier; CLS 0.
 - [ ] INP ≤ 200ms in the field.
 - [ ] First-load JS ≤ 120KB gz; measured 140–144 KB gzip (119–123 KB Brotli), recorded as a miss.
@@ -276,7 +276,7 @@ All of the following true:
 - [x] HTML validator: 0 errors and 0 warnings on 8 routes.
 - [x] 200% zoom equivalent, text-spacing overrides, and reduced motion pass.
 - [ ] Cross-browser: Chromium, Firefox, and Playwright WebKit pass; real Safari, Edge, iOS, and Android pending.
-- [x] No broken links; 14 internal and 4 external URLs resolve; no dead controls.
+- [x] No broken links; 14 internal and 4 external URLs resolve (LinkedIn is owner-supplied and returns 999 to automated requests); no dead controls.
 - [ ] Metadata + OG + JSON-LD validated externally; local structure and links pass.
 - [x] Security headers + enforced CSP.
 - [ ] Content ledger complete; banned words absent.
